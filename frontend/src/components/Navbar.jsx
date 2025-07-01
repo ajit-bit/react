@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Search, Heart, User, ShoppingBag } from 'lucide-react';
 import './Navbar.css';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,6 +12,8 @@ const Navbar = () => {
   const [likedItems, setLikedItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkLoginStatus();
@@ -172,10 +175,20 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
     setIsCartSidebarOpen(false);
     setShowUserDropdown(false);
+    setShowAllJewelryDropdown(false);
   };
 
   const openTab = (tabName) => {
     setActiveTab(tabName);
+  };
+
+  const toggleAllJewelryDropdown = () => {
+    setShowAllJewelryDropdown(!showAllJewelryDropdown);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    closeAllMenus();
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -256,10 +269,22 @@ const Navbar = () => {
 
         <nav className="cat-strip" aria-label="Primary navigation">
           <ul className="cat-links">
-            <li><a href="/products">All Jewellery</a></li>
-            <li><a href="/rings">Rings</a></li>
-            <li><a href="/bracelets">Bracelets</a></li>
-            <li><a href="/blog">Blogs</a></li>
+            <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
+                All Jewellery
+              </a>
+              {showAllJewelryDropdown && (
+                <div className="dropdown-menu">
+                  <a href="#" onClick={() => handleNavigation('/earrings')}>Earrings</a>
+                  <a href="#" onClick={() => handleNavigation('/rings')}>Rings</a>
+                  <a href="#" onClick={() => handleNavigation('/necklaces')}>Necklaces</a>
+                  <a href="#" onClick={() => handleNavigation('/bracelets')}>Bracelets</a>
+                  <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
+                </div>
+              )}
+            </li>
+            <li><a href="/collections">Collections</a></li>
+            <li><a href="/new-arrivals">New Arrivals</a></li>
           </ul>
         </nav>
 
@@ -273,10 +298,20 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
-          <li><a href="/products" onClick={closeAllMenus}>All Jewellery</a></li>
-          <li><a href="/rings" onClick={closeAllMenus}>Rings</a></li>
-          <li><a href="/bracelets" onClick={closeAllMenus}>Bracelets</a></li>
-          <li><a href="/blog" onClick={closeAllMenus}>Blogs</a></li>
+          <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+            <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
+            {showAllJewelryDropdown && (
+              <div className="dropdown-menu">
+                <a href="#" onClick={() => handleNavigation('/earrings')}>Earrings</a>
+                <a href="#" onClick={() => handleNavigation('/rings')}>Rings</a>
+                <a href="#" onClick={() => handleNavigation('/necklaces')}>Necklaces</a>
+                <a href="#" onClick={() => handleNavigation('/bracelets')}>Bracelets</a>
+                <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
+              </div>
+            )}
+          </li>
+          <li><a href="/collections" onClick={closeAllMenus}>Collections</a></li>
+          <li><a href="/new-arrivals" onClick={closeAllMenus}>New Arrivals</a></li>
         </ul>
       </aside>
 

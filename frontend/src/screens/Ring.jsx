@@ -1,73 +1,301 @@
-import Navbar from '../components/Navbar.jsx';
-import Footer from '../components/Footer.jsx';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
 import '../styles/Ring.css';
+import Navbar from '../components/Navbar';
+import ring from '../../images/ring.png';
+import ring1 from '../../images/ring1.jpg';
+
+// You can now use <img src={ringImg} /> or <img src={ringImg1} /> in your JSX.
+
 
 const Ring = () => {
-  const jewelryItems = Array(9).fill({
-    name: "Rose Gold Infinity Ring",
-    price: "₹1,200",
-    image: "https://via.placeholder.com/200",
-  });
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [likedProducts, setLikedProducts] = useState(new Set());
+
+  // Slideshow images
+  const slideImages = [
+    'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
+    'https://images.pexels.com/photos/1927130/pexels-photo-1927130.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
+    'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
+    'https://images.pexels.com/photos/1445527/pexels-photo-1445527.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
+  ];
+
+  // Product data with hover images
+  const products = [
+   {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 1,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+  ];
+
+  // Auto-slide functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slideImages.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slideImages.length) % slideImages.length);
+  };
+
+  const toggleLike = (productId) => {
+    setLikedProducts(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(productId)) {
+        newLiked.delete(productId);
+      } else {
+        newLiked.add(productId);
+      }
+      return newLiked;
+    });
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`star ${
+          i < Math.floor(rating) 
+            ? 'filled' 
+            : i < rating 
+            ? 'half-filled' 
+            : ''
+        }`}
+      />
+    ));
+  };
 
   return (
-    <div className="ring-container">
-      <Navbar />
-      <div className="ring-content">
-        {/* Hero Section */}
-        <div className="hero-section">
-          <h1 className="hero-title">Discover Your Edge</h1>
-          <p className="hero-description">
-            Handpicked silver and stainless-steel jewelry crafted for the modern man.
-          </p>
-          <button className="hero-button">Shop Now</button>
-        </div>
-
-        <div className="content-grid">
-          {/* Filters */}
-          <div className="filters">
-            <h3 className="filter-title">Shop by Category</h3>
-            <ul className="filter-list">
-              <li><a href="#" className="filter-link">Necklace</a></li>
-              <li><a href="#" className="filter-link">Rings</a></li>
-              <li><a href="#" className="filter-link">Earrings</a></li>
-              <li><a href="#" className="filter-link">Bracelet</a></li>
-            </ul>
-            <h3 className="filter-title">Price Range (₹)</h3>
-            <div className="price-range">
-              <input type="number" placeholder="Min: ₹100" className="price-input" />
-              <input type="number" placeholder="Max: ₹10000" className="price-input" />
-            </div>
-            <h3 className="filter-title">Occasion</h3>
-            <ul className="filter-list">
-              <li><a href="#" className="filter-link">Wedding</a></li>
-              <li><a href="#" className="filter-link">Casual</a></li>
-              <li><a href="#" className="filter-link">Festive</a></li>
-            </ul>
+    <>
+      
+      <div className="ring-page">
+        {/* Slideshow Section */}
+        <div className="slideshow-container">
+          <div 
+            className="slideshow-wrapper"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {slideImages.map((image, index) => (
+              <div key={index} className="slide">
+                <img
+                  src={image}
+                  alt={`Slide ${index + 1}`}
+                />
+                <div className="slide-overlay">
+                  <div className="slide-content">
+                    <h2 className="slide-title">Exquisite Rings</h2>
+                    <p className="slide-subtitle">Discover our premium collection of handcrafted rings</p>
+                    <button className="slide-button">
+                      Shop Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Product Grid */}
-          <div className="product-grid">
-            <div className="products">
-              {jewelryItems.map((item, index) => (
-                <div key={index} className="product-card">
-                  <img src={item.image} alt={item.name} className="product-image" />
-                  <h4 className="product-name">{item.name}</h4>
-                  <p className="product-price">{item.price}</p>
-                  <button className="product-button">Add to Bag</button>
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="nav-arrow prev"
+          >
+            <ChevronLeft />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="nav-arrow next"
+          >
+            <ChevronRight />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="slide-indicators">
+            {slideImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Header Section */}
+        <div className="header-section">
+          <div className="header-content">
+            <h1 className="header-title">Premium Ring Collection</h1>
+            <p className="header-description">
+              Discover our handpicked selection of exquisite rings, crafted with precision and designed to make every moment special.
+            </p>
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        <div className="products-container">
+          <div className="products-grid">
+            {products.map((product) => (
+              <div key={product.id} className="product-card">
+                <div className="product-image-container">
+                  <div className="product-image-wrapper">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="product-image main-image"
+                    />
+                    <img
+                      src={product.hoverImage}
+                      alt={`${product.name} - alternate view`}
+                      className="product-image hover-image"
+                    />
+                  </div>
+                  {product.badge && (
+                    <div className="product-badge">
+                      {product.badge}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-            {/* Pagination */}
-            <div className="pagination">
-              <button className="pagination-button">1</button>
-              <button className="pagination-button">2</button>
-              <button className="pagination-button">3</button>
-            </div>
+
+                <div className="product-content">
+                  <h3 className="product-name">
+                    {product.name}
+                  </h3>
+
+                  {/* Rating */}
+                  <div className="rating-container">
+                    <div className="stars-container">
+                      {renderStars(product.rating)}
+                    </div>
+                    <span className="reviews-text">
+                      {product.reviews} reviews
+                    </span>
+                  </div>
+
+                  {/* Price */}
+                  <div className="price-container">
+                    <div className="price-wrapper">
+                      <span className="current-price">
+                        Rs. {product.currentPrice.toFixed(2)}
+                      </span>
+                      <span className="original-price">
+                        Rs. {product.originalPrice.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="action-buttons">
+                    <button className="add-to-bag-button">
+                      <ShoppingBag className="bag-icon" />
+                      <span>Add to Bag</span>
+                    </button>
+                    <button
+                      onClick={() => toggleLike(product.id)}
+                      className="like-button"
+                    >
+                      <Heart
+                        className={`heart-icon ${
+                          likedProducts.has(product.id) ? 'liked' : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 };
 
