@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
-import '../styles/Ring.css';
+import styles from '../styles/Ring.module.css';
 import ring from '../../images/ring.png';
 import ring1 from '../../images/ring1.jpg';
-
-// You can now use <img src={ringImg} /> or <img src={ringImg1} /> in your JSX.
-
 
 const Ring = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -21,17 +18,6 @@ const Ring = () => {
 
   // Product data with hover images
   const products = [
-   {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
-      badge: null
-    },
     {
       id: 1,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
@@ -44,7 +30,7 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 2,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -55,7 +41,7 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 3,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -66,7 +52,7 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 4,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -77,7 +63,7 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 5,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -88,7 +74,7 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 6,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -99,7 +85,18 @@ const Ring = () => {
       badge: null
     },
     {
-      id: 1,
+      id: 7,
+      name: 'Girl Boss Salty Watch Ring - Rose Gold',
+      originalPrice: 900.00,
+      currentPrice: 749.00,
+      rating: 4.5,
+      reviews: 670,
+      image: ring,
+      hoverImage: ring1,
+      badge: null
+    },
+    {
+      id: 8,
       name: 'Girl Boss Salty Watch Ring - Rose Gold',
       originalPrice: 900.00,
       currentPrice: 749.00,
@@ -143,11 +140,11 @@ const Ring = () => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`star ${
+        className={`${styles.star} ${
           i < Math.floor(rating) 
-            ? 'filled' 
+            ? styles.filled 
             : i < rating 
-            ? 'half-filled' 
+            ? styles['half-filled'] 
             : ''
         }`}
       />
@@ -156,25 +153,24 @@ const Ring = () => {
 
   return (
     <>
-      
-      <div className="ring-page">
+      <div className={styles['ring-page']}>
         {/* Slideshow Section */}
-        <div className="slideshow-container">
+        <div className={styles['slideshow-container']}>
           <div 
-            className="slideshow-wrapper"
+            className={styles['slideshow-wrapper']}
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slideImages.map((image, index) => (
-              <div key={index} className="slide">
+              <div key={index} className={styles.slide}>
                 <img
                   src={image}
                   alt={`Slide ${index + 1}`}
                 />
-                <div className="slide-overlay">
-                  <div className="slide-content">
-                    <h2 className="slide-title">Exquisite Rings</h2>
-                    <p className="slide-subtitle">Discover our premium collection of handcrafted rings</p>
-                    <button className="slide-button">
+                <div className={styles['slide-overlay']}>
+                  <div className={styles['slide-content']}>
+                    <h2 className={styles['slide-title']}>Exquisite Rings</h2>
+                    <p className={styles['slide-subtitle']}>Discover our premium collection of handcrafted rings</p>
+                    <button className={styles['slide-button']}>
                       Shop Now
                     </button>
                   </div>
@@ -186,104 +182,104 @@ const Ring = () => {
           {/* Navigation Arrows */}
           <button
             onClick={prevSlide}
-            className="nav-arrow prev"
+            className={`${styles['nav-arrow']} ${styles.prev}`}
           >
             <ChevronLeft />
           </button>
           <button
             onClick={nextSlide}
-            className="nav-arrow next"
+            className={`${styles['nav-arrow']} ${styles.next}`}
           >
             <ChevronRight />
           </button>
 
           {/* Slide Indicators */}
-          <div className="slide-indicators">
+          <div className={styles['slide-indicators']}>
             {slideImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`indicator ${index === currentSlide ? 'active' : ''}`}
+                className={`${styles.indicator} ${index === currentSlide ? styles.active : ''}`}
               />
             ))}
           </div>
         </div>
 
         {/* Header Section */}
-        <div className="header-section">
-          <div className="header-content">
-            <h1 className="header-title">Premium Ring Collection</h1>
-            <p className="header-description">
+        <div className={styles['header-section']}>
+          <div className={styles['header-content']}>
+            <h1 className={styles['header-title']}>Premium Ring Collection</h1>
+            <p className={styles['header-description']}>
               Discover our handpicked selection of exquisite rings, crafted with precision and designed to make every moment special.
             </p>
           </div>
         </div>
 
         {/* Products Grid */}
-        <div className="products-container">
-          <div className="products-grid">
+        <div className={styles['products-container']}>
+          <div className={styles['products-grid']}>
             {products.map((product) => (
-              <div key={product.id} className="product-card">
-                <div className="product-image-container">
-                  <div className="product-image-wrapper">
+              <div key={product.id} className={styles['product-card']}>
+                <div className={styles['product-image-container']}>
+                  <div className={styles['product-image-wrapper']}>
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="product-image main-image"
+                      className={`${styles['product-image']} ${styles['main-image']}`}
                     />
                     <img
                       src={product.hoverImage}
                       alt={`${product.name} - alternate view`}
-                      className="product-image hover-image"
+                      className={`${styles['product-image']} ${styles['hover-image']}`}
                     />
                   </div>
                   {product.badge && (
-                    <div className="product-badge">
+                    <div className={styles['product-badge']}>
                       {product.badge}
                     </div>
                   )}
                 </div>
 
-                <div className="product-content">
-                  <h3 className="product-name">
+                <div className={styles['product-content']}>
+                  <h3 className={styles['product-name']}>
                     {product.name}
                   </h3>
 
                   {/* Rating */}
-                  <div className="rating-container">
-                    <div className="stars-container">
+                  <div className={styles['rating-container']}>
+                    <div className={styles['stars-container']}>
                       {renderStars(product.rating)}
                     </div>
-                    <span className="reviews-text">
+                    <span className={styles['reviews-text']}>
                       {product.reviews} reviews
                     </span>
                   </div>
 
                   {/* Price */}
-                  <div className="price-container">
-                    <div className="price-wrapper">
-                      <span className="current-price">
+                  <div className={styles['price-container']}>
+                    <div className={styles['price-wrapper']}>
+                      <span className={styles['current-price']}>
                         Rs. {product.currentPrice.toFixed(2)}
                       </span>
-                      <span className="original-price">
+                      <span className={styles['original-price']}>
                         Rs. {product.originalPrice.toFixed(2)}
                       </span>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="action-buttons">
-                    <button className="add-to-bag-button">
-                      <ShoppingBag className="bag-icon" />
+                  <div className={styles['action-buttons']}>
+                    <button className={styles['add-to-bag-button']}>
+                      <ShoppingBag className={styles['bag-icon']} />
                       <span>Add to Bag</span>
                     </button>
                     <button
                       onClick={() => toggleLike(product.id)}
-                      className="like-button"
+                      className={styles['like-button']}
                     >
                       <Heart
-                        className={`heart-icon ${
-                          likedProducts.has(product.id) ? 'liked' : ''
+                        className={`${styles['heart-icon']} ${
+                          likedProducts.has(product.id) ? styles.liked : ''
                         }`}
                       />
                     </button>

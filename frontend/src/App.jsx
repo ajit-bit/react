@@ -6,6 +6,7 @@ import Bracelet from "./screens/Bracelet";
 import Necklace from "./screens/Necklace";
 import Earring from "./screens/Earring";
 import  Blogs from "./screens/Blog";
+import Home from "./screens/Home";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/collections" element={<div>Collections Page</div>} />
           <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />
           <Route path="/blogs" element={<Blogs/>} />
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/" element={<Home/>} />
         </Routes>
       </Router>
     </div>
