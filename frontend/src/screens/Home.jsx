@@ -24,11 +24,7 @@ import myntra from '../../images/myntra.png';
 import testimonial1 from '../../images/testimonial-1.jpg';
 import testimonial2 from '../../images/testimonial-2.jpg';
 import testimonial3 from '../../images/testimonial-3.jpg';
-import paytm from '../../images/paytm.svg';
-import googlepay from '../../images/googlepay.svg';
-import visa from '../../images/visa.svg';
-import mastercard from '../../images/mastercard.svg';
-import americanexpress from '../../images/americanexpress.svg';
+
 
 
 const App = () => {
@@ -36,14 +32,7 @@ const App = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('rings');
 
-  const payments = {
-  paytm,
-  googlepay,
-  visa,
-  mastercard,
-  americanexpress,
-};
-
+  
   // Slider functionality
   useEffect(() => {
     const interval = setInterval(() => {
@@ -602,61 +591,7 @@ const App = () => {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-brand">
-              <div className="logos">
-                <div className="logos-icon"></div>
-                <div>
-                  <div className="logos-text">AAISHA</div>
-                  <div className="logos-subtext">HOUSE OF SILVER</div>
-                </div>
-              </div>
-              <p className="brand-description">
-                Unleash the radiance of your inner beauty with our premium silver jewelry brand - a perfect blend of sophistication and style.
-              </p>
-
-              <div className="custom-social-icons">
-                <a href="#"><i className="fab fa-facebook-f"></i></a>
-                <a href="#"><i className="fab fa-instagram"></i></a>
-                <a href="#"><i className="fab fa-pinterest-p"></i></a>
-              </div>
-
-              <div className="footer-bottom">
-                <div className="payment-methods">
-                   {Object.keys(payments).map((payment) => (
-                    <img
-                      key={payment}
-                      src={payments[payment]}
-                      alt={payment}
-                      className="payment-icon"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="footer-section">
-              <h3>Account</h3>
-              <ul>
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Orders</a></li>
-                <li><a href="#">Wishlist</a></li>
-                <li><a href="#">Addresses</a></li>
-              </ul>
-            </div>
-
-            <div className="footer-section">
-              <h3>Help</h3>
-              <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact Support</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

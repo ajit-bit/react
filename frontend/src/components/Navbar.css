@@ -459,11 +459,9 @@
   transition: right 0.3s ease;
   z-index: 1300;
   overflow-y: auto;
-  display: none;
 }
 
 .cart-sidebar.open {
-  display: block;
   right: 0;
 }
 

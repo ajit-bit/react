@@ -244,7 +244,7 @@ const Navbar = () => {
             
             <button 
               className="icon-link"
-              onClick={() => toggleCartSidebar('liked')}
+              onClick={() => { toggleCartSidebar('liked');  }}
               aria-label="Wishlist"
             >
               <img src={likeLogo} alt="Wishlist" className="icon-svg" />
@@ -278,7 +278,7 @@ const Navbar = () => {
 
             <button 
               className="icon-link"
-              onClick={() => toggleCartSidebar('cart')}
+              onClick={() => { toggleCartSidebar('cart');}}
               aria-label="Shopping cart"
             >
               <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
@@ -385,8 +385,12 @@ const Navbar = () => {
 
         <div className={`tab-content ${activeTab === 'cart' ? 'active' : ''}`}>
           <h2>SHOPPING CART</h2>
+          <hr />
           {cartItems.length === 0 ? (
-            <p className="empty-message">Your cart is empty.</p>
+            <div>
+              <p className="empty-message">Your cart is empty.</p>
+              <img src={shopLogo} alt="Shopping Cart" onClick={() => navigate('/bag')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+            </div>
           ) : (
             <div className="items-container">
               {cartItems.map((item) => (
@@ -402,12 +406,19 @@ const Navbar = () => {
           <button className="return-to-shop" onClick={closeAllMenus}>
             RETURN TO SHOP
           </button>
+          <button className="proceed-checkout">
+            PROCEED TO SECURE CHECKOUT
+          </button>
         </div>
 
         <div className={`tab-content ${activeTab === 'liked' ? 'active' : ''}`}>
-          <h2>LIKED ITEMS</h2>
+          <h2>LIKED</h2>
+          <hr />
           {likedItems.length === 0 ? (
-            <p className="empty-message">No liked items yet.</p>
+            <div>
+              <p className="empty-message">No liked items yet.</p>
+              <img src={likeLogo} alt="Liked Items" onClick={() => navigate('/liked')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+            </div>
           ) : (
             <div className="items-container">
               {likedItems.map((item) => (
@@ -421,12 +432,6 @@ const Navbar = () => {
           )}
           <button className="return-to-shop" onClick={closeAllMenus}>
             GO TO WISHLIST
-          </button>
-        </div>
-
-        <div className="common-section">
-          <button className="proceed-checkout">
-            PROCEED TO SECURE CHECKOUT
           </button>
         </div>
       </aside>

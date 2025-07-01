@@ -1,0 +1,171 @@
+/* Footer Main Container */
+.footer {
+  background-color: #f5f5f5;
+  padding: 15px 15px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Top Footer Layout */
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+/* Brand Section */
+.footerBrand {
+  flex: 2;
+  min-width: 250px;
+}
+
+.logos {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.logosIcon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #d4af37, #ffd700);
+  margin-right: 12px;
+  transform: rotate(45deg);
+  position: relative;
+}
+
+.logosIcon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  width: 20px;
+  height: 20px;
+  background: white;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.logosText {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.logosSubtext {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.brandDescription {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 10px;
+  text-align: left;
+}
+
+/* Footer Columns */
+.footerSection {
+  flex: 1;
+  min-width: 180px;
+}
+
+.footerSection h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.footerSection ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerSection ul li {
+  margin-bottom: 12px;
+}
+
+.footerSection ul li a {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footerSection ul li a:hover {
+  color: #d4af37;
+}
+
+/* Social Icons */
+.customSocialIcons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.socialLink {
+  width: 35px;
+  height: 35px;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.socialLink:hover {
+  background-color: #d4af37;
+  color: white;
+}
+
+/* Payment Icons */
+.paymentMethods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.paymentIcon {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footerContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footerBrand,
+  .footerSection {
+    min-width: 100%;
+  }
+
+  .brandDescription {
+    text-align: center;
+  }
+
+  .customSocialIcons {
+    justify-content: center;
+  }
+
+  .paymentMethods {
+    justify-content: center;
+  }
+}
