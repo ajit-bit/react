@@ -285,7 +285,7 @@ const Navbar = () => {
         <div className="overlay" onClick={closeAllMenus}></div>
       )}
 
-      {/* Fixed Cart Sidebar */}
+      {/* Cart Sidebar */}
       <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`}>
         <div className="tab-buttons">
           <button 
