@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, Heart, User, ShoppingBag } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, X } from 'lucide-react';
 import './Navbar.css';
 import { useNavigate } from 'react-router-dom';
+
+// Import custom SVG icons
+import searchLogo from '../../images/searchlogo.svg';
+import likeLogo from '../../images/like.svg';
+import accountLogo from '../../images/acountlogo.svg';
+import shopLogo from '../../images/shoplogo.svg';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -13,11 +19,23 @@ const Navbar = () => {
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
+  const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const navigate = useNavigate();
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     checkLoginStatus();
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button')) {
+        setIsCartSidebarOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const checkLoginStatus = async () => {
@@ -159,16 +177,13 @@ const Navbar = () => {
   };
 
   const toggleMobileMenu = () => {
-    if (!isCartSidebarOpen) {
-      setIsMobileMenuOpen(!isMobileMenuOpen);
-    }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const toggleCartSidebar = (tab = 'cart') => {
-    if (!isMobileMenuOpen) {
-      setActiveTab(tab);
-      setIsCartSidebarOpen(!isCartSidebarOpen);
-    }
+    setActiveTab(tab);
+    setIsCartSidebarOpen(!isCartSidebarOpen);
+    if (!isCartSidebarOpen) setIsMobileMenuOpen(false); // Close mobile menu when opening sidebar
   };
 
   const closeAllMenus = () => {
@@ -176,6 +191,7 @@ const Navbar = () => {
     setIsCartSidebarOpen(false);
     setShowUserDropdown(false);
     setShowAllJewelryDropdown(false);
+    setShowAboutDropdown(false);
   };
 
   const openTab = (tabName) => {
@@ -184,6 +200,12 @@ const Navbar = () => {
 
   const toggleAllJewelryDropdown = () => {
     setShowAllJewelryDropdown(!showAllJewelryDropdown);
+    setShowAboutDropdown(false);
+  };
+
+  const toggleAboutDropdown = () => {
+    setShowAboutDropdown(!showAboutDropdown);
+    setShowAllJewelryDropdown(false);
   };
 
   const handleNavigation = (path) => {
@@ -217,7 +239,7 @@ const Navbar = () => {
 
           <nav className="icon-bar" aria-label="Quick actions">
             <a href="#" aria-label="Search">
-              <Search size={24} />
+              <img src={searchLogo} alt="Search" className="icon-svg" />
             </a>
             
             <button 
@@ -225,7 +247,7 @@ const Navbar = () => {
               onClick={() => toggleCartSidebar('liked')}
               aria-label="Wishlist"
             >
-              <Heart size={24} />
+              <img src={likeLogo} alt="Wishlist" className="icon-svg" />
               {likedItems.length > 0 && (
                 <span className="badge">{likedItems.length}</span>
               )}
@@ -238,11 +260,11 @@ const Navbar = () => {
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
                   aria-label="Account"
                 >
-                  <User size={24} />
+                  <img src={accountLogo} alt="Account" className="icon-svg" />
                 </button>
               ) : (
                 <a href="/auth" aria-label="Login">
-                  <User size={24} />
+                  <img src={accountLogo} alt="Login" className="icon-svg" />
                 </a>
               )}
               
@@ -259,7 +281,7 @@ const Navbar = () => {
               onClick={() => toggleCartSidebar('cart')}
               aria-label="Shopping cart"
             >
-              <ShoppingBag size={24} />
+              <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
               {cartItems.length > 0 && (
                 <span className="badge">{cartItems.length}</span>
               )}
@@ -285,6 +307,18 @@ const Navbar = () => {
             </li>
             <li><a href="/collections">Collections</a></li>
             <li><a href="/new-arrivals">New Arrivals</a></li>
+            <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
+              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown();}}>
+                About
+              </a>
+              {showAboutDropdown && (
+                <div className="dropdown-menu">
+                  <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
+                  <a href="#" onClick={() => handleNavigation('/blogs')}>Blogs</a>
+                  <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
+                </div>
+              )}
+            </li>
           </ul>
         </nav>
 
@@ -312,6 +346,18 @@ const Navbar = () => {
           </li>
           <li><a href="/collections" onClick={closeAllMenus}>Collections</a></li>
           <li><a href="/new-arrivals" onClick={closeAllMenus}>New Arrivals</a></li>
+          <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
+            <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
+            {showAboutDropdown && (
+              <div className="dropdown-menu">
+                <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
+                <a href="#" onClick={() => handleNavigation('/craftsmanship')}>Craftsmanship</a>
+                <a href="#" onClick={() => handleNavigation('/sustainability')}>Sustainability</a>
+                <a href="#" onClick={() => handleNavigation('/testimonials')}>Testimonials</a>
+                <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
+              </div>
+            )}
+          </li>
         </ul>
       </aside>
 
@@ -321,7 +367,7 @@ const Navbar = () => {
       )}
 
       {/* Cart Sidebar */}
-      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`}>
+      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`} ref={sidebarRef}>
         <div className="tab-buttons">
           <button 
             className={`tab-link ${activeTab === 'cart' ? 'active' : ''}`}

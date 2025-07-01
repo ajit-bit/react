@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
-import '../styles/Ring.css';
-import ring from '../../images/ring.png';
-import ring1 from '../../images/ring1.jpg';
+import '../styles/Earring.css';
+import earring from '../../images/earring.png';
+import earring1 from '../../images/earring1.jpg';
 
-// You can now use <img src={ringImg} /> or <img src={ringImg1} /> in your JSX.
-
-
-const Ring = () => {
+const Earring = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
 
@@ -21,92 +18,92 @@ const Ring = () => {
 
   // Product data with hover images
   const products = [
-   {
+    {
       id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 2,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 3,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 4,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 5,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 6,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 7,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
     {
-      id: 1,
-      name: 'Girl Boss Salty Watch Ring - Rose Gold',
-      originalPrice: 900.00,
-      currentPrice: 749.00,
-      rating: 4.5,
-      reviews: 670,
-      image: ring,
-      hoverImage: ring1,
+      id: 8,
+      name: 'Elegant Drop Earrings - Silver',
+      originalPrice: 800.00,
+      currentPrice: 649.00,
+      rating: 4.7,
+      reviews: 520,
+      image: earring,
+      hoverImage: earring1,
       badge: null
     },
   ];
@@ -156,8 +153,7 @@ const Ring = () => {
 
   return (
     <>
-      
-      <div className="ring-page">
+      <div className="earring-page">
         {/* Slideshow Section */}
         <div className="slideshow-container">
           <div 
@@ -172,8 +168,8 @@ const Ring = () => {
                 />
                 <div className="slide-overlay">
                   <div className="slide-content">
-                    <h2 className="slide-title">Exquisite Rings</h2>
-                    <p className="slide-subtitle">Discover our premium collection of handcrafted rings</p>
+                    <h2 className="slide-title">Exquisite Earrings</h2>
+                    <p className="slide-subtitle">Discover our premium collection of handcrafted earrings</p>
                     <button className="slide-button">
                       Shop Now
                     </button>
@@ -212,9 +208,9 @@ const Ring = () => {
         {/* Header Section */}
         <div className="header-section">
           <div className="header-content">
-            <h1 className="header-title">Premium Ring Collection</h1>
+            <h1 className="header-title">Premium Earring Collection</h1>
             <p className="header-description">
-              Discover our handpicked selection of exquisite rings, crafted with precision and designed to make every moment special.
+              Discover our handpicked selection of exquisite earrings, crafted with precision and designed to make every moment special.
             </p>
           </div>
         </div>
@@ -298,4 +294,4 @@ const Ring = () => {
   );
 };
 
-export default Ring;
+export default Earring;
