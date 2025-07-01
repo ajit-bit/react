@@ -8,6 +8,7 @@ import Necklace from './screens/Necklace';
 import Earring from './screens/Earring';
 import Blogs from './screens/Blog';
 import Home from './screens/Home';
+import Cart from './screens/Cart'; // Updated path to match file structure
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/collections" element={<div>Collections Page</div>} />
             <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/bag" element={<Cart />} /> {/* Route for /bag */}
             <Route path="/" element={<Home />} />
           </Routes>
         </main>
