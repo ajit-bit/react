@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X } from 'lucide-react';
 import './Navbar.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -301,6 +300,8 @@ const Navbar = () => {
             </li>
             <li><a href="/collections">Collections</a></li>
             <li><a href="/new-arrivals">New Arrivals</a></li>
+                        <li><a href="/new-arrivals">Best Seller</a></li>
+
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
               <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown();}}>
                 About
