@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X } from 'lucide-react';
-import './Navbar.css';
+import { Heart, Search, ShoppingBag, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from "../images/logo-nobg.png";
+import './MenNavbar.css';
 
-// Import custom SVG icons
-import searchLogo from '../../images/searchlogo.svg';
-import likeLogo from '../../images/like.svg';
-import accountLogo from '../../images/acountlogo.svg';
-import shopLogo from '../../images/shoplogo.svg';
 
-const Navbar = () => {
+const MenNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
@@ -19,25 +15,14 @@ const Navbar = () => {
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
-  const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const navigate = useNavigate();
-  const sidebarRef = useRef(null);
 
   useEffect(() => {
     checkLoginStatus();
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button')) {
-        setIsCartSidebarOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+  
   const checkLoginStatus = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/me", {
@@ -177,13 +162,16 @@ const Navbar = () => {
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    if (!isCartSidebarOpen) {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    }
   };
 
   const toggleCartSidebar = (tab = 'cart') => {
-    setActiveTab(tab);
-    setIsCartSidebarOpen(!isCartSidebarOpen);
-    if (!isCartSidebarOpen) setIsMobileMenuOpen(false); // Close mobile menu when opening sidebar
+    if (!isMobileMenuOpen) {
+      setActiveTab(tab);
+      setIsCartSidebarOpen(!isCartSidebarOpen);
+    }
   };
 
   const closeAllMenus = () => {
@@ -191,7 +179,6 @@ const Navbar = () => {
     setIsCartSidebarOpen(false);
     setShowUserDropdown(false);
     setShowAllJewelryDropdown(false);
-    setShowAboutDropdown(false);
   };
 
   const openTab = (tabName) => {
@@ -200,12 +187,6 @@ const Navbar = () => {
 
   const toggleAllJewelryDropdown = () => {
     setShowAllJewelryDropdown(!showAllJewelryDropdown);
-    setShowAboutDropdown(false);
-  };
-
-  const toggleAboutDropdown = () => {
-    setShowAboutDropdown(!showAboutDropdown);
-    setShowAllJewelryDropdown(false);
   };
 
   const handleNavigation = (path) => {
@@ -217,7 +198,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="navbar-header">
+      <header className="mennavbar-header">
         <div className="promo">
           FREE JEWELLERY ORGANIZER WORTH ₹400 ON ORDERS ABOVE RS. 1500
         </div>
@@ -233,34 +214,40 @@ const Navbar = () => {
 
           <div className="logo">
             <a href="/">
-              <img src="/images/logo-nobg.png" alt="Aisha" />
+              <img src={logo} alt="Aisha" />
             </a>
           </div>
 
           <nav className="icon-bar" aria-label="Quick actions">
             <a href="#" aria-label="Search">
-              <img src={searchLogo} alt="Search" className="icon-svg" />
+              <Search size={24} />
             </a>
             
             <button 
               className="icon-link"
-              onClick={() => { toggleCartSidebar('liked');  }}
+              onClick={() => toggleCartSidebar('liked')}
               aria-label="Wishlist"
             >
-              <img src={likeLogo} alt="Wishlist" className="icon-svg" />
+              <Heart size={24} />
               {likedItems.length > 0 && (
                 <span className="badge">{likedItems.length}</span>
               )}
             </button>
 
             <div className="account-wrapper">
-              <button 
-                className="account-button"
-                onClick={() => handleNavigation('/auth')}
-                aria-label="Account"
-              >
-                <img src={accountLogo} alt="Account" className="icon-svg" />
-              </button>
+              {user ? (
+                <button 
+                  className="account-button"
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  aria-label="Account"
+                >
+                  <User size={24} />
+                </button>
+              ) : (
+                <a href="/auth" aria-label="Login">
+                  <User size={24} />
+                </a>
+              )}
               
               {user && showUserDropdown && (
                 <div className="account-dropdown">
@@ -272,10 +259,10 @@ const Navbar = () => {
 
             <button 
               className="icon-link"
-              onClick={() => { toggleCartSidebar('cart');}}
+              onClick={() => toggleCartSidebar('cart')}
               aria-label="Shopping cart"
             >
-              <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
+              <ShoppingBag size={24} />
               {cartItems.length > 0 && (
                 <span className="badge">{cartItems.length}</span>
               )}
@@ -301,18 +288,6 @@ const Navbar = () => {
             </li>
             <li><a href="/collections">Collections</a></li>
             <li><a href="/new-arrivals">New Arrivals</a></li>
-            <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown();}}>
-                About
-              </a>
-              {showAboutDropdown && (
-                <div className="dropdown-menu">
-                  <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
-                  <a href="#" onClick={() => handleNavigation('/blogs')}>Blogs</a>
-                  <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
-                </div>
-              )}
-            </li>
           </ul>
         </nav>
 
@@ -340,18 +315,6 @@ const Navbar = () => {
           </li>
           <li><a href="/collections" onClick={closeAllMenus}>Collections</a></li>
           <li><a href="/new-arrivals" onClick={closeAllMenus}>New Arrivals</a></li>
-          <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-            <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
-            {showAboutDropdown && (
-              <div className="dropdown-menu">
-                <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
-                <a href="#" onClick={() => handleNavigation('/craftsmanship')}>Craftsmanship</a>
-                <a href="#" onClick={() => handleNavigation('/sustainability')}>Sustainability</a>
-                <a href="#" onClick={() => handleNavigation('/testimonials')}>Testimonials</a>
-                <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
-              </div>
-            )}
-          </li>
         </ul>
       </aside>
 
@@ -361,7 +324,7 @@ const Navbar = () => {
       )}
 
       {/* Cart Sidebar */}
-      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`} ref={sidebarRef}>
+      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`}>
         <div className="tab-buttons">
           <button 
             className={`tab-link ${activeTab === 'cart' ? 'active' : ''}`}
@@ -379,12 +342,8 @@ const Navbar = () => {
 
         <div className={`tab-content ${activeTab === 'cart' ? 'active' : ''}`}>
           <h2>SHOPPING CART</h2>
-          <hr />
           {cartItems.length === 0 ? (
-            <div>
-              <p className="empty-message">Your cart is empty.</p>
-              <img src={shopLogo} alt="Shopping Cart" onClick={() => navigate('/bag')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
-            </div>
+            <p className="empty-message">Your cart is empty.</p>
           ) : (
             <div className="items-container">
               {cartItems.map((item) => (
@@ -400,19 +359,12 @@ const Navbar = () => {
           <button className="return-to-shop" onClick={closeAllMenus}>
             RETURN TO SHOP
           </button>
-          <button className="proceed-checkout">
-            PROCEED TO SECURE CHECKOUT
-          </button>
         </div>
 
         <div className={`tab-content ${activeTab === 'liked' ? 'active' : ''}`}>
-          <h2>LIKED</h2>
-          <hr />
+          <h2>LIKED ITEMS</h2>
           {likedItems.length === 0 ? (
-            <div>
-              <p className="empty-message">No liked items yet.</p>
-              <img src={likeLogo} alt="Liked Items" onClick={() => navigate('/liked')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
-            </div>
+            <p className="empty-message">No liked items yet.</p>
           ) : (
             <div className="items-container">
               {likedItems.map((item) => (
@@ -426,6 +378,12 @@ const Navbar = () => {
           )}
           <button className="return-to-shop" onClick={closeAllMenus}>
             GO TO WISHLIST
+          </button>
+        </div>
+
+        <div className="common-section">
+          <button className="proceed-checkout">
+            PROCEED TO SECURE CHECKOUT
           </button>
         </div>
       </aside>
@@ -452,4 +410,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default MenNavbar;
