@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
-import { useNavigate } from 'react-router-dom';
-
-// Import custom SVG icons
 import searchLogo from '../../images/searchlogo.svg';
 import likeLogo from '../../images/like.svg';
 import accountLogo from '../../images/acountlogo.svg';
@@ -20,6 +18,7 @@ const Navbar = () => {
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const sidebarRef = useRef(null);
 
   useEffect(() => {
@@ -182,7 +181,7 @@ const Navbar = () => {
   const toggleCartSidebar = (tab = 'cart') => {
     setActiveTab(tab);
     setIsCartSidebarOpen(!isCartSidebarOpen);
-    if (!isCartSidebarOpen) setIsMobileMenuOpen(false); // Close mobile menu when opening sidebar
+    if (!isCartSidebarOpen) setIsMobileMenuOpen(false);
   };
 
   const closeAllMenus = () => {
@@ -214,9 +213,11 @@ const Navbar = () => {
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
 
+  const isMenRoute = location.pathname === '/men';
+
   return (
     <>
-      <header className="navbar-header">
+      <header className={`navbar-header ${isMenRoute ? 'men-theme' : ''}`}>
         <div className="promo">
           FREE JEWELLERY ORGANIZER WORTH ₹400 ON ORDERS ABOVE RS. 1500
         </div>
@@ -231,15 +232,19 @@ const Navbar = () => {
           </button>
 
           <div className="logo">
-            <a href="/">
+            <a href="/" onClick={() => handleNavigation('/')}>
               <img src="/images/logo-nobg.png" alt="Aisha" />
             </a>
           </div>
 
           <nav className="icon-bar" aria-label="Quick actions">
-            <a href="#" aria-label="Search">
+            <button 
+              className="icon-link"
+              onClick={() => handleNavigation('/search')}
+              aria-label="Search"
+            >
               <img src={searchLogo} alt="Search" className="icon-svg" />
-            </a>
+            </button>
             
             <button 
               className="icon-link"
@@ -255,7 +260,7 @@ const Navbar = () => {
             <div className="account-wrapper">
               <button 
                 className="account-button"
-                onClick={() => handleNavigation('/auth')}
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
                 aria-label="Account"
               >
                 <img src={accountLogo} alt="Account" className="icon-svg" />
@@ -323,7 +328,6 @@ const Navbar = () => {
         </nav>
       </header>
 
-      {/* Mobile Menu */}
       <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
           <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
@@ -355,13 +359,11 @@ const Navbar = () => {
         </ul>
       </aside>
 
-      {/* Overlay */}
       {(isMobileMenuOpen || isCartSidebarOpen) && (
         <div className="overlay" onClick={closeAllMenus}></div>
       )}
 
-      {/* Cart Sidebar */}
-      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''}`} ref={sidebarRef}>
+      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''} ${isMenRoute ? 'men-theme' : ''}`} ref={sidebarRef}>
         <div className="tab-buttons">
           <button 
             className={`tab-link ${activeTab === 'cart' ? 'active' : ''}`}
@@ -430,7 +432,6 @@ const Navbar = () => {
         </div>
       </aside>
 
-      {/* Products Grid */}
       {products.length > 0 && (
         <main className="products-section">
           <div className="product-grid">

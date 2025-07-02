@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
 import styles from '../styles/Category.module.css';
 import earring from '../../images/earring.png';
 import earring1 from '../../images/earring1.jpg';
@@ -11,12 +12,17 @@ import ring1 from '../../images/ring1.jpg';
 import bracelet from '../../images/bracelet.png';
 import bracelet1 from '../../images/bracelet1.jpg';
 
-const Category = () => {
+const Category = ({ setCartItems, setLikedItems }) => {
   const { categoryName } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState({}); // Track loading state per product
 
-  // Slideshow images (same for all categories)
+  const isMenRoute = location.pathname === '/men';
+
   const slideImages = [
     'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
     'https://images.pexels.com/photos/1927130/pexels-photo-1927130.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
@@ -24,7 +30,6 @@ const Category = () => {
     'https://images.pexels.com/photos/1445527/pexels-photo-1445527.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
   ];
 
-  // Product data for each category
   const categoryData = {
     earrings: {
       title: 'Premium Earring Collection',
@@ -92,12 +97,153 @@ const Category = () => {
     },
   };
 
-  // Normalize categoryName to match categoryData keys
   const normalizedCategory = categoryName ? categoryName.toLowerCase() : 'earrings';
   const currentCategory = categoryData[normalizedCategory] || categoryData.earrings;
 
-  // Auto-slide functionality
+  const checkLoginStatus = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/me", {
+        credentials: "include"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        await fetchCartItems(data.user.id);
+        await fetchLikedItems(data.user.id);
+      } else {
+        setUser(null);
+        setCartItems([]);
+        setLikedItems([]);
+      }
+    } catch (err) {
+      console.error("Error checking login status", err);
+      setUser(null);
+      toast.error("Failed to check login status", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+    }
+  };
+
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
+        credentials: "include"
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+        }));
+        setCartItems(normalizedItems);
+      }
+    } catch (err) {
+      console.error("Error fetching cart items:", err);
+      toast.error("Failed to fetch cart items", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+    }
+  };
+
+  const fetchLikedItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
+        credentials: "include"
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+        }));
+        setLikedItems(normalizedItems);
+        setLikedProducts(new Set(normalizedItems.map(item => item.id)));
+      }
+    } catch (err) {
+      console.error("Error fetching liked items:", err);
+      toast.error("Failed to fetch liked items", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+    }
+  };
+
+  const addToCart = async (productId) => {
+    if (!user) {
+      toast.warn("Please login to add items to cart", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ productId })
+      });
+      if (response.ok) {
+        await fetchCartItems(user.id);
+        toast.success("Added to Cart!", {
+          className: isMenRoute ? 'men-theme-toast' : '',
+        });
+      } else {
+        throw new Error("Failed to add to cart");
+      }
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      toast.error("Failed to add to cart", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+
+  const addToWishlist = async (productId) => {
+    if (!user) {
+      toast.warn("Please login to add items to wishlist", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ productId })
+      });
+      if (response.ok) {
+        await fetchLikedItems(user.id);
+        toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
+          className: isMenRoute ? 'men-theme-toast' : '',
+        });
+      } else {
+        throw new Error("Failed to update wishlist");
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+      toast.error("Failed to update wishlist", {
+        className: isMenRoute ? 'men-theme-toast' : '',
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+
   useEffect(() => {
+    checkLoginStatus();
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slideImages.length);
     }, 5000);
@@ -113,15 +259,7 @@ const Category = () => {
   };
 
   const toggleLike = (productId) => {
-    setLikedProducts((prev) => {
-      const newLiked = new Set(prev);
-      if (newLiked.has(productId)) {
-        newLiked.delete(productId);
-      } else {
-        newLiked.add(productId);
-      }
-      return newLiked;
-    });
+    addToWishlist(productId);
   };
 
   const renderStars = (rating) => {
@@ -141,7 +279,19 @@ const Category = () => {
 
   return (
     <div className={styles['category-page']}>
-      {/* Slideshow Section */}
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+        theme={isMenRoute ? 'dark' : 'light'}
+      />
+      
       <div className={styles['slideshow-container']}>
         <div 
           className={styles['slideshow-wrapper']}
@@ -149,15 +299,15 @@ const Category = () => {
         >
           {slideImages.map((image, index) => (
             <div key={index} className={styles.slide}>
-              <img
-                src={image}
-                alt={`Slide ${index + 1}`}
-              />
+              <img src={image} alt={`Slide ${index + 1}`} />
               <div className={styles['slide-overlay']}>
                 <div className={styles['slide-content']}>
                   <h2 className={styles['slide-title']}>{currentCategory.subtitle}</h2>
                   <p className={styles['slide-subtitle']}>Discover our premium collection of handcrafted {normalizedCategory}</p>
-                  <button className={styles['slide-button']}>
+                  <button 
+                    className={styles['slide-button']} 
+                    onClick={() => navigate('/products')}
+                  >
                     Shop Now
                   </button>
                 </div>
@@ -166,7 +316,6 @@ const Category = () => {
           ))}
         </div>
 
-        {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
           className={`${styles['nav-arrow']} ${styles.prev}`}
@@ -180,7 +329,6 @@ const Category = () => {
           <ChevronRight />
         </button>
 
-        {/* Slide Indicators */}
         <div className={styles['slide-indicators']}>
           {slideImages.map((_, index) => (
             <button
@@ -192,7 +340,6 @@ const Category = () => {
         </div>
       </div>
 
-      {/* Header Section */}
       <div className={styles['header-section']}>
         <div className={styles['header-content']}>
           <h1 className={styles['header-title']}>{currentCategory.title}</h1>
@@ -202,7 +349,6 @@ const Category = () => {
         </div>
       </div>
 
-      {/* Products Grid */}
       <div className={styles['products-container']}>
         {currentCategory.products && currentCategory.products.length > 0 ? (
           <div className={styles['products-grid']}>
@@ -233,7 +379,6 @@ const Category = () => {
                     {product.name}
                   </h3>
 
-                  {/* Rating */}
                   <div className={styles['rating-container']}>
                     <div className={styles['stars-container']}>
                       {renderStars(product.rating)}
@@ -243,7 +388,6 @@ const Category = () => {
                     </span>
                   </div>
 
-                  {/* Price */}
                   <div className={styles['price-container']}>
                     <div className={styles['price-wrapper']}>
                       <span className={styles['current-price']}>
@@ -255,15 +399,19 @@ const Category = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className={styles['action-buttons']}>
-                    <button className={styles['add-to-bag-button']}>
+                    <button 
+                      className={styles['add-to-bag-button']} 
+                      onClick={() => addToCart(product.id)}
+                      disabled={loading[product.id]}
+                    >
                       <ShoppingBag className={styles['bag-icon']} />
-                      <span>Add to Bag</span>
+                      <span>{loading[product.id] ? 'Adding...' : 'Add to Bag'}</span>
                     </button>
                     <button
                       onClick={() => toggleLike(product.id)}
-                      className={styles['like-button']}
+                      className={`${styles['like-button']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
+                      disabled={loading[product.id]}
                     >
                       <Heart
                         className={`${styles['heart-icon']} ${

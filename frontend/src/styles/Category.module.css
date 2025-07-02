@@ -370,9 +370,14 @@
   transform: scale(1);
 }
 
-.add-to-bag-button:hover {
+.add-to-bag-button:hover:not(:disabled) {
   background-color: #ca8a04;
   transform: scale(1.05);
+}
+
+.add-to-bag-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .bag-icon {
@@ -389,8 +394,18 @@
   transition: all 0.3s ease;
 }
 
-.like-button:hover {
+.like-button:hover:not(:disabled) {
   border-color: #fca5a5;
+  background-color: #fef2f2;
+}
+
+.like-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.like-button.liked {
+  border-color: #ef4444;
   background-color: #fef2f2;
 }
 
@@ -406,8 +421,22 @@
   fill: #ef4444;
 }
 
-.heart-icon:hover {
+.heart-icon:hover:not(.liked) {
   color: #ef4444;
+}
+
+/* Toast Notification Styles */
+.men-theme-toast {
+  background: linear-gradient(135deg, #000, #2c2c2c) !important;
+  color: #ffffff !important;
+}
+
+.men-theme-toast .Toastify__progress-bar {
+  background: #ffffff !important;
+}
+
+.men-theme-toast .Toastify__close-button {
+  color: #ffffff !important;
 }
 
 /* Responsive Design */

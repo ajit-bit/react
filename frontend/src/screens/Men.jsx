@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import MenNavbar from '../components/MenNavbar';
-import women1 from '../images/men1.jpg';
-import women2 from '../images/men2.jpg';
-import women3 from '../images/men3.jpg';
+import { useNavigate } from 'react-router-dom';
+import men1 from '../images/men1.jpg';
+import men2 from '../images/men2.jpg';
+import men3 from '../images/men3.jpg';
 import menAmericanExpress from '../images/menamericanexpress.svg';
 import menGooglePay from '../images/mengooglepay.svg';
 import menMastercard from '../images/menmastercard.svg';
@@ -14,12 +14,12 @@ import styles from '../styles/Men.module.css';
 const Men = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
-  // Removed unused wishCount state
+  const navigate = useNavigate();
 
   const sliderImages = [
-    { src: women1, alt: 'Men Jewelry Slide 1' },
-    { src: women2, alt: 'Men Jewelry Slide 2' },
-    { src: women3, alt: 'Men Jewelry Slide 3' }
+    { src: men1, alt: 'Men Jewelry Slide 1' },
+    { src: men2, alt: 'Men Jewelry Slide 2' },
+    { src: men3, alt: 'Men Jewelry Slide 3' }
   ];
 
   const reviewSlides = [
@@ -98,20 +98,23 @@ const Men = () => {
     }
   };
 
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   const renderStars = (count) => {
     return '★'.repeat(count) + '☆'.repeat(5 - count);
   };
 
   return (
     <div className={styles.menPage}>
-      <MenNavbar />
       <section className={styles.slider}>
         <div className={`${styles.slide} ${currentSlide === 0 ? styles.active : ''}`}>
           <div className={styles.text}>
             <h4>Curated for Him</h4>
             <h1>BOLD STATEMENTS</h1>
             <p>Discover powerful jewelry made for modern men — statement chains, sleek rings, and versatile accessories.</p>
-            <button>Shop now</button>
+            <button onClick={() => handleNavigation('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[0].src} alt={sliderImages[0].alt} />
         </div>
@@ -121,7 +124,7 @@ const Men = () => {
             <h4>Season's Best</h4>
             <h1>SILVER EDGE</h1>
             <p>Refined designs in cool silver tones — perfect for layering or wearing solely solo. Command attention with confidence.</p>
-            <button>Shop now</button>
+            <button onClick={() => handleNavigation('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[1].src} alt={sliderImages[1].alt} />
         </div>
@@ -131,7 +134,7 @@ const Men = () => {
             <h4>Urban Appeal</h4>
             <h1>STREET STYLE</h1>
             <p>From casual wear to special occasions, elevate your style with pieces that make every moment count.</p>
-            <button>Shop now</button>
+            <button onClick={() => handleNavigation('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[2].src} alt={sliderImages[2].alt} />
         </div>
@@ -150,7 +153,7 @@ const Men = () => {
 
       <div className={styles.collection}>
         <h2>Alpha Sports Collection</h2>
-        <button className={styles.viewMore}>View All</button>
+        <button className={styles.viewMore} onClick={() => handleNavigation('/collections')}>View All</button>
         <div className={styles.cards}>
           {[
             { name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4 },
@@ -186,7 +189,7 @@ const Men = () => {
       ].map((collectionName, collectionIndex) => (
         <div key={collectionIndex} className={styles.jeweler}>
           <h2>{collectionName}</h2>
-          <button className={styles.viewMore}>View All</button>
+          <button className={styles.viewMore} onClick={() => handleNavigation('/collections')}>View All</button>
           <div className={styles.cards}>
             {[
               { name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4 },
@@ -219,7 +222,7 @@ const Men = () => {
         <h2>Shop What You Love</h2>
         <div className={styles.cards}>
           {['Bracelets', 'Chains', 'Rings', 'Earrings'].map((category, index) => (
-            <div key={index} className={styles.card} onClick={() => window.location.href = `${category.toLowerCase()}.html`}>
+            <div key={index} className={styles.card} onClick={() => handleNavigation(`/category/${category.toLowerCase()}`)}>
               <img src={ring1} alt={category} />
               <div className={styles.cardContent}>
                 <h3>{category}</h3>
@@ -277,9 +280,9 @@ const Men = () => {
               </p>
 
               <div className={styles.customSocialIcons}>
-                <a href="#"><i className="fab fa-facebook-f"></i></a>
-                <a href="#"><i className="fab fa-instagram"></i></a>
-                <a href="#"><i className="fab fa-pinterest-p"></i></a>
+                <button onClick={() => handleNavigation('/social/facebook')}><i className="fab fa-facebook-f"></i></button>
+                <button onClick={() => handleNavigation('/social/instagram')}><i className="fab fa-instagram"></i></button>
+                <button onClick={() => handleNavigation('/social/pinterest')}><i className="fab fa-pinterest-p"></i></button>
               </div>
 
               <div className={styles.footerBottom}>
@@ -296,18 +299,18 @@ const Men = () => {
             <div className={styles.footerSection}>
               <h3>Account</h3>
               <ul>
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="#">Orders</a></li>
-                <li><a href="#">Wishlist</a></li>
-                <li><a href="#">Addresses</a></li>
+                <li><button onClick={() => handleNavigation('/dashboard')}>Dashboard</button></li>
+                <li><button onClick={() => handleNavigation('/orders')}>Orders</button></li>
+                <li><button onClick={() => handleNavigation('/wishlist')}>Wishlist</button></li>
+                <li><button onClick={() => handleNavigation('/addresses')}>Addresses</button></li>
               </ul>
             </div>
 
             <div className={styles.footerSection}>
               <h3>Help</h3>
               <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact Support</a></li>
+                <li><button onClick={() => handleNavigation('/about')}>About Us</button></li>
+                <li><button onClick={() => handleNavigation('/contact')}>Contact Support</button></li>
               </ul>
             </div>
           </div>
