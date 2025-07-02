@@ -1,5 +1,7 @@
+import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import men1 from '../images/men1.jpg';
 import men2 from '../images/men2.jpg';
 import men3 from '../images/men3.jpg';
@@ -11,15 +13,21 @@ import menVisa from '../images/menvisa.svg';
 import ring1 from '../images/ring1.jpg';
 import styles from '../styles/Men.module.css';
 
-const Men = () => {
+const Men = ({ setCartItems, setLikedItems }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
+  const [likedProducts, setLikedProducts] = useState(new Set());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isMenRoute = location.pathname === '/men';
 
   const sliderImages = [
     { src: men1, alt: 'Men Jewelry Slide 1' },
     { src: men2, alt: 'Men Jewelry Slide 2' },
-    { src: men3, alt: 'Men Jewelry Slide 3' }
+    { src: men3, alt: 'Men Jewelry Slide 3' },
   ];
 
   const reviewSlides = [
@@ -29,22 +37,22 @@ const Men = () => {
         text: "Pretty good stuff salty! They are helpful, and go the extra mile to ensure customer satisfaction. It's refreshing to find a brand that truly values its customers.",
         author: "Dixtia Patel",
         title: "Fashion Influencer",
-        image: ring1
+        image: ring1,
       },
       {
         stars: 5,
         text: "Omg! Everything is just superb and high quality, can wait to try more. they are perfect for lounging on the beach or by the pool. I wore those chains and studs in my goa trip.",
         author: "Md Shad",
         title: "Content Creator",
-        image: ring1
+        image: ring1,
       },
       {
         stars: 5,
         text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
         author: "Laakshi Pathak",
         title: "Makeup Artist",
-        image: ring1
-      }
+        image: ring1,
+      },
     ],
     [
       {
@@ -52,26 +60,216 @@ const Men = () => {
         text: "Amazing quality and fast delivery. The jewelry looks exactly like the pictures and feels premium. Highly recommended!",
         author: "Customer Review",
         title: "Verified Buyer",
-        image: ring1
+        image: ring1,
       },
       {
         stars: 5,
         text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
         author: "Laakshi Pathak",
         title: "Makeup Artist",
-        image: ring1
+        image: ring1,
       },
       {
         stars: 5,
         text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
         author: "Laakshi Pathak",
         title: "Makeup Artist",
-        image: ring1
-      }
-    ]
+        image: ring1,
+      },
+    ],
   ];
 
+  const collections = [
+    {
+      name: 'Alpha Sports Collection',
+      products: [
+        { id: 1, name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 2, name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 3, name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 4, name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2, image: ring1, hoverImage: men1 },
+      ],
+    },
+    {
+      name: 'Icy and Spicy Jewellery',
+      products: [
+        { id: 5, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 6, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 7, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 8, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+      ],
+    },
+    {
+      name: 'Alpha BestSellers',
+      products: [
+        { id: 9, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 10, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 11, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 12, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5,image: ring1, hoverImage: men1 },
+      ],
+    },
+    {
+      name: 'The Halloween Collection',
+      products: [
+        { id: 13, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 14, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 15, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 16, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+      ],
+    },
+    {
+      name: 'The Sicko Jewellery Collection',
+      products: [
+        { id: 17, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: 18, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3,image: ring1, hoverImage: men1 },
+        { id: 19, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: 20, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+      ],
+    },
+  ];
+
+  const checkLoginStatus = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/me", {
+        credentials: "include",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        await fetchCartItems(data.user.id);
+        await fetchLikedItems(data.user.id);
+      } else {
+        setUser(null);
+        setCartItems([]);
+        setLikedItems([]);
+      }
+    } catch (err) {
+      console.error("Error checking login status", err);
+      toast.error("Failed to check login status", {
+        className: styles['men-theme-toast'],
+      });
+    }
+  };
+
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+        }));
+        setCartItems(normalizedItems);
+      }
+    } catch (err) {
+      console.error("Error fetching cart items:", err);
+      toast.error("Failed to fetch cart items", {
+        className: styles['men-theme-toast'],
+      });
+    }
+  };
+
+  const fetchLikedItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+        }));
+        setLikedItems(normalizedItems);
+        setLikedProducts(new Set(normalizedItems.map(item => item.id)));
+      }
+    } catch (err) {
+      console.error("Error fetching liked items:", err);
+      toast.error("Failed to fetch liked items", {
+        className: styles['men-theme-toast'],
+      });
+    }
+  };
+
+  const addToCart = async (productId) => {
+    if (!user) {
+      toast.warn("Please login to add items to cart", {
+        className: styles['men-theme-toast'],
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ productId }),
+      });
+      if (response.ok) {
+        await fetchCartItems(user.id);
+        toast.success("Added to Cart!", {
+          className: styles['men-theme-toast'],
+        });
+      } else {
+        throw new Error("Failed to add to cart");
+      }
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      toast.error("Failed to add to cart", {
+        className: styles['men-theme-toast'],
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+
+  const addToWishlist = async (productId) => {
+    if (!user) {
+      toast.warn("Please login to add items to wishlist", {
+        className: styles['men-theme-toast'],
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ productId }),
+      });
+      if (response.ok) {
+        await fetchLikedItems(user.id);
+        toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
+          className: styles['men-theme-toast'],
+        });
+      } else {
+        throw new Error("Failed to update wishlist");
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+      toast.error("Failed to update wishlist", {
+        className: styles['men-theme-toast'],
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+
   useEffect(() => {
+    checkLoginStatus();
     const sliderInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     }, 5000);
@@ -86,35 +284,43 @@ const Men = () => {
     };
   }, [sliderImages.length, reviewSlides.length]);
 
-  const handleWishlistClick = (e) => {
-    e.preventDefault();
-    const button = e.target.closest(`.${styles.wishlistIcon}`);
-    if (button.textContent === '♡') {
-      button.textContent = '♥';
-      button.style.color = 'red';
-    } else {
-      button.textContent = '♡';
-      button.style.color = 'black';
-    }
-  };
-
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
-
-  const renderStars = (count) => {
-    return '★'.repeat(count) + '☆'.repeat(5 - count);
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`${styles.star} ${
+          i < Math.floor(rating) 
+            ? styles.filled 
+            : i < rating 
+            ? styles['half-filled'] 
+            : ''
+        }`}
+      />
+    ));
   };
 
   return (
     <div className={styles.menPage}>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+
       <section className={styles.slider}>
         <div className={`${styles.slide} ${currentSlide === 0 ? styles.active : ''}`}>
           <div className={styles.text}>
             <h4>Curated for Him</h4>
             <h1>BOLD STATEMENTS</h1>
             <p>Discover powerful jewelry made for modern men — statement chains, sleek rings, and versatile accessories.</p>
-            <button onClick={() => handleNavigation('/products')}>Shop now</button>
+            <button onClick={() => navigate('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[0].src} alt={sliderImages[0].alt} />
         </div>
@@ -124,7 +330,7 @@ const Men = () => {
             <h4>Season's Best</h4>
             <h1>SILVER EDGE</h1>
             <p>Refined designs in cool silver tones — perfect for layering or wearing solely solo. Command attention with confidence.</p>
-            <button onClick={() => handleNavigation('/products')}>Shop now</button>
+            <button onClick={() => navigate('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[1].src} alt={sliderImages[1].alt} />
         </div>
@@ -134,7 +340,7 @@ const Men = () => {
             <h4>Urban Appeal</h4>
             <h1>STREET STYLE</h1>
             <p>From casual wear to special occasions, elevate your style with pieces that make every moment count.</p>
-            <button onClick={() => handleNavigation('/products')}>Shop now</button>
+            <button onClick={() => navigate('/products')}>Shop now</button>
           </div>
           <img src={sliderImages[2].src} alt={sliderImages[2].alt} />
         </div>
@@ -151,66 +357,74 @@ const Men = () => {
         </div>
       </section>
 
-      <div className={styles.collection}>
-        <h2>Alpha Sports Collection</h2>
-        <button className={styles.viewMore} onClick={() => handleNavigation('/collections')}>View All</button>
-        <div className={styles.cards}>
-          {[
-            { name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4 },
-            { name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4 },
-            { name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3 },
-            { name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2 }
-          ].map((product, index) => (
-            <div key={index} className={styles.card}>
-              <button className={styles.wishlistIcon} onClick={handleWishlistClick}>♡</button>
-              <img src={ring1} alt={product.name} />
-              <div className={styles.cardContent}>
-                <h3>{product.name}</h3>
-                <div className={styles.cardRating}>
-                  <div className={styles.stars}>{renderStars(product.rating)}</div>
-                  <p className={styles.reviewCount}>{product.reviews} reviews</p>
+      {collections.map((collection, collectionIndex) => (
+        <div key={collectionIndex} className={styles.collection}>
+          <h2>{collection.name}</h2>
+          <button className={styles.viewMore} onClick={() => navigate('/collections')}>View All</button>
+          <div className={styles['products-grid']}>
+            {collection.products.map((product) => (
+              <div key={product.id} className={styles['product-card']}>
+                <div className={styles['product-image-container']}>
+                  <div className={styles['product-image-wrapper']}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className={`${styles['product-image']} ${styles['main-image']}`}
+                    />
+                    <img
+                      src={product.hoverImage}
+                      alt={`${product.name} - alternate view`}
+                      className={`${styles['product-image']} ${styles['hover-image']}`}
+                    />
+                  </div>
                 </div>
-                <div className={styles.price}>
-                  <span className={styles.originalPrice}>Rs. {product.originalPrice}.00</span>
-                  <span className={styles.currentPrice}>Rs. {product.currentPrice}.00</span>
-                </div>
-                <button className={styles.addToCart}>Add to Cart</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {[
-        'Icy and Spicy Jewellery',
-        'Alpha BestSellers',
-        'The Halloween Collection',
-        'The Sicko Jewellery Collection'
-      ].map((collectionName, collectionIndex) => (
-        <div key={collectionIndex} className={styles.jeweler}>
-          <h2>{collectionName}</h2>
-          <button className={styles.viewMore} onClick={() => handleNavigation('/collections')}>View All</button>
-          <div className={styles.cards}>
-            {[
-              { name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4 },
-              { name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3 },
-              { name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3 },
-              { name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5 }
-            ].map((product, index) => (
-              <div key={index} className={styles.card}>
-                <button className={styles.wishlistIcon} onClick={handleWishlistClick}>♡</button>
-                <img src={ring1} alt={product.name} />
-                <div className={styles.cardContent}>
-                  <h3>{product.name}</h3>
-                  <div className={styles.cardRating}>
-                    <div className={styles.stars}>{renderStars(product.rating)}</div>
-                    <span className={styles.reviewCount}>{product.reviews} reviews</span>
+                <div className={styles['product-content']}>
+                  <h3 className={styles['product-name']}>
+                    {product.name}
+                  </h3>
+
+                  <div className={styles['rating-container']}>
+                    <div className={styles['stars-container']}>
+                      {renderStars(product.rating)}
+                    </div>
+                    <span className={styles['reviews-text']}>
+                      {product.reviews} reviews
+                    </span>
                   </div>
-                  <div className={styles.price}>
-                    <span className={styles.originalPrice}>Rs. {product.originalPrice}.00</span>
-                    <span className={styles.currentPrice}>Rs. {product.currentPrice}.00</span>
+
+                  <div className={styles['price-container']}>
+                    <div className={styles['price-wrapper']}>
+                      <span className={styles['current-price']}>
+                        Rs. {product.currentPrice.toFixed(2)}
+                      </span>
+                      <span className={styles['original-price']}>
+                        Rs. {product.originalPrice.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
-                  <button className={styles.addToCart}>Add to Cart</button>
+
+                  <div className={styles['action-buttons']}>
+                    <button 
+                      className={styles['add-to-bag-button']} 
+                      onClick={() => addToCart(product.id)}
+                      disabled={loading[product.id]}
+                    >
+                      <ShoppingBag className={styles['bag-icon']} />
+                      <span>{loading[product.id] ? 'Adding...' : 'Add to Bag'}</span>
+                    </button>
+                    <button
+                      onClick={() => addToWishlist(product.id)}
+                      className={`${styles['like-button']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
+                      disabled={loading[product.id]}
+                    >
+                      <Heart
+                        className={`${styles['heart-icon']} ${
+                          likedProducts.has(product.id) ? styles.liked : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -222,7 +436,7 @@ const Men = () => {
         <h2>Shop What You Love</h2>
         <div className={styles.cards}>
           {['Bracelets', 'Chains', 'Rings', 'Earrings'].map((category, index) => (
-            <div key={index} className={styles.card} onClick={() => handleNavigation(`/category/${category.toLowerCase()}`)}>
+            <div key={index} className={styles.card} onClick={() => navigate(`/category/${category.toLowerCase()}`)}>
               <img src={ring1} alt={category} />
               <div className={styles.cardContent}>
                 <h3>{category}</h3>
@@ -280,9 +494,9 @@ const Men = () => {
               </p>
 
               <div className={styles.customSocialIcons}>
-                <button onClick={() => handleNavigation('/social/facebook')}><i className="fab fa-facebook-f"></i></button>
-                <button onClick={() => handleNavigation('/social/instagram')}><i className="fab fa-instagram"></i></button>
-                <button onClick={() => handleNavigation('/social/pinterest')}><i className="fab fa-pinterest-p"></i></button>
+                <button onClick={() => navigate('/social/facebook')}><i className="fab fa-facebook-f"></i></button>
+                <button onClick={() => navigate('/social/instagram')}><i className="fab fa-instagram"></i></button>
+                <button onClick={() => navigate('/social/pinterest')}><i className="fab fa-pinterest-p"></i></button>
               </div>
 
               <div className={styles.footerBottom}>
@@ -299,18 +513,18 @@ const Men = () => {
             <div className={styles.footerSection}>
               <h3>Account</h3>
               <ul>
-                <li><button onClick={() => handleNavigation('/dashboard')}>Dashboard</button></li>
-                <li><button onClick={() => handleNavigation('/orders')}>Orders</button></li>
-                <li><button onClick={() => handleNavigation('/wishlist')}>Wishlist</button></li>
-                <li><button onClick={() => handleNavigation('/addresses')}>Addresses</button></li>
+                <li><button onClick={() => navigate('/dashboard')}>Dashboard</button></li>
+                <li><button onClick={() => navigate('/orders')}>Orders</button></li>
+                <li><button onClick={() => navigate('/wishlist')}>Wishlist</button></li>
+                <li><button onClick={() => navigate('/addresses')}>Addresses</button></li>
               </ul>
             </div>
 
             <div className={styles.footerSection}>
               <h3>Help</h3>
               <ul>
-                <li><button onClick={() => handleNavigation('/about')}>About Us</button></li>
-                <li><button onClick={() => handleNavigation('/contact')}>Contact Support</button></li>
+                <li><button onClick={() => navigate('/about')}>About Us</button></li>
+                <li><button onClick={() => navigate('/contact')}>Contact Support</button></li>
               </ul>
             </div>
           </div>

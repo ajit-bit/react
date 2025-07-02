@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/Home.css';
 // Import all images
-import slide1 from '../../images/slide1.png';
-import slide2 from '../../images/slide2.png';
-import slide3 from '../../images/slide3.png';
-import ring1 from '../../images/ring1.jpg';
+import bracelet1 from '../../images/bracelet1.jpg';
+import chain1 from '../../images/chain.png';
+import earing1 from '../../images/earing1.jpg';
+import essentialsCasual from '../../images/essentials-casual.jpg';
+import essentialsVacation from '../../images/essentials-vacation.jpg';
+import essentialsWedding from '../../images/essentials-wedding.jpg';
+import essentialsWork from '../../images/essentials-work.jpg';
+import goldring from '../../images/goldring.jpg';
 import immg1 from '../../images/immg1.png';
 import immg2 from '../../images/immg2.png';
 import immg3 from '../../images/immg3.png';
 import immg4 from '../../images/immg4.png';
-import goldring from '../../images/goldring.jpg';
-import silvernecklace from '../../images/silvernecklace.jpg';
-import chain1 from '../../images/chain.png';
-import bracelet1 from '../../images/bracelet1.jpg';
-import watch from '../../images/watch.jpg';
-import essentialsVacation from '../../images/essentials-vacation.jpg';
-import essentialsWork from '../../images/essentials-work.jpg';
-import essentialsCasual from '../../images/essentials-casual.jpg';
-import essentialsWedding from '../../images/essentials-wedding.jpg';
-import earing1 from '../../images/earing1.jpg';
-import neck from '../../images/neck.jpg';
 import myntra from '../../images/myntra.png';
+import neck from '../../images/neck.jpg';
+import ring1 from '../../images/ring1.jpg';
+import silvernecklace from '../../images/silvernecklace.jpg';
+import slide1 from '../../images/slide1.png';
+import slide2 from '../../images/slide2.png';
+import slide3 from '../../images/slide3.png';
 import testimonial1 from '../../images/testimonial-1.jpg';
 import testimonial2 from '../../images/testimonial-2.jpg';
 import testimonial3 from '../../images/testimonial-3.jpg';
+import watch from '../../images/watch.jpg';
 
 
 
