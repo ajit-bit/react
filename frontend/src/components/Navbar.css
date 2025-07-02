@@ -7,8 +7,12 @@
 }
 
 .navbar-header {
-  position: relative;
+  position: fixed; /* Changed from relative to fixed for sticky behavior */
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light)); /* Ensure background persists */
 }
 
 .promo {

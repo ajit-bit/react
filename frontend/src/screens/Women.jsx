@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Women.module.css';
 
 // Import images from the public/images folder
-import ring1 from '/images/ring1.jpg';
+import ring1 from '/images/ring1.jpg'; 
 import women1 from '/images/women1.jpg';
 import women2 from '/images/women2.jpg';
 import women3 from '/images/women3.jpg';

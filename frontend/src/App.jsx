@@ -2,23 +2,21 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Ring from './screens/Ring';
-import Bracelet from './screens/Bracelet';
-import Necklace from './screens/Necklace';
-import Earring from './screens/Earring';
+import Category from './screens/Category';
 import Blogs from './screens/Blog';
 import Home from './screens/Home';
 import Cart from './screens/Cart';
 import AuthComponent from './screens/Auth';
 import Women from './screens/Women';
 import Men from './screens/Men';
+import './App.css';
 
 // Custom Layout Component to conditionally render Navbar and Footer
 const Layout = ({ children, hideNavbarFooter }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="layout-container">
       {!hideNavbarFooter && <Navbar />}
-      <main className="flex-grow">{children}</main>
+      <main className="main-content">{children}</main>
       {!hideNavbarFooter && <Footer />}
     </div>
   );
@@ -32,10 +30,7 @@ const AppContent = () => {
   return (
     <Layout hideNavbarFooter={hideNavbarFooter}>
       <Routes>
-        <Route path="/rings" element={<Ring />} />
-        <Route path="/bracelets" element={<Bracelet />} />
-        <Route path="/necklaces" element={<Necklace />} />
-        <Route path="/earrings" element={<Earring />} />
+        <Route path="/category/:categoryName" element={<Category />} />
         <Route path="/jewellery-sets" element={<div>Jewellery Sets Page</div>} />
         <Route path="/collections" element={<div>Collections Page</div>} />
         <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />

@@ -1,0 +1,17 @@
+/* Layout styles for App.jsx */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb; /* Matches bg-gray-50 */
+}
+
+.main-content {
+  flex: 1 0 auto; /* Ensures main content expands to push footer down */
+  padding-top: 150px; /* Adjust based on navbar height */
+}
+
+/* Ensure footer sticks to bottom */
+footer {
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}

@@ -14,8 +14,7 @@ import styles from '../styles/Men.module.css';
 const Men = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [wishCount, setWishCount] = useState(0);
+  // Removed unused wishCount state
 
   const sliderImages = [
     { src: women1, alt: 'Men Jewelry Slide 1' },
@@ -93,11 +92,9 @@ const Men = () => {
     if (button.textContent === '♡') {
       button.textContent = '♥';
       button.style.color = 'red';
-      setWishCount(prev => prev + 1);
     } else {
       button.textContent = '♡';
       button.style.color = 'black';
-      setWishCount(prev => prev - 1);
     }
   };
 

@@ -169,7 +169,7 @@ const Navbar = () => {
       setCartItems([]);
       setLikedItems([]);
       setShowUserDropdown(false);
-      window.location.href = "/";
+      navigate("/");
     } catch (err) {
       console.error("Logout failed", err);
     }
@@ -243,7 +243,7 @@ const Navbar = () => {
             
             <button 
               className="icon-link"
-              onClick={() => { toggleCartSidebar('liked');  }}
+              onClick={() => toggleCartSidebar('liked')}
               aria-label="Wishlist"
             >
               <img src={likeLogo} alt="Wishlist" className="icon-svg" />
@@ -271,7 +271,7 @@ const Navbar = () => {
 
             <button 
               className="icon-link"
-              onClick={() => { toggleCartSidebar('cart');}}
+              onClick={() => toggleCartSidebar('cart')}
               aria-label="Shopping cart"
             >
               <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
@@ -290,20 +290,19 @@ const Navbar = () => {
               </a>
               {showAllJewelryDropdown && (
                 <div className="dropdown-menu">
-                  <a href="#" onClick={() => handleNavigation('/earrings')}>Earrings</a>
-                  <a href="#" onClick={() => handleNavigation('/rings')}>Rings</a>
-                  <a href="#" onClick={() => handleNavigation('/necklaces')}>Necklaces</a>
-                  <a href="#" onClick={() => handleNavigation('/bracelets')}>Bracelets</a>
+                  <a href="#" onClick={() => handleNavigation('/category/earrings')}>Earrings</a>
+                  <a href="#" onClick={() => handleNavigation('/category/rings')}>Rings</a>
+                  <a href="#" onClick={() => handleNavigation('/category/necklaces')}>Necklaces</a>
+                  <a href="#" onClick={() => handleNavigation('/category/bracelets')}>Bracelets</a>
                   <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
                 </div>
               )}
             </li>
-            <li><a href="/collections">Collections</a></li>
-            <li><a href="/new-arrivals">New Arrivals</a></li>
-                        <li><a href="/new-arrivals">Best Seller</a></li>
-
+            <li><a href="/collections" onClick={() => handleNavigation('/collections')}>Collections</a></li>
+            <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>New Arrivals</a></li>
+            <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>Best Seller</a></li>
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown();}}>
+              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
                 About
               </a>
               {showAboutDropdown && (
@@ -318,9 +317,9 @@ const Navbar = () => {
         </nav>
 
         <nav className="gender-strip" aria-label="Shop by gender">
-          <a href="/women">WOMEN</a>
+          <a href="/women" onClick={() => handleNavigation('/women')}>WOMEN</a>
           <span>|</span>
-          <a href="/men">MEN</a>
+          <a href="/men" onClick={() => handleNavigation('/men')}>MEN</a>
         </nav>
       </header>
 
@@ -331,16 +330,16 @@ const Navbar = () => {
             <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
             {showAllJewelryDropdown && (
               <div className="dropdown-menu">
-                <a href="#" onClick={() => handleNavigation('/earrings')}>Earrings</a>
-                <a href="#" onClick={() => handleNavigation('/rings')}>Rings</a>
-                <a href="#" onClick={() => handleNavigation('/necklaces')}>Necklaces</a>
-                <a href="#" onClick={() => handleNavigation('/bracelets')}>Bracelets</a>
+                <a href="#" onClick={() => handleNavigation('/category/earrings')}>Earrings</a>
+                <a href="#" onClick={() => handleNavigation('/category/rings')}>Rings</a>
+                <a href="#" onClick={() => handleNavigation('/category/necklaces')}>Necklaces</a>
+                <a href="#" onClick={() => handleNavigation('/category/bracelets')}>Bracelets</a>
                 <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
               </div>
             )}
           </li>
-          <li><a href="/collections" onClick={closeAllMenus}>Collections</a></li>
-          <li><a href="/new-arrivals" onClick={closeAllMenus}>New Arrivals</a></li>
+          <li><a href="/collections" onClick={() => handleNavigation('/collections')}>Collections</a></li>
+          <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>New Arrivals</a></li>
           <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
             <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
             {showAboutDropdown && (
