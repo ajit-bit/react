@@ -146,6 +146,7 @@
   background: none;
   border: none;
   padding: 0;
+  z-index: 1002;
 }
 
 .burger span,
@@ -194,6 +195,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1001;
 }
 
 .logo img {
@@ -769,17 +771,94 @@
   color: var(--white);
 }
 
+.mobile-bottom-nav {
+  display: none; 
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  background-color: var(--white);
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+  z-index: 999;
+}
+
+.mobile-bottom-nav button {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  color: var(--gray-dark);
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.mobile-bottom-nav button:hover,
+.mobile-bottom-nav button:focus {
+  color: var(--gold-dark);
+  outline: none;
+}
+
+.mobile-bottom-nav .icon-svg {
+  filter: none; 
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+  color: var(--gray-dark);
+  transition: color 0.2s ease;
+}
+
+.mobile-bottom-nav button:hover .icon-svg,
+.mobile-bottom-nav button:focus .icon-svg {
+  filter: none;
+  color: var(--gold-dark);
+}
+
+.mobile-bottom-nav img.icon-svg {
+  filter: brightness(0) saturate(100%) invert(15%) sepia(0%) saturate(1352%) hue-rotate(176deg) brightness(96%) contrast(92%);
+  transition: filter 0.2s ease;
+}
+
+.mobile-bottom-nav button:hover img.icon-svg,
+.mobile-bottom-nav button:focus img.icon-svg {
+  filter: brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1345%) hue-rotate(23deg) brightness(94%) contrast(94%);
+}
+
+.mobile-bottom-nav .cart-button {
+  position: relative;
+}
+
+.mobile-bottom-nav .cart-button .badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 22px);
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  background: var(--gold-dark);
+  color: var(--white);
+}
+
+/* ======================================================== */
+/* =================== MEDIA QUERIES ====================== */
+/* ======================================================== */
+
 @media (max-width: 1023px) {
   .icon-bar {
     gap: 20px;
   }
-
   .icon-bar a,
   .icon-bar button {
     --edge: 38px;
     --ico: 24px;
   }
-
   .icon-svg {
     width: 20px;
     height: 20px;
@@ -787,46 +866,60 @@
 }
 
 @media (max-width: 767px) {
+  /* Add padding to body so content isn't hidden by fixed nav */
+  body {
+    padding-bottom: 65px; 
+  }
+
+  /* Show mobile-specific elements */
+  .mobile-bottom-nav {
+    display: flex;
+  }
   .burger {
     display: block;
-    margin-left: 20px;
   }
 
-  .cat-strip {
+  /* Hide desktop/tablet navigation elements */
+  .cat-strip, .gender-strip {
     display: none;
   }
-
-  .nav-row {
-    padding: 20px 20px;
-  }
-
-  .logo img {
-    height: 52px;
-  }
-
+  
+  /* --- KEY CHANGE: Force the top icon bar to hide --- */
   .icon-bar {
-    gap: 8px;
-    margin-right: 20px;
+    display: none !important;
   }
 
-  .icon-bar a,
-  .icon-bar button {
-    --edge: 32px;
-    --ico: 20px;
+  /* --- Configure top bar layout for mobile --- */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* This helps center the logo */
+    position: relative;
+    height: 70px;
+    padding: 0 20px;
+  }
+  
+  .burger {
+    position: absolute; /* Position burger relative to nav-row */
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
-  .icon-svg {
-    width: 18px;
-    height: 18px;
+  .logo {
+    position: static; /* Let it be centered by the flex container */
+    transform: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    height: 48px;
   }
 
   .mobile-menu a {
     font-size: 20px;
-  }
-
-  .cat-links {
-    gap: 20px;
-    padding: 12px 0;
   }
 
   .cart-sidebar {
@@ -835,58 +928,36 @@
 
   .product-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
-    padding: 20px 0;
-  }
-
-  .product-card {
-    padding: 12px;
-  }
-
-  .product-card img {
-    height: 140px;
   }
 }
 
 @media (max-width: 480px) {
   .promo {
     font-size: 12px;
-    padding: 4px 0;
   }
 
   .nav-row {
-    padding: 16px 16px;
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .burger {
+    left: 16px;
   }
 
   .logo img {
-    height: 48px;
+    height: 42px;
   }
-
-  .cat-links {
-    gap: 16px;
-    font-size: 14px;
-  }
-
-  .gender-strip {
-    font-size: 14px;
-  }
-
+  
   .cart-sidebar {
     width: 90%;
     max-width: 280px;
   }
 
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    padding: 20px 10px;
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .icon-svg {
-    width: 16px;
-    height: 16px;
-  }
-
+  
   .mobile-menu {
     width: 85%;
   }

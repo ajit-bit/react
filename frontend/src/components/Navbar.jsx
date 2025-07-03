@@ -6,6 +6,23 @@ import likeLogo from '../../images/like.svg';
 import accountLogo from '../../images/acountlogo.svg';
 import shopLogo from '../../images/shoplogo.svg';
 
+// Inline SVG Icons for the mobile bottom nav
+const CategoriesIcon = () => (
+  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7"></rect>
+    <rect x="14" y="3" width="7" height="7"></rect>
+    <rect x="3" y="14" width="7" height="7"></rect>
+    <rect x="14" y="14" width="7" height="7"></rect>
+  </svg>
+);
+
+const TopIcon = () => (
+  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+);
+
+
 const Navbar = ({ setCartItems, setLikedItems }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
@@ -28,7 +45,7 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button')) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
         setIsCartSidebarOpen(false);
       }
     };
@@ -180,7 +197,8 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
         const errorData = await response.json();
         alert(errorData.message || 'Failed to add to wishlist');
       }
-    } catch (err) {
+    } catch (err)
+      {
       console.error("Error adding to wishlist:", err);
     }
   };
@@ -250,6 +268,13 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
     } else {
       handleNavigation('/auth');
     }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -495,6 +520,31 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
           </div>
         </main>
       )}
+      
+      <div className="mobile-bottom-nav">
+          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')}>
+              <img src={accountLogo} alt="Account" className="icon-svg"/>
+              <span>Account</span>
+          </button>
+          <button onClick={toggleMobileMenu}>
+              <CategoriesIcon />
+              <span>Categories</span>
+          </button>
+          <button className="cart-button" onClick={() => toggleCartSidebar('cart')}>
+              <img src={shopLogo} alt="Cart" className="icon-svg"/>
+              {cartItems.length > 0 && <span className="badge">{cartItems.length}</span>}
+              <span>Cart</span>
+          </button>
+          <button onClick={() => handleNavigation('/search')}>
+              <img src={searchLogo} alt="Search" className="icon-svg"/>
+              <span>Search</span>
+          </button>
+          <button onClick={scrollToTop}>
+              <TopIcon />
+              <span>Top</span>
+          </button>
+      </div>
+
     </>
   );
 };
