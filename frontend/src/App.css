@@ -1,17 +1,33 @@
-/* Layout styles for App.jsx */
 .layout-container {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f9fafb; /* Matches bg-gray-50 */
 }
 
 .main-content {
-  flex: 1 0 auto; /* Ensures main content expands to push footer down */
-  padding-top: 150px; /* Adjust based on navbar height */
+  flex: 1;
 }
 
-/* Ensure footer sticks to bottom */
-footer {
-  flex-shrink: 0; /* Prevent footer from shrinking */
+.auth-layout {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-layout .main-content {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .layout-container {
+    padding-top: 60px; /* Adjust based on your Navbar height if needed */
+  }
+}
+
+.auth-layout {
+  padding-top: 0 !important; /* Override any default padding */
 }

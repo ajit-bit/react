@@ -19,9 +19,9 @@ const Category = ({ setCartItems, setLikedItems }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState({}); // Track loading state per product
+  const [loading, setLoading] = useState({});
 
-  const isMenRoute = location.pathname === '/men';
+  const isMenRoute = location.pathname.includes('/men');
 
   const slideImages = [
     'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
@@ -102,8 +102,16 @@ const Category = ({ setCartItems, setLikedItems }) => {
 
   const checkLoginStatus = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUser(null);
+        setCartItems([]);
+        setLikedItems([]);
+        return;
+      }
       const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include"
+        credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -111,13 +119,19 @@ const Category = ({ setCartItems, setLikedItems }) => {
         await fetchCartItems(data.user.id);
         await fetchLikedItems(data.user.id);
       } else {
+        localStorage.removeItem('token');
         setUser(null);
         setCartItems([]);
         setLikedItems([]);
+        toast.error("Session expired, please log in again", {
+          className: isMenRoute ? 'men-theme-toast' : '',
+        });
       }
     } catch (err) {
       console.error("Error checking login status", err);
       setUser(null);
+      setCartItems([]);
+      setLikedItems([]);
       toast.error("Failed to check login status", {
         className: isMenRoute ? 'men-theme-toast' : '',
       });
@@ -126,21 +140,27 @@ const Category = ({ setCartItems, setLikedItems }) => {
 
   const fetchCartItems = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
-        credentials: "include"
+        credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name,
+          name: item.product?.name || item.name || 'Unnamed Product',
           price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          quantity: item.quantity || 1,
         }));
         setCartItems(normalizedItems);
+      } else {
+        throw new Error("Failed to fetch cart items");
       }
     } catch (err) {
       console.error("Error fetching cart items:", err);
+      setCartItems([]);
       toast.error("Failed to fetch cart items", {
         className: isMenRoute ? 'men-theme-toast' : '',
       });
@@ -149,22 +169,27 @@ const Category = ({ setCartItems, setLikedItems }) => {
 
   const fetchLikedItems = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
-        credentials: "include"
+        credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name,
+          name: item.product?.name || item.name || 'Unnamed Product',
           price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
         }));
         setLikedItems(normalizedItems);
         setLikedProducts(new Set(normalizedItems.map(item => item.id)));
+      } else {
+        throw new Error("Failed to fetch liked items");
       }
     } catch (err) {
       console.error("Error fetching liked items:", err);
+      setLikedItems([]);
       toast.error("Failed to fetch liked items", {
         className: isMenRoute ? 'men-theme-toast' : '',
       });
@@ -179,14 +204,17 @@ const Category = ({ setCartItems, setLikedItems }) => {
       navigate('/auth');
       return;
     }
-
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        },
         credentials: "include",
-        body: JSON.stringify({ productId })
+        body: JSON.stringify({ productId }),
       });
       if (response.ok) {
         await fetchCartItems(user.id);
@@ -194,11 +222,12 @@ const Category = ({ setCartItems, setLikedItems }) => {
           className: isMenRoute ? 'men-theme-toast' : '',
         });
       } else {
-        throw new Error("Failed to add to cart");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add to cart");
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error("Failed to add to cart", {
+      toast.error(err.message || "Failed to add to cart", {
         className: isMenRoute ? 'men-theme-toast' : '',
       });
     } finally {
@@ -214,15 +243,18 @@ const Category = ({ setCartItems, setLikedItems }) => {
       navigate('/auth');
       return;
     }
-
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
+      const token = localStorage.getItem('token');
       const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        },
         credentials: "include",
-        body: JSON.stringify({ productId })
+        body: JSON.stringify({ productId }),
       });
       if (response.ok) {
         await fetchLikedItems(user.id);
@@ -230,11 +262,12 @@ const Category = ({ setCartItems, setLikedItems }) => {
           className: isMenRoute ? 'men-theme-toast' : '',
         });
       } else {
-        throw new Error("Failed to update wishlist");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update wishlist");
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
-      toast.error("Failed to update wishlist", {
+      toast.error(err.message || "Failed to update wishlist", {
         className: isMenRoute ? 'men-theme-toast' : '',
       });
     } finally {
@@ -258,19 +291,15 @@ const Category = ({ setCartItems, setLikedItems }) => {
     setCurrentSlide((prev) => (prev - 1 + slideImages.length) % slideImages.length);
   };
 
-  const toggleLike = (productId) => {
-    addToWishlist(productId);
-  };
-
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
         className={`${styles.star} ${
-          i < Math.floor(rating) 
-            ? styles.filled 
-            : i < rating 
-            ? styles['half-filled'] 
+          i < Math.floor(rating)
+            ? styles.filled
+            : i < rating
+            ? styles['half-filled']
             : ''
         }`}
       />
@@ -279,21 +308,20 @@ const Category = ({ setCartItems, setLikedItems }) => {
 
   return (
     <div className={styles['category-page']}>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000} 
-        hideProgressBar={false} 
-        newestOnTop={false} 
-        closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss 
-        draggable 
-        pauseOnHover 
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
         theme={isMenRoute ? 'dark' : 'light'}
       />
-      
       <div className={styles['slideshow-container']}>
-        <div 
+        <div
           className={styles['slideshow-wrapper']}
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
@@ -304,8 +332,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
                 <div className={styles['slide-content']}>
                   <h2 className={styles['slide-title']}>{currentCategory.subtitle}</h2>
                   <p className={styles['slide-subtitle']}>Discover our premium collection of handcrafted {normalizedCategory}</p>
-                  <button 
-                    className={styles['slide-button']} 
+                  <button
+                    className={styles['slide-button']}
                     onClick={() => navigate('/products')}
                   >
                     Shop Now
@@ -315,7 +343,6 @@ const Category = ({ setCartItems, setLikedItems }) => {
             </div>
           ))}
         </div>
-
         <button
           onClick={prevSlide}
           className={`${styles['nav-arrow']} ${styles.prev}`}
@@ -328,7 +355,6 @@ const Category = ({ setCartItems, setLikedItems }) => {
         >
           <ChevronRight />
         </button>
-
         <div className={styles['slide-indicators']}>
           {slideImages.map((_, index) => (
             <button
@@ -339,16 +365,12 @@ const Category = ({ setCartItems, setLikedItems }) => {
           ))}
         </div>
       </div>
-
       <div className={styles['header-section']}>
         <div className={styles['header-content']}>
           <h1 className={styles['header-title']}>{currentCategory.title}</h1>
-          <p className={styles['header-description']}>
-            {currentCategory.description}
-          </p>
+          <p className={styles['header-description']}>{currentCategory.description}</p>
         </div>
       </div>
-
       <div className={styles['products-container']}>
         {currentCategory.products && currentCategory.products.length > 0 ? (
           <div className={styles['products-grid']}>
@@ -367,41 +389,22 @@ const Category = ({ setCartItems, setLikedItems }) => {
                       className={`${styles['product-image']} ${styles['hover-image']}`}
                     />
                   </div>
-                  {product.badge && (
-                    <div className={styles['product-badge']}>
-                      {product.badge}
-                    </div>
-                  )}
                 </div>
-
                 <div className={styles['product-content']}>
-                  <h3 className={styles['product-name']}>
-                    {product.name}
-                  </h3>
-
+                  <h3 className={styles['product-name']}>{product.name}</h3>
                   <div className={styles['rating-container']}>
-                    <div className={styles['stars-container']}>
-                      {renderStars(product.rating)}
-                    </div>
-                    <span className={styles['reviews-text']}>
-                      {product.reviews} reviews
-                    </span>
+                    <div className={styles['stars-container']}>{renderStars(product.rating)}</div>
+                    <span className={styles['reviews-text']}>{product.reviews} reviews</span>
                   </div>
-
                   <div className={styles['price-container']}>
                     <div className={styles['price-wrapper']}>
-                      <span className={styles['current-price']}>
-                        Rs. {product.currentPrice.toFixed(2)}
-                      </span>
-                      <span className={styles['original-price']}>
-                        Rs. {product.originalPrice.toFixed(2)}
-                      </span>
+                      <span className={styles['current-price']}>Rs. {product.currentPrice.toFixed(2)}</span>
+                      <span className={styles['original-price']}>Rs. {product.originalPrice.toFixed(2)}</span>
                     </div>
                   </div>
-
                   <div className={styles['action-buttons']}>
-                    <button 
-                      className={styles['add-to-bag-button']} 
+                    <button
+                      className={styles['add-to-bag-button']}
                       onClick={() => addToCart(product.id)}
                       disabled={loading[product.id]}
                     >
@@ -409,14 +412,12 @@ const Category = ({ setCartItems, setLikedItems }) => {
                       <span>{loading[product.id] ? 'Adding...' : 'Add to Bag'}</span>
                     </button>
                     <button
-                      onClick={() => toggleLike(product.id)}
+                      onClick={() => addToWishlist(product.id)}
                       className={`${styles['like-button']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
                       disabled={loading[product.id]}
                     >
                       <Heart
-                        className={`${styles['heart-icon']} ${
-                          likedProducts.has(product.id) ? styles.liked : ''
-                        }`}
+                        className={`${styles['heart-icon']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
                       />
                     </button>
                   </div>
@@ -425,9 +426,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-500">
-            No products available for this category.
-          </div>
+          <p>No products available in this category.</p>
         )}
       </div>
     </div>

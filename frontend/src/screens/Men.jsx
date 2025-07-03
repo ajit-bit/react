@@ -1,6 +1,6 @@
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import men1 from '../images/men1.jpg';
 import men2 from '../images/men2.jpg';
@@ -14,15 +14,16 @@ import ring1 from '../images/ring1.jpg';
 import styles from '../styles/Men.module.css';
 
 const Men = ({ setCartItems, setLikedItems }) => {
+  /* ---------- local state ---------- */
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const isMenRoute = location.pathname === '/men';
+  const navigate  = useNavigate();
+
+
 
   const sliderImages = [
     { src: men1, alt: 'Men Jewelry Slide 1' },
@@ -104,7 +105,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
         { id: 9, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
         { id: 10, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
         { id: 11, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 12, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5,image: ring1, hoverImage: men1 },
+        { id: 12, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
     },
     {
@@ -120,7 +121,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
       name: 'The Sicko Jewellery Collection',
       products: [
         { id: 17, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 18, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3,image: ring1, hoverImage: men1 },
+        { id: 18, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
         { id: 19, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
         { id: 20, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
@@ -129,8 +130,16 @@ const Men = ({ setCartItems, setLikedItems }) => {
 
   const checkLoginStatus = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUser(null);
+        setCartItems([]);
+        setLikedItems([]);
+        return;
+      }
       const res = await fetch("http://localhost:5000/api/auth/me", {
         credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -138,12 +147,19 @@ const Men = ({ setCartItems, setLikedItems }) => {
         await fetchCartItems(data.user.id);
         await fetchLikedItems(data.user.id);
       } else {
+        localStorage.removeItem('token');
         setUser(null);
         setCartItems([]);
         setLikedItems([]);
+        toast.error("Session expired, please log in again", {
+          className: styles['men-theme-toast'],
+        });
       }
     } catch (err) {
       console.error("Error checking login status", err);
+      setUser(null);
+      setCartItems([]);
+      setLikedItems([]);
       toast.error("Failed to check login status", {
         className: styles['men-theme-toast'],
       });
@@ -152,21 +168,27 @@ const Men = ({ setCartItems, setLikedItems }) => {
 
   const fetchCartItems = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
         credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name,
+          name: item.product?.name || item.name || 'Unnamed Product',
           price: parseFloat(item.product?.price || item.price || 0),
           imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          quantity: item.quantity || 1,
         }));
         setCartItems(normalizedItems);
+      } else {
+        throw new Error("Failed to fetch cart items");
       }
     } catch (err) {
       console.error("Error fetching cart items:", err);
+      setCartItems([]);
       toast.error("Failed to fetch cart items", {
         className: styles['men-theme-toast'],
       });
@@ -175,22 +197,27 @@ const Men = ({ setCartItems, setLikedItems }) => {
 
   const fetchLikedItems = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
         credentials: "include",
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name,
+          name: item.product?.name || item.name || 'Unnamed Product',
           price: parseFloat(item.product?.price || item.price || 0),
           imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
         }));
         setLikedItems(normalizedItems);
         setLikedProducts(new Set(normalizedItems.map(item => item.id)));
+      } else {
+        throw new Error("Failed to fetch liked items");
       }
     } catch (err) {
       console.error("Error fetching liked items:", err);
+      setLikedItems([]);
       toast.error("Failed to fetch liked items", {
         className: styles['men-theme-toast'],
       });
@@ -205,12 +232,15 @@ const Men = ({ setCartItems, setLikedItems }) => {
       navigate('/auth');
       return;
     }
-
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        },
         credentials: "include",
         body: JSON.stringify({ productId }),
       });
@@ -220,11 +250,12 @@ const Men = ({ setCartItems, setLikedItems }) => {
           className: styles['men-theme-toast'],
         });
       } else {
-        throw new Error("Failed to add to cart");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add to cart");
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error("Failed to add to cart", {
+      toast.error(err.message || "Failed to add to cart", {
         className: styles['men-theme-toast'],
       });
     } finally {
@@ -240,13 +271,16 @@ const Men = ({ setCartItems, setLikedItems }) => {
       navigate('/auth');
       return;
     }
-
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
+      const token = localStorage.getItem('token');
       const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        },
         credentials: "include",
         body: JSON.stringify({ productId }),
       });
@@ -256,11 +290,12 @@ const Men = ({ setCartItems, setLikedItems }) => {
           className: styles['men-theme-toast'],
         });
       } else {
-        throw new Error("Failed to update wishlist");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update wishlist");
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
-      toast.error("Failed to update wishlist", {
+      toast.error(err.message || "Failed to update wishlist", {
         className: styles['men-theme-toast'],
       });
     } finally {
@@ -273,11 +308,9 @@ const Men = ({ setCartItems, setLikedItems }) => {
     const sliderInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     }, 5000);
-
     const reviewInterval = setInterval(() => {
       setCurrentReviewSlide((prev) => (prev + 1) % reviewSlides.length);
     }, 7000);
-
     return () => {
       clearInterval(sliderInterval);
       clearInterval(reviewInterval);
@@ -289,10 +322,10 @@ const Men = ({ setCartItems, setLikedItems }) => {
       <Star
         key={i}
         className={`${styles.star} ${
-          i < Math.floor(rating) 
-            ? styles.filled 
-            : i < rating 
-            ? styles['half-filled'] 
+          i < Math.floor(rating)
+            ? styles.filled
+            : i < rating
+            ? styles['half-filled']
             : ''
         }`}
       />
@@ -313,7 +346,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
         pauseOnHover
         theme="dark"
       />
-
       <section className={styles.slider}>
         <div className={`${styles.slide} ${currentSlide === 0 ? styles.active : ''}`}>
           <div className={styles.text}>
@@ -324,7 +356,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
           <img src={sliderImages[0].src} alt={sliderImages[0].alt} />
         </div>
-
         <div className={`${styles.slide} ${currentSlide === 1 ? styles.active : ''}`}>
           <div className={styles.text}>
             <h4>Season's Best</h4>
@@ -334,7 +365,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
           <img src={sliderImages[1].src} alt={sliderImages[1].alt} />
         </div>
-
         <div className={`${styles.slide} ${currentSlide === 2 ? styles.active : ''}`}>
           <div className={styles.text}>
             <h4>Urban Appeal</h4>
@@ -344,19 +374,17 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
           <img src={sliderImages[2].src} alt={sliderImages[2].alt} />
         </div>
-
         <div className={styles.sliderNav}>
-          <button 
+          <button
             className={styles.prev}
             onClick={() => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length)}
           ></button>
-          <button 
+          <button
             className={styles.next}
             onClick={() => setCurrentSlide((prev) => (prev + 1) % sliderImages.length)}
           ></button>
         </div>
       </section>
-
       {collections.map((collection, collectionIndex) => (
         <div key={collectionIndex} className={styles.collection}>
           <h2>{collection.name}</h2>
@@ -378,35 +406,21 @@ const Men = ({ setCartItems, setLikedItems }) => {
                     />
                   </div>
                 </div>
-
                 <div className={styles['product-content']}>
-                  <h3 className={styles['product-name']}>
-                    {product.name}
-                  </h3>
-
+                  <h3 className={styles['product-name']}>{product.name}</h3>
                   <div className={styles['rating-container']}>
-                    <div className={styles['stars-container']}>
-                      {renderStars(product.rating)}
-                    </div>
-                    <span className={styles['reviews-text']}>
-                      {product.reviews} reviews
-                    </span>
+                    <div className={styles['stars-container']}>{renderStars(product.rating)}</div>
+                    <span className={styles['reviews-text']}>{product.reviews} reviews</span>
                   </div>
-
                   <div className={styles['price-container']}>
                     <div className={styles['price-wrapper']}>
-                      <span className={styles['current-price']}>
-                        Rs. {product.currentPrice.toFixed(2)}
-                      </span>
-                      <span className={styles['original-price']}>
-                        Rs. {product.originalPrice.toFixed(2)}
-                      </span>
+                      <span className={styles['current-price']}>Rs. {product.currentPrice.toFixed(2)}</span>
+                      <span className={styles['original-price']}>Rs. {product.originalPrice.toFixed(2)}</span>
                     </div>
                   </div>
-
                   <div className={styles['action-buttons']}>
-                    <button 
-                      className={styles['add-to-bag-button']} 
+                    <button
+                      className={styles['add-to-bag-button']}
                       onClick={() => addToCart(product.id)}
                       disabled={loading[product.id]}
                     >
@@ -419,9 +433,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
                       disabled={loading[product.id]}
                     >
                       <Heart
-                        className={`${styles['heart-icon']} ${
-                          likedProducts.has(product.id) ? styles.liked : ''
-                        }`}
+                        className={`${styles['heart-icon']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
                       />
                     </button>
                   </div>
@@ -431,12 +443,11 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
         </div>
       ))}
-
       <div className={styles.shopLove}>
         <h2>Shop What You Love</h2>
         <div className={styles.cards}>
           {['Bracelets', 'Chains', 'Rings', 'Earrings'].map((category, index) => (
-            <div key={index} className={styles.card} onClick={() => navigate(`/category/${category.toLowerCase()}`)}>
+            <div key={index} className={styles.card} onClick={() => navigate('/products')}>
               <img src={ring1} alt={category} />
               <div className={styles.cardContent}>
                 <h3>{category}</h3>
@@ -445,7 +456,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
           ))}
         </div>
       </div>
-
       <div className={styles.reviews}>
         <h2>Our Customers ♥ Us</h2>
         <div className={styles.reviewCarousel}>
@@ -468,7 +478,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
           ))}
           <div className={styles.reviewIndicators}>
             {reviewSlides.map((_, index) => (
-              <div 
+              <div
                 key={index}
                 className={`${styles.reviewIndicator} ${currentReviewSlide === index ? styles.active : ''}`}
                 onClick={() => setCurrentReviewSlide(index)}
@@ -477,7 +487,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
         </div>
       </div>
-
       <footer className={styles.footer}>
         <div className={styles.container}>
           <div className={styles.footerContent}>
@@ -492,13 +501,11 @@ const Men = ({ setCartItems, setLikedItems }) => {
               <p className={styles.brandDescription}>
                 Unleash the radiance of your inner beauty with our premium silver jewelry brand - a perfect blend of sophistication and style.
               </p>
-
               <div className={styles.customSocialIcons}>
                 <button onClick={() => navigate('/social/facebook')}><i className="fab fa-facebook-f"></i></button>
                 <button onClick={() => navigate('/social/instagram')}><i className="fab fa-instagram"></i></button>
                 <button onClick={() => navigate('/social/pinterest')}><i className="fab fa-pinterest-p"></i></button>
               </div>
-
               <div className={styles.footerBottom}>
                 <div className={styles.paymentMethods}>
                   <img src={menPaytm} alt="Paytm" className={styles.paymentIcon} />
@@ -509,7 +516,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
                 </div>
               </div>
             </div>
-
             <div className={styles.footerSection}>
               <h3>Account</h3>
               <ul>
@@ -519,7 +525,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
                 <li><button onClick={() => navigate('/addresses')}>Addresses</button></li>
               </ul>
             </div>
-
             <div className={styles.footerSection}>
               <h3>Help</h3>
               <ul>

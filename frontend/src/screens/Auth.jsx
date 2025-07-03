@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../images/logo-nobg.png';
 import '../styles/Auth.css';
 
@@ -14,11 +16,12 @@ const AuthComponent = ({ onLogin }) => {
     confirmPassword: '',
     rememberMe: false,
     agreeTerms: false,
-    newsletter: false
+    newsletter: false,
   });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [showPassword, setShowPassword] = useState({ password: false, confirmPassword: false });
+  const navigate = useNavigate();
 
   const toggleTab = (login) => {
     setIsLogin(login);
@@ -31,17 +34,17 @@ const AuthComponent = ({ onLogin }) => {
       confirmPassword: '',
       rememberMe: false,
       agreeTerms: false,
-      newsletter: false
+      newsletter: false,
     });
     setErrors({});
     setTouched({});
   };
 
   const validators = {
-    email: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-    password: value => value.length >= 6,
-    phone: value => /^[+]?\d{10,15}$/.test(value),
-    name: value => value.trim().length >= 2
+    email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    password: (value) => value.length >= 6,
+    phone: (value) => /^[+]?\d{10,15}$/.test(value),
+    name: (value) => value.trim().length >= 2,
   };
 
   const validateField = (name, value) => {
@@ -67,27 +70,27 @@ const AuthComponent = ({ onLogin }) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === 'checkbox' ? checked : value;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: fieldValue
+      [name]: fieldValue,
     }));
 
     if (touched[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: validateField(name, fieldValue)
+        [name]: validateField(name, fieldValue),
       }));
     }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    setTouched(prev => ({ ...prev, [name]: true }));
-    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
   };
 
   const togglePasswordVisibility = (field) => {
-    setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
   const handleSubmit = async (e) => {
@@ -98,7 +101,7 @@ const AuthComponent = ({ onLogin }) => {
       : ['firstName', 'lastName', 'email', 'phone', 'password', 'confirmPassword'];
 
     const newErrors = {};
-    fields.forEach(field => {
+    fields.forEach((field) => {
       newErrors[field] = validateField(field, formData[field]);
     });
 
@@ -107,35 +110,46 @@ const AuthComponent = ({ onLogin }) => {
     }
 
     setErrors(newErrors);
-    setTouched(fields.reduce((acc, curr) => ({ ...acc, [curr]: true }), {}));
+    setTouched(
+      fields.reduce((acc, curr) => ({ ...acc, [curr]: true }), {})
+    );
 
-    const hasErrors = Object.values(newErrors).some(msg => msg);
+    const hasErrors = Object.values(newErrors).some((msg) => msg);
     if (hasErrors) return;
 
     const url = isLogin ? '/api/auth/login' : '/api/auth/register';
-    const response = await fetch(`http://localhost:5000${url}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...formData,
-        confirmPassword: undefined,
-        rememberMe: undefined,
-        agreeTerms: undefined,
-        newsletter: undefined
-      })
-    });
+    try {
+      const response = await fetch(`http://localhost:5000${url}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          confirmPassword: undefined,
+          rememberMe: undefined,
+          agreeTerms: undefined,
+          newsletter: undefined,
+        }),
+      });
 
-    const data = await response.json();
-    if (response.ok) {
-      if (onLogin) onLogin(data.token);
-      alert(`${isLogin ? 'Login' : 'Signup'} successful!`);
-    } else {
-      alert(data.message);
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        if (onLogin) onLogin(data.token);
+        toast.success(`${isLogin ? 'Login' : 'Signup'} successful!`);
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        toast.error(data.message || 'Authentication failed');
+      }
+    } catch (err) {
+      console.error('Authentication error:', err);
+      toast.error('An error occurred during authentication');
     }
   };
 
   const handleSocialLogin = (provider) => {
-    alert(`${provider} login would be implemented here.`);
+    toast.info(`${provider} login is not implemented yet.`, {
+      autoClose: 3000,
+    });
   };
 
   return (
@@ -152,8 +166,12 @@ const AuthComponent = ({ onLogin }) => {
         </div>
 
         <div className="auth-tabs">
-          <button className={`tab ${isLogin ? 'active' : ''}`} onClick={() => toggleTab(true)}>Login</button>
-          <button className={`tab ${!isLogin ? 'active' : ''}`} onClick={() => toggleTab(false)}>Sign Up</button>
+          <button className={`tab ${isLogin ? 'active' : ''}`} onClick={() => toggleTab(true)}>
+            Login
+          </button>
+          <button className={`tab ${!isLogin ? 'active' : ''}`} onClick={() => toggleTab(false)}>
+            Sign Up
+          </button>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -221,7 +239,9 @@ const AuthComponent = ({ onLogin }) => {
               onBlur={handleBlur}
               className={errors.password && touched.password ? 'input error' : 'input'}
             />
-            <span className="eye-icon" onClick={() => togglePasswordVisibility('password')}>👁</span>
+            <span className="eye-icon" onClick={() => togglePasswordVisibility('password')}>
+              👁
+            </span>
           </div>
           {errors.password && touched.password && <span className="error-text">{errors.password}</span>}
 
@@ -236,7 +256,9 @@ const AuthComponent = ({ onLogin }) => {
                 onBlur={handleBlur}
                 className={errors.confirmPassword && touched.confirmPassword ? 'input error' : 'input'}
               />
-              <span className="eye-icon" onClick={() => togglePasswordVisibility('confirmPassword')}>👁</span>
+              <span className="eye-icon" onClick={() => togglePasswordVisibility('confirmPassword')}>
+                👁
+              </span>
             </div>
           )}
           {!isLogin && errors.confirmPassword && touched.confirmPassword && (

@@ -10,8 +10,12 @@ const Cart = () => {
 
   const checkLoginStatus = async () => {
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch('http://localhost:5000/api/auth/me', {
         credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (res.ok) {
         const data = await res.json();
@@ -40,8 +44,12 @@ const Cart = () => {
 
   const loadCart = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
         credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (response.ok) {
         const data = await response.json();
@@ -50,8 +58,16 @@ const Cart = () => {
           setTotal(0);
           return;
         }
-        const calculatedTotal = data.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        setCartItems(data);
+        const normalizedItems = data.map(item => ({
+          id: item._id,
+          productId: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          quantity: item.quantity || 1,
+        }));
+        const calculatedTotal = normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        setCartItems(normalizedItems);
         setTotal(calculatedTotal);
       } else {
         throw new Error('Failed to fetch cart items');
@@ -69,9 +85,13 @@ const Cart = () => {
 
   const deleteItem = async (id) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/cart/${id}`, {
         method: 'DELETE',
         credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (response.ok) {
         toast.success('Item deleted from cart!', {
@@ -80,11 +100,12 @@ const Cart = () => {
         });
         await loadCart(user.id);
       } else {
-        throw new Error('Failed to delete item');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete item');
       }
     } catch (err) {
       console.error('Delete failed:', err);
-      toast.error('Failed to delete item', {
+      toast.error(err.message || 'Failed to delete item', {
         position: 'top-right',
         autoClose: 3000,
       });
@@ -93,9 +114,13 @@ const Cart = () => {
 
   const buyNow = async (id, name) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/cart/buy/${id}`, {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (response.ok) {
         const data = await response.json();
@@ -105,11 +130,12 @@ const Cart = () => {
         });
         await loadCart(user.id);
       } else {
-        throw new Error('Buy failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Buy failed');
       }
     } catch (err) {
       console.error('Buy failed:', err);
-      toast.error('Failed to purchase item', {
+      toast.error(err.message || 'Failed to purchase item', {
         position: 'top-right',
         autoClose: 3000,
       });
@@ -176,23 +202,23 @@ const Cart = () => {
           </div>
         ) : (
           cartItems.map((item) => (
-            <div key={item._id} className={styles.cartItem}>
-              <img src={item.image} alt={item.name} className={styles.cartImage} />
+            <div key={item.id} className={styles.cartItem}>
+              <img src={item.imageUrl} alt={item.name} className={styles.cartImage} />
               <div className={styles.cartInfo}>
                 <h3>{item.name}</h3>
-                <p>Price: ₹{item.price}</p>
+                <p>Price: ₹{item.price.toFixed(2)}</p>
                 <p>Quantity: {item.quantity}</p>
               </div>
               <div className={styles.buttons}>
                 <button
                   className={styles.buyBtn}
-                  onClick={() => buyNow(item._id, item.name)}
+                  onClick={() => buyNow(item.id, item.name)}
                 >
                   Buy Now
                 </button>
                 <button
                   className={styles.deleteBtn}
-                  onClick={() => deleteItem(item._id)}
+                  onClick={() => deleteItem(item.id)}
                 >
                   Delete
                 </button>

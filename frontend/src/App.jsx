@@ -16,7 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems }) => {
   const location = useLocation();
   return (
-    <div className="layout-container">
+    <div className={`layout-container ${hideNavbarFooter ? 'auth-layout' : ''}`}>
       {!hideNavbarFooter && <Navbar setCartItems={setCartItems} setLikedItems={setLikedItems} />}
       <main className="main-content">{children}</main>
       {!hideNavbarFooter && <Footer />}
