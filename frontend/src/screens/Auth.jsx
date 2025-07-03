@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../images/logo-nobg.png';
 import '../styles/Auth.css';
 
-const AuthComponent = () => {
+const AuthComponent = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -90,7 +90,7 @@ const AuthComponent = () => {
     setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const fields = isLogin
@@ -112,8 +112,26 @@ const AuthComponent = () => {
     const hasErrors = Object.values(newErrors).some(msg => msg);
     if (hasErrors) return;
 
-    alert(`${isLogin ? 'Login' : 'Signup'} successful!`);
-    console.log('Form data:', formData);
+    const url = isLogin ? '/api/auth/login' : '/api/auth/register';
+    const response = await fetch(`http://localhost:5000${url}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        confirmPassword: undefined,
+        rememberMe: undefined,
+        agreeTerms: undefined,
+        newsletter: undefined
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      if (onLogin) onLogin(data.token);
+      alert(`${isLogin ? 'Login' : 'Signup'} successful!`);
+    } else {
+      alert(data.message);
+    }
   };
 
   const handleSocialLogin = (provider) => {

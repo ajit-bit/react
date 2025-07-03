@@ -6,13 +6,13 @@ import likeLogo from '../../images/like.svg';
 import accountLogo from '../../images/acountlogo.svg';
 import shopLogo from '../../images/shoplogo.svg';
 
-const Navbar = () => {
+const Navbar = ({ setCartItems, setLikedItems }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
   const [user, setUser] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const [likedItems, setLikedItems] = useState([]);
+  const [cartItems, setCartItemsLocal] = useState([]);
+  const [likedItems, setLikedItemsLocal] = useState([]);
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
@@ -38,8 +38,17 @@ const Navbar = () => {
 
   const checkLoginStatus = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUser(null);
+        return;
+      }
+      
       const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (res.ok) {
@@ -49,12 +58,14 @@ const Navbar = () => {
         await fetchLikedItems(data.user.id);
       } else {
         setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
+        setCartItemsLocal([]);
+        setLikedItemsLocal([]);
+        localStorage.removeItem('token');
       }
     } catch (err) {
       console.error("Error checking login status", err);
       setUser(null);
+      localStorage.removeItem('token');
     }
   };
 
@@ -75,7 +86,10 @@ const Navbar = () => {
   const fetchCartItems = async (userId) => {
     try {
       const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
       if (response.ok) {
         const data = await response.json();
@@ -85,7 +99,8 @@ const Navbar = () => {
           price: parseFloat(item.product?.price || item.price || 0),
           imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
         }));
-        setCartItems(normalizedItems);
+        setCartItemsLocal(normalizedItems);
+        if (setCartItems) setCartItems(normalizedItems);
       }
     } catch (err) {
       console.error("Error fetching cart items:", err);
@@ -95,7 +110,10 @@ const Navbar = () => {
   const fetchLikedItems = async (userId) => {
     try {
       const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
       if (response.ok) {
         const data = await response.json();
@@ -105,7 +123,8 @@ const Navbar = () => {
           price: parseFloat(item.product?.price || item.price || 0),
           imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
         }));
-        setLikedItems(normalizedItems);
+        setLikedItemsLocal(normalizedItems);
+        if (setLikedItems) setLikedItems(normalizedItems);
       }
     } catch (err) {
       console.error("Error fetching liked items:", err);
@@ -114,7 +133,7 @@ const Navbar = () => {
 
   const addToCart = async (productId) => {
     if (!user) {
-      alert('Please login to add items to cart');
+      navigate('/auth');
       return;
     }
 
@@ -122,13 +141,17 @@ const Navbar = () => {
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         credentials: "include",
-        body: JSON.stringify({ productId })
+        body: JSON.stringify({ productId, userId: user.id })
       });
       if (response.ok) {
         await fetchCartItems(user.id);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to add to cart');
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
@@ -137,7 +160,7 @@ const Navbar = () => {
 
   const addToWishlist = async (productId) => {
     if (!user) {
-      alert('Please login to add items to wishlist');
+      navigate('/auth');
       return;
     }
 
@@ -145,13 +168,17 @@ const Navbar = () => {
       const response = await fetch("http://localhost:5000/api/liked/add", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         credentials: "include",
-        body: JSON.stringify({ productId })
+        body: JSON.stringify({ productId, userId: user.id })
       });
       if (response.ok) {
         await fetchLikedItems(user.id);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to add to wishlist');
       }
     } catch (err) {
       console.error("Error adding to wishlist:", err);
@@ -162,12 +189,18 @@ const Navbar = () => {
     try {
       await fetch("http://localhost:5000/api/auth/logout", {
         method: "POST",
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
       setUser(null);
-      setCartItems([]);
-      setLikedItems([]);
+      setCartItemsLocal([]);
+      setLikedItemsLocal([]);
+      if (setCartItems) setCartItems([]);
+      if (setLikedItems) setLikedItems([]);
       setShowUserDropdown(false);
+      localStorage.removeItem('token');
       navigate("/");
     } catch (err) {
       console.error("Logout failed", err);
@@ -211,6 +244,14 @@ const Navbar = () => {
     closeAllMenus();
   };
 
+  const handleProfileClick = () => {
+    if (user) {
+      setShowUserDropdown(!showUserDropdown);
+    } else {
+      handleNavigation('/auth');
+    }
+  };
+
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
 
   const isMenRoute = location.pathname === '/men';
@@ -232,7 +273,7 @@ const Navbar = () => {
           </button>
 
           <div className="logo">
-            <a href="/" onClick={() => handleNavigation('/')}>
+            <a href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>
               <img src="/images/logo-nobg.png" alt="Aisha" />
             </a>
           </div>
@@ -240,7 +281,7 @@ const Navbar = () => {
           <nav className="icon-bar" aria-label="Quick actions">
             <button 
               className="icon-link"
-              onClick={() => handleNavigation('/search')}
+              onClick={(e) => { e.preventDefault(); handleNavigation('/search'); }}
               aria-label="Search"
             >
               <img src={searchLogo} alt="Search" className="icon-svg" />
@@ -248,7 +289,7 @@ const Navbar = () => {
             
             <button 
               className="icon-link"
-              onClick={() => toggleCartSidebar('liked')}
+              onClick={(e) => { e.preventDefault(); toggleCartSidebar('liked'); }}
               aria-label="Wishlist"
             >
               <img src={likeLogo} alt="Wishlist" className="icon-svg" />
@@ -260,7 +301,7 @@ const Navbar = () => {
             <div className="account-wrapper">
               <button 
                 className="account-button"
-                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                onClick={(e) => { e.preventDefault(); handleProfileClick(); }}
                 aria-label="Account"
               >
                 <img src={accountLogo} alt="Account" className="icon-svg" />
@@ -269,14 +310,14 @@ const Navbar = () => {
               {user && showUserDropdown && (
                 <div className="account-dropdown">
                   <span>Hello, {user.firstName}</span>
-                  <button onClick={logout}>Logout</button>
+                  <button onClick={(e) => { e.preventDefault(); logout(); }}>Logout</button>
                 </div>
               )}
             </div>
 
             <button 
               className="icon-link"
-              onClick={() => toggleCartSidebar('cart')}
+              onClick={(e) => { e.preventDefault(); toggleCartSidebar('cart'); }}
               aria-label="Shopping cart"
             >
               <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
@@ -295,26 +336,26 @@ const Navbar = () => {
               </a>
               {showAllJewelryDropdown && (
                 <div className="dropdown-menu">
-                  <a href="#" onClick={() => handleNavigation('/category/earrings')}>Earrings</a>
-                  <a href="#" onClick={() => handleNavigation('/category/rings')}>Rings</a>
-                  <a href="#" onClick={() => handleNavigation('/category/necklaces')}>Necklaces</a>
-                  <a href="#" onClick={() => handleNavigation('/category/bracelets')}>Bracelets</a>
-                  <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
                 </div>
               )}
             </li>
-            <li><a href="/collections" onClick={() => handleNavigation('/collections')}>Collections</a></li>
-            <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>New Arrivals</a></li>
-            <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>Best Seller</a></li>
+            <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
+            <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
+            <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>Best Seller</a></li>
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
               <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
                 About
               </a>
               {showAboutDropdown && (
                 <div className="dropdown-menu">
-                  <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
-                  <a href="#" onClick={() => handleNavigation('/blogs')}>Blogs</a>
-                  <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/blogs'); }}>Blogs</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
                 </div>
               )}
             </li>
@@ -322,9 +363,9 @@ const Navbar = () => {
         </nav>
 
         <nav className="gender-strip" aria-label="Shop by gender">
-          <a href="/women" onClick={() => handleNavigation('/women')}>WOMEN</a>
+          <a href="/women" onClick={(e) => { e.preventDefault(); handleNavigation('/women'); }}>WOMEN</a>
           <span>|</span>
-          <a href="/men" onClick={() => handleNavigation('/men')}>MEN</a>
+          <a href="/men" onClick={(e) => { e.preventDefault(); handleNavigation('/men'); }}>MEN</a>
         </nav>
       </header>
 
@@ -334,27 +375,32 @@ const Navbar = () => {
             <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
             {showAllJewelryDropdown && (
               <div className="dropdown-menu">
-                <a href="#" onClick={() => handleNavigation('/category/earrings')}>Earrings</a>
-                <a href="#" onClick={() => handleNavigation('/category/rings')}>Rings</a>
-                <a href="#" onClick={() => handleNavigation('/category/necklaces')}>Necklaces</a>
-                <a href="#" onClick={() => handleNavigation('/category/bracelets')}>Bracelets</a>
-                <a href="#" onClick={() => handleNavigation('/jewellery-sets')}>Jewellery Sets</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
               </div>
             )}
           </li>
-          <li><a href="/collections" onClick={() => handleNavigation('/collections')}>Collections</a></li>
-          <li><a href="/new-arrivals" onClick={() => handleNavigation('/new-arrivals')}>New Arrivals</a></li>
+          <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
+          <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
           <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
             <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
             {showAboutDropdown && (
               <div className="dropdown-menu">
-                <a href="#" onClick={() => handleNavigation('/our-story')}>Our Story</a>
-                <a href="#" onClick={() => handleNavigation('/craftsmanship')}>Craftsmanship</a>
-                <a href="#" onClick={() => handleNavigation('/sustainability')}>Sustainability</a>
-                <a href="#" onClick={() => handleNavigation('/testimonials')}>Testimonials</a>
-                <a href="#" onClick={() => handleNavigation('/contact')}>Contact Us</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>Craftsmanship</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>Sustainability</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>Testimonials</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
               </div>
             )}
+          </li>
+          <li>
+            <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation('/auth'); }}>
+              {user ? 'Profile' : 'Login/Sign Up'}
+            </a>
           </li>
         </ul>
       </aside>
@@ -367,13 +413,13 @@ const Navbar = () => {
         <div className="tab-buttons">
           <button 
             className={`tab-link ${activeTab === 'cart' ? 'active' : ''}`}
-            onClick={() => openTab('cart')}
+            onClick={(e) => { e.preventDefault(); openTab('cart'); }}
           >
             Cart
           </button>
           <button 
             className={`tab-link ${activeTab === 'liked' ? 'active' : ''}`}
-            onClick={() => openTab('liked')}
+            onClick={(e) => { e.preventDefault(); openTab('liked'); }}
           >
             Liked
           </button>
@@ -385,7 +431,7 @@ const Navbar = () => {
           {cartItems.length === 0 ? (
             <div>
               <p className="empty-message">Your cart is empty.</p>
-              <img src={shopLogo} alt="Shopping Cart" onClick={() => navigate('/bag')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+              <img src={shopLogo} alt="Shopping Cart" onClick={(e) => { e.preventDefault(); navigate('/bag'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
             </div>
           ) : (
             <div className="items-container">
@@ -399,10 +445,10 @@ const Navbar = () => {
             </div>
           )}
           <div className="subtotal">Subtotal: ₹{cartTotal.toFixed(2)}</div>
-          <button className="return-to-shop" onClick={closeAllMenus}>
+          <button className="return-to-shop" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             RETURN TO SHOP
           </button>
-          <button className="proceed-checkout">
+          <button className="proceed-checkout" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
             PROCEED TO SECURE CHECKOUT
           </button>
         </div>
@@ -413,7 +459,7 @@ const Navbar = () => {
           {likedItems.length === 0 ? (
             <div>
               <p className="empty-message">No liked items yet.</p>
-              <img src={likeLogo} alt="Liked Items" onClick={() => navigate('/liked')} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+              <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/liked'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
             </div>
           ) : (
             <div className="items-container">
@@ -426,7 +472,7 @@ const Navbar = () => {
               ))}
             </div>
           )}
-          <button className="return-to-shop" onClick={closeAllMenus}>
+          <button className="return-to-shop" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             GO TO WISHLIST
           </button>
         </div>
@@ -441,8 +487,8 @@ const Navbar = () => {
                 <h3>{product.name}</h3>
                 <p>₹{product.price.toFixed(2)}</p>
                 <div className="product-actions">
-                  <button onClick={() => addToCart(product.id)}>Add to Cart</button>
-                  <button onClick={() => addToWishlist(product.id)}>Add to Wishlist</button>
+                  <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }}>Add to Cart</button>
+                  <button onClick={(e) => { e.preventDefault(); addToWishlist(product.id); }}>Add to Wishlist</button>
                 </div>
               </div>
             ))}

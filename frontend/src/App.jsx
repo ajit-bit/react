@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -36,15 +36,20 @@ const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems }) => 
   );
 };
 
-const AppContent = ({ cartItems, setCartItems, setLikedItems }) => {
+const AppContent = ({ setCartItems, setLikedItems }) => {
   const location = useLocation();
   const hideNavbarFooter = location.pathname === '/auth';
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // Example usage of cartItems to avoid unused variable error
-  React.useEffect(() => {
-    // This effect runs whenever cartItems changes
-    // You can add logic here if needed
-  }, [cartItems]);
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) setToken(storedToken);
+  }, []);
+
+  const handleLogin = (token) => {
+    localStorage.setItem('token', token);
+    setToken(token);
+  };
 
   return (
     <Layout hideNavbarFooter={hideNavbarFooter} setCartItems={setCartItems} setLikedItems={setLikedItems}>
@@ -54,24 +59,23 @@ const AppContent = ({ cartItems, setCartItems, setLikedItems }) => {
         <Route path="/collections" element={<div>Collections Page</div>} />
         <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/bag" element={<Cart />} />
-        <Route path="/auth" element={<AuthComponent />} />
-        <Route path="/women" element={<Women />} />
-        <Route path="/men" element={<Men />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/bag" element={<Cart token={token} />} />
+        <Route path="/auth" element={<AuthComponent onLogin={handleLogin} />} />
+        <Route path="/women" element={<Women token={token} />} />
+        <Route path="/men" element={<Men token={token} />} />
+        <Route path="/" element={<Home token={token} />} />
       </Routes>
     </Layout>
   );
 };
 
 function App() {
-  const [cartItems, setCartItems] = useState([]);
-  // Only using setLikedItems to avoid unused variable error
+  const [, setCartItems] = useState([]);
   const [, setLikedItems] = useState([]);
 
   return (
     <Router>
-      <AppContent cartItems={cartItems} setCartItems={setCartItems} setLikedItems={setLikedItems} />
+      <AppContent setCartItems={setCartItems} setLikedItems={setLikedItems} />
     </Router>
   );
 }
