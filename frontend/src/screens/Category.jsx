@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
@@ -11,6 +12,7 @@ import ring from '../../images/ring.png';
 import ring1 from '../../images/ring1.jpg';
 import bracelet from '../../images/bracelet.png';
 import bracelet1 from '../../images/bracelet1.jpg';
+import { v4 as uuidv4 } from 'uuid';
 
 const Category = ({ setCartItems, setLikedItems }) => {
   const { categoryName } = useParams();
@@ -18,8 +20,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
   const location = useLocation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
+  const sessionId = localStorage.getItem('sessionId') || uuidv4();
 
   const isMenRoute = location.pathname.includes('/men');
 
@@ -30,13 +32,14 @@ const Category = ({ setCartItems, setLikedItems }) => {
     'https://images.pexels.com/photos/1445527/pexels-photo-1445527.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
   ];
 
+  // Use realistic ObjectId strings for product IDs
   const categoryData = {
     earrings: {
       title: 'Premium Earring Collection',
       subtitle: 'Exquisite Earrings',
       description: 'Discover our handpicked selection of exquisite earrings, crafted with precision and designed to make every moment special.',
       products: Array(8).fill().map((_, index) => ({
-        id: index + 1,
+        id: `507f1f77bcf86cd79943901${index}`,
         name: 'Elegant Drop Earrings - Silver',
         originalPrice: 800.00,
         currentPrice: 649.00,
@@ -52,7 +55,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
       subtitle: 'Exquisite Necklaces',
       description: 'Discover our handpicked selection of exquisite necklaces, crafted with precision and designed to make every moment special.',
       products: Array(8).fill().map((_, index) => ({
-        id: index + 1,
+        id: `507f1f77bcf86cd79943902${index}`,
         name: 'Radiant Gem Necklace - Gold',
         originalPrice: 1500.00,
         currentPrice: 1299.00,
@@ -68,7 +71,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
       subtitle: 'Exquisite Rings',
       description: 'Discover our handpicked selection of exquisite rings, crafted with precision and designed to make every moment special.',
       products: Array(8).fill().map((_, index) => ({
-        id: index + 1,
+        id: `507f1f77bcf86cd79943903${index}`,
         name: 'Girl Boss Salty Watch Ring - Rose Gold',
         originalPrice: 900.00,
         currentPrice: 749.00,
@@ -84,7 +87,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
       subtitle: 'Exquisite Bracelets',
       description: 'Discover our handpicked selection of exquisite bracelets, crafted with precision and designed to make every moment special.',
       products: Array(8).fill().map((_, index) => ({
-        id: index + 1,
+        id: `507f1f77bcf86cd79943904${index}`,
         name: 'Elegant Charm Bracelet - Silver',
         originalPrice: 1200.00,
         currentPrice: 999.00,
@@ -100,58 +103,28 @@ const Category = ({ setCartItems, setLikedItems }) => {
   const normalizedCategory = categoryName ? categoryName.toLowerCase() : 'earrings';
   const currentCategory = categoryData[normalizedCategory] || categoryData.earrings;
 
-  const checkLoginStatus = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
-        return;
-      }
-      const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-        await fetchCartItems(data.user.id);
-        await fetchLikedItems(data.user.id);
-      } else {
-        localStorage.removeItem('token');
-        setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
-        toast.error("Session expired, please log in again", {
-          className: isMenRoute ? 'men-theme-toast' : '',
-        });
-      }
-    } catch (err) {
-      console.error("Error checking login status", err);
-      setUser(null);
-      setCartItems([]);
-      setLikedItems([]);
-      toast.error("Failed to check login status", {
-        className: isMenRoute ? 'men-theme-toast' : '',
-      });
+  useEffect(() => {
+    if (!localStorage.getItem('sessionId')) {
+      localStorage.setItem('sessionId', sessionId);
     }
-  };
+    fetchCartItems();
+    fetchLikedItems();
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slideImages.length]);
 
-  const fetchCartItems = async (userId) => {
+  const fetchCartItems = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await fetch(`http://localhost:5000/api/cart/${sessionId}`);
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          name: item.name || 'Unnamed Product',
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
         }));
         setCartItems(normalizedItems);
@@ -167,20 +140,16 @@ const Category = ({ setCartItems, setLikedItems }) => {
     }
   };
 
-  const fetchLikedItems = async (userId) => {
+  const fetchLikedItems = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await fetch(`http://localhost:5000/api/liked/${sessionId}`);
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
           id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          name: item.name || 'Unnamed Product',
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
         }));
         setLikedItems(normalizedItems);
         setLikedProducts(new Set(normalizedItems.map(item => item.id)));
@@ -197,27 +166,29 @@ const Category = ({ setCartItems, setLikedItems }) => {
   };
 
   const addToCart = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to cart", {
-        className: isMenRoute ? 'men-theme-toast' : '',
-      });
-      navigate('/auth');
+    const product = currentCategory.products.find(p => p.id === productId);
+    if (!product) {
+      toast.error("Product not found", { className: isMenRoute ? 'men-theme-toast' : '' });
       return;
     }
+
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
         },
-        credentials: "include",
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({
+          productId,
+          sessionId,
+          name: product.name,
+          price: product.currentPrice,
+          imageUrl: product.image,
+        }),
       });
       if (response.ok) {
-        await fetchCartItems(user.id);
+        await fetchCartItems();
         toast.success("Added to Cart!", {
           className: isMenRoute ? 'men-theme-toast' : '',
         });
@@ -236,28 +207,30 @@ const Category = ({ setCartItems, setLikedItems }) => {
   };
 
   const addToWishlist = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to wishlist", {
-        className: isMenRoute ? 'men-theme-toast' : '',
-      });
-      navigate('/auth');
+    const product = currentCategory.products.find(p => p.id === productId);
+    if (!product) {
+      toast.error("Product not found", { className: isMenRoute ? 'men-theme-toast' : '' });
       return;
     }
+
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
-      const token = localStorage.getItem('token');
       const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
         },
-        credentials: "include",
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({
+          productId,
+          sessionId,
+          name: product.name,
+          price: product.currentPrice,
+          imageUrl: product.image,
+        }),
       });
       if (response.ok) {
-        await fetchLikedItems(user.id);
+        await fetchLikedItems();
         toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
           className: isMenRoute ? 'men-theme-toast' : '',
         });
@@ -274,14 +247,6 @@ const Category = ({ setCartItems, setLikedItems }) => {
       setLoading(prev => ({ ...prev, [productId]: false }));
     }
   };
-
-  useEffect(() => {
-    checkLoginStatus();
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slideImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [slideImages.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slideImages.length);

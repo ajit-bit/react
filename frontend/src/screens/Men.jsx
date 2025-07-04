@@ -1,7 +1,9 @@
+
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 import men1 from '../images/men1.jpg';
 import men2 from '../images/men2.jpg';
 import men3 from '../images/men3.jpg';
@@ -14,16 +16,13 @@ import ring1 from '../images/ring1.jpg';
 import styles from '../styles/Men.module.css';
 
 const Men = ({ setCartItems, setLikedItems }) => {
-  /* ---------- local state ---------- */
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
-
-  const navigate  = useNavigate();
-
-
+  const navigate = useNavigate();
+  const sessionId = localStorage.getItem('sessionId') || uuidv4();
 
   const sliderImages = [
     { src: men1, alt: 'Men Jewelry Slide 1' },
@@ -84,57 +83,74 @@ const Men = ({ setCartItems, setLikedItems }) => {
     {
       name: 'Alpha Sports Collection',
       products: [
-        { id: 1, name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 2, name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 3, name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 4, name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439051', name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439052', name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439053', name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439054', name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2, image: ring1, hoverImage: men1 },
       ],
     },
     {
       name: 'Icy and Spicy Jewellery',
       products: [
-        { id: 5, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 6, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 7, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 8, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439055', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439056', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439057', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439058', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
     },
     {
       name: 'Alpha BestSellers',
       products: [
-        { id: 9, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 10, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 11, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 12, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439059', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439060', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439061', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439062', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
     },
     {
       name: 'The Halloween Collection',
       products: [
-        { id: 13, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 14, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 15, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 16, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439063', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439064', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439065', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439066', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
     },
     {
       name: 'The Sicko Jewellery Collection',
       products: [
-        { id: 17, name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: 18, name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 19, name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: 20, name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439067', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439068', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439069', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439070', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
       ],
     },
   ];
+
+  useEffect(() => {
+    if (!localStorage.getItem('sessionId')) {
+      localStorage.setItem('sessionId', sessionId);
+    }
+    checkLoginStatus();
+    const sliderInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 5000);
+    const reviewInterval = setInterval(() => {
+      setCurrentReviewSlide((prev) => (prev + 1) % reviewSlides.length);
+    }, 7000);
+    return () => {
+      clearInterval(sliderInterval);
+      clearInterval(reviewInterval);
+    };
+  }, [sliderImages.length, reviewSlides.length]);
 
   const checkLoginStatus = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
+        await fetchCartItems(sessionId);
+        await fetchLikedItems(sessionId);
         return;
       }
       const res = await fetch("http://localhost:5000/api/auth/me", {
@@ -149,8 +165,8 @@ const Men = ({ setCartItems, setLikedItems }) => {
       } else {
         localStorage.removeItem('token');
         setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
+        await fetchCartItems(sessionId);
+        await fetchLikedItems(sessionId);
         toast.error("Session expired, please log in again", {
           className: styles['men-theme-toast'],
         });
@@ -158,28 +174,29 @@ const Men = ({ setCartItems, setLikedItems }) => {
     } catch (err) {
       console.error("Error checking login status", err);
       setUser(null);
-      setCartItems([]);
-      setLikedItems([]);
+      await fetchCartItems(sessionId);
+      await fetchLikedItems(sessionId);
       toast.error("Failed to check login status", {
         className: styles['men-theme-toast'],
       });
     }
   };
 
-  const fetchCartItems = async (userId) => {
+  const fetchCartItems = async (identifier) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const response = await fetch(`http://localhost:5000/api/cart/${identifier}`, {
         credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers,
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          id: item.productId || item._id,
+          name: item.name || 'Unnamed Product',
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
         }));
         setCartItems(normalizedItems);
@@ -195,20 +212,21 @@ const Men = ({ setCartItems, setLikedItems }) => {
     }
   };
 
-  const fetchLikedItems = async (userId) => {
+  const fetchLikedItems = async (identifier) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const response = await fetch(`http://localhost:5000/api/liked/${identifier}`, {
         credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers,
       });
       if (response.ok) {
         const data = await response.json();
         const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+          id: item.productId || item._id,
+          name: item.name || 'Unnamed Product',
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
         }));
         setLikedItems(normalizedItems);
         setLikedProducts(new Set(normalizedItems.map(item => item.id)));
@@ -225,27 +243,27 @@ const Men = ({ setCartItems, setLikedItems }) => {
   };
 
   const addToCart = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to cart", {
-        className: styles['men-theme-toast'],
-      });
-      navigate('/auth');
+    const product = collections.flatMap(c => c.products).find(p => p.id === productId);
+    if (!product) {
+      toast.error("Product not found", { className: styles['men-theme-toast'] });
       return;
     }
+
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
       const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+      const body = user
+        ? { productId, name: product.name, price: product.currentPrice, imageUrl: product.image }
+        : { productId, name: product.name, price: product.currentPrice, imageUrl: product.image, sessionId };
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        },
+        headers,
         credentials: "include",
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify(body),
       });
       if (response.ok) {
-        await fetchCartItems(user.id);
+        await fetchCartItems(user ? user.id : sessionId);
         toast.success("Added to Cart!", {
           className: styles['men-theme-toast'],
         });
@@ -264,28 +282,28 @@ const Men = ({ setCartItems, setLikedItems }) => {
   };
 
   const addToWishlist = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to wishlist", {
-        className: styles['men-theme-toast'],
-      });
-      navigate('/auth');
+    const product = collections.flatMap(c => c.products).find(p => p.id === productId);
+    if (!product) {
+      toast.error("Product not found", { className: styles['men-theme-toast'] });
       return;
     }
+
     setLoading(prev => ({ ...prev, [productId]: true }));
     try {
       const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
       const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
+      const body = user
+        ? { productId, name: product.name, price: product.currentPrice, imageUrl: product.image }
+        : { productId, name: product.name, price: product.currentPrice, imageUrl: product.image, sessionId };
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        },
+        headers,
         credentials: "include",
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify(body),
       });
       if (response.ok) {
-        await fetchLikedItems(user.id);
+        await fetchLikedItems(user ? user.id : sessionId);
         toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
           className: styles['men-theme-toast'],
         });
@@ -302,20 +320,6 @@ const Men = ({ setCartItems, setLikedItems }) => {
       setLoading(prev => ({ ...prev, [productId]: false }));
     }
   };
-
-  useEffect(() => {
-    checkLoginStatus();
-    const sliderInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 5000);
-    const reviewInterval = setInterval(() => {
-      setCurrentReviewSlide((prev) => (prev + 1) % reviewSlides.length);
-    }, 7000);
-    return () => {
-      clearInterval(sliderInterval);
-      clearInterval(reviewInterval);
-    };
-  }, [sliderImages.length, reviewSlides.length]);
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (

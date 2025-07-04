@@ -21,23 +21,23 @@ const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems }) => 
       {!hideNavbarFooter && <Navbar setCartItems={setCartItems} setLikedItems={setLikedItems} />}
       <main className="main-content">{children}</main>
       {!hideNavbarFooter && <Footer />}
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000} 
-        hideProgressBar={false} 
-        newestOnTop={false} 
-        closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss 
-        draggable 
-        pauseOnHover 
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
         theme={location.pathname === '/men' ? 'dark' : 'light'}
       />
     </div>
   );
 };
 
-const AppContent = ({ setCartItems, setLikedItems }) => {
+const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
   const [user, setUser] = useState(null);
   const sessionId = localStorage.getItem('sessionId') || uuidv4();
   const location = useLocation();
@@ -62,20 +62,19 @@ const AppContent = ({ setCartItems, setLikedItems }) => {
         setUser(null);
         return;
       }
-      const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${storedToken}` },
+      const res = await fetch('http://localhost:5000/api/auth/me', {
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${storedToken}` },
       });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
       } else {
         localStorage.removeItem('token');
-        localStorage.removeItem('token');
         setUser(null);
       }
     } catch (err) {
-      console.error("Error checking login status:", err);
+      console.error('Error checking login status:', err);
       localStorage.removeItem('token');
       setUser(null);
     }
@@ -94,29 +93,52 @@ const AppContent = ({ setCartItems, setLikedItems }) => {
   return (
     <Layout hideNavbarFooter={hideNavbarFooter} setCartItems={setCartItems} setLikedItems={setLikedItems}>
       <Routes>
-        <Route path="/category/:categoryName" element={<Category setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />} />
+        <Route
+          path="/category/:categoryName"
+          element={<Category setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />}
+        />
         <Route path="/jewellery-sets" element={<div>Jewellery Sets Page</div>} />
         <Route path="/collections" element={<div>Collections Page</div>} />
         <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/bag" element={<CartWishlist type="cart" user={user} setCartItems={setCartItems} />} />
-        <Route path="/wishlist" element={<CartWishlist type="wishlist" user={user} setLikedItems={setLikedItems} />} />
+        <Route
+          path="/bag"
+          element={<CartWishlist type="cart" user={user} cartItems={cartItems} setCartItems={setCartItems} />}
+        />
+        <Route
+          path="/wishlist"
+          element={<CartWishlist type="wishlist" user={user} likedItems={likedItems} setLikedItems={setLikedItems} />}
+        />
         <Route path="/auth" element={<AuthComponent onLogin={handleLogin} onLogout={handleLogout} />} />
-        <Route path="/women" element={<Women user={user} />} />
-        <Route path="/men" element={<Men user={user} />} />
-        <Route path="/" element={<Home user={user} />} />
+        <Route
+          path="/women"
+          element={<Women user={user} />}
+        />
+        <Route
+          path="/men"
+          element={<Men user={user} setCartItems={setCartItems} setLikedItems={setLikedItems} />}
+        />
+        <Route
+          path="/"
+          element={<Home user={user} setCartItems={setCartItems} setLikedItems={setLikedItems} />}
+        />
       </Routes>
     </Layout>
   );
 };
 
 function App() {
-  const [, setCartItems] = useState([]);
-  const [, setLikedItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [likedItems, setLikedItems] = useState([]);
 
   return (
     <Router>
-      <AppContent setCartItems={setCartItems} setLikedItems={setLikedItems} />
+      <AppContent
+        setCartItems={setCartItems}
+        setLikedItems={setLikedItems}
+        cartItems={cartItems}
+        likedItems={likedItems}
+      />
     </Router>
   );
 }

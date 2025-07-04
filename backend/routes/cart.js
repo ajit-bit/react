@@ -1,25 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const Product = require('../models/Product');
 
 router.get('/:identifier', async (req, res) => {
   const { identifier } = req.params;
-  const isAuthenticated = req.headers.authorization;
 
-  if (!identifier && !isAuthenticated) {
+  if (!identifier) {
     return res.status(400).json({ message: 'Identifier required' });
   }
 
-  const query = isAuthenticated ? { userId: identifier } : { sessionId: identifier || '' };
+  const query = req.user ? { userId: req.user.id } : { sessionId: identifier };
   try {
-    const cartItems = await Cart.find(query).populate('productId');
+    const cartItems = await Cart.find(query);
     const normalizedItems = cartItems.map(item => ({
       _id: item._id,
-      productId: item.productId._id,
-      name: item.productId.name,
-      price: item.productId.price,
-      imageUrl: item.productId.imageUrl,
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      imageUrl: item.imageUrl,
       quantity: item.quantity,
     }));
     res.json(normalizedItems || []);
@@ -30,24 +28,30 @@ router.get('/:identifier', async (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-  const { productId, userId, sessionId } = req.body;
-  if (!userId && !sessionId) {
-    return res.status(400).json({ message: 'User ID or Session ID required' });
+  const { productId, name, price, imageUrl, sessionId } = req.body;
+  if (!productId || !name || !price || !imageUrl) {
+    return res.status(400).json({ message: 'Product ID, name, price, and imageUrl required' });
+  }
+  if (!req.user && !sessionId) {
+    return res.status(400).json({ message: 'Session ID required for unauthenticated users' });
   }
 
   try {
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    const query = userId ? { userId, productId } : { sessionId, productId };
+    const query = req.user ? { userId: req.user.id, productId } : { sessionId, productId };
     let cartItem = await Cart.findOne(query);
     if (cartItem) {
       cartItem.quantity += 1;
       await cartItem.save();
     } else {
-      cartItem = new Cart({ userId: userId || undefined, sessionId: sessionId || undefined, productId, quantity: 1 });
+      cartItem = new Cart({
+        userId: req.user ? req.user.id : null,
+        sessionId: req.user ? null : sessionId,
+        productId,
+        name,
+        price,
+        imageUrl,
+        quantity: 1,
+      });
       await cartItem.save();
     }
 
@@ -60,13 +64,13 @@ router.post('/add', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  const { userId, sessionId } = req.body;
-  if (!userId && !sessionId) {
-    return res.status(400).json({ message: 'User ID or Session ID required' });
+  const { sessionId } = req.body;
+  if (!req.user && !sessionId) {
+    return res.status(400).json({ message: 'Session ID required for unauthenticated users' });
   }
 
   try {
-    const query = userId ? { _id: id, userId } : { _id: id, sessionId };
+    const query = req.user ? { _id: id, userId: req.user.id } : { _id: id, sessionId };
     const cartItem = await Cart.findOneAndDelete(query);
     if (!cartItem) {
       return res.status(404).json({ message: 'Cart item not found' });

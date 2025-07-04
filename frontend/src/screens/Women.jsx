@@ -2,20 +2,20 @@ import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import ring1 from '../images/ring1.jpg';
+import { v4 as uuidv4 } from 'uuid';
 import women1 from '../images/women1.jpg';
 import women2 from '../images/women2.jpg';
 import women3 from '../images/women3.jpg';
+import ring1 from '../images/ring1.jpg';
 import styles from '../styles/Women.module.css';
 
-const Women = ({ setCartItems, setLikedItems }) => {
+const Women = ({ user }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
   const navigate = useNavigate();
-
+  const sessionId = localStorage.getItem('sessionId') || uuidv4();
 
   const sliderImages = [
     { src: women1, alt: 'Women Jewelry Slide 1' },
@@ -76,227 +76,54 @@ const Women = ({ setCartItems, setLikedItems }) => {
     {
       name: 'Signature Silver Collection',
       products: [
-        { id: 1, name: 'Elegant Rose Ring', originalPrice: 1200, currentPrice: 949, reviews: 14, rating: 5, image: ring1, hoverImage: women1 },
-        { id: 2, name: 'Pearl Stud Necklace', originalPrice: 1000, currentPrice: 799, reviews: 9, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 3, name: 'Crystal Charm Bracelet', originalPrice: 950, currentPrice: 749, reviews: 6, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 4, name: 'Golden Glow Earrings', originalPrice: 850, currentPrice: 699, reviews: 5, rating: 3, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439071', name: 'Elegant Rose Ring', originalPrice: 1200, currentPrice: 949, reviews: 14, rating: 5, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439072', name: 'Pearl Stud Necklace', originalPrice: 1000, currentPrice: 799, reviews: 9, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439073', name: 'Crystal Charm Bracelet', originalPrice: 950, currentPrice: 749, reviews: 6, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439074', name: 'Golden Glow Earrings', originalPrice: 850, currentPrice: 699, reviews: 5, rating: 3, image: ring1, hoverImage: women1 },
       ],
     },
     {
       name: 'Celestial Glow Collection',
       products: [
-        { id: 5, name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 6, name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 7, name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
-        { id: 8, name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439075', name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439076', name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439077', name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439078', name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
       ],
     },
     {
       name: 'Most Loved by Her',
       products: [
-        { id: 9, name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 10, name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 11, name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
-        { id: 12, name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439079', name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439080', name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439081', name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439082', name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
       ],
     },
     {
       name: 'Festive Dazzle Picks',
       products: [
-        { id: 13, name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 14, name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 15, name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
-        { id: 16, name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439083', name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439084', name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439085', name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439086', name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
       ],
     },
     {
       name: 'The Luxe Essentials',
       products: [
-        { id: 17, name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 18, name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
-        { id: 19, name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
-        { id: 20, name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439087', name: 'Opal Shine Necklace', originalPrice: 1100, currentPrice: 949, reviews: 11, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439088', name: 'Twilight Gold Ring', originalPrice: 1150, currentPrice: 849, reviews: 8, rating: 4, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439089', name: 'Crystal Drop Earrings', originalPrice: 990, currentPrice: 799, reviews: 7, rating: 3, image: ring1, hoverImage: women1 },
+        { id: '507f1f77bcf86cd799439090', name: 'Luna Silver Cuff', originalPrice: 1250, currentPrice: 999, reviews: 12, rating: 5, image: ring1, hoverImage: women1 },
       ],
     },
   ];
 
-  const checkLoginStatus = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
-        return;
-      }
-      const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-        await fetchCartItems(data.user.id);
-        await fetchLikedItems(data.user.id);
-      } else {
-        localStorage.removeItem('token');
-        setUser(null);
-        setCartItems([]);
-        setLikedItems([]);
-        toast.error("Session expired, please log in again", {
-          className: styles['women-theme-toast'],
-        });
-      }
-    } catch (err) {
-      console.error("Error checking login status", err);
-      setUser(null);
-      setCartItems([]);
-      setLikedItems([]);
-      toast.error("Failed to check login status", {
-        className: styles['women-theme-toast'],
-      });
-    }
-  };
-
-  const fetchCartItems = async (userId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
-          quantity: item.quantity || 1,
-        }));
-        setCartItems(normalizedItems);
-      } else {
-        throw new Error("Failed to fetch cart items");
-      }
-    } catch (err) {
-      console.error("Error fetching cart items:", err);
-      setCartItems([]);
-      toast.error("Failed to fetch cart items", {
-        className: styles['women-theme-toast'],
-      });
-    }
-  };
-
-  const fetchLikedItems = async (userId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
-        credentials: "include",
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name || 'Unnamed Product',
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
-        }));
-        setLikedItems(normalizedItems);
-        setLikedProducts(new Set(normalizedItems.map(item => item.id)));
-      } else {
-        throw new Error("Failed to fetch liked items");
-      }
-    } catch (err) {
-      console.error("Error fetching liked items:", err);
-      setLikedItems([]);
-      toast.error("Failed to fetch liked items", {
-        className: styles['women-theme-toast'],
-      });
-    }
-  };
-
-  const addToCart = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to cart", {
-        className: styles['women-theme-toast'],
-      });
-      navigate('/auth');
-      return;
-    }
-    setLoading(prev => ({ ...prev, [productId]: true }));
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch("http://localhost:5000/api/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId }),
-      });
-      if (response.ok) {
-        await fetchCartItems(user.id);
-        toast.success("Added to Cart!", {
-          className: styles['women-theme-toast'],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add to cart");
-      }
-    } catch (err) {
-      console.error("Error adding to cart:", err);
-      toast.error(err.message || "Failed to add to cart", {
-        className: styles['women-theme-toast'],
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, [productId]: false }));
-    }
-  };
-
-  const addToWishlist = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to wishlist", {
-        className: styles['women-theme-toast'],
-      });
-      navigate('/auth');
-      return;
-    }
-    setLoading(prev => ({ ...prev, [productId]: true }));
-    try {
-      const token = localStorage.getItem('token');
-      const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId }),
-      });
-      if (response.ok) {
-        await fetchLikedItems(user.id);
-        toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
-          className: styles['women-theme-toast'],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update wishlist");
-      }
-    } catch (err) {
-      console.error("Error updating wishlist:", err);
-      toast.error(err.message || "Failed to update wishlist", {
-        className: styles['women-theme-toast'],
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, [productId]: false }));
-    }
-  };
-
   useEffect(() => {
-    checkLoginStatus();
+    if (!localStorage.getItem('sessionId')) {
+      localStorage.setItem('sessionId', sessionId);
+    }
     const sliderInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     }, 5000);
@@ -308,6 +135,92 @@ const Women = ({ setCartItems, setLikedItems }) => {
       clearInterval(reviewInterval);
     };
   }, [sliderImages.length, reviewSlides.length]);
+
+  const addToCart = async (productId) => {
+    const product = collections.flatMap(c => c.products).find(p => p.id === productId);
+    if (!product) {
+      toast.error('Product not found', { className: styles['women-theme-toast'] });
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+      const body = user
+        ? { productId, name: product.name, price: product.currentPrice, imageUrl: product.image }
+        : { productId, name: product.name, price: product.currentPrice, imageUrl: product.image, sessionId };
+      const response = await fetch('http://localhost:5000/api/cart/add', {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        toast.success('Added to Cart!', {
+          className: styles['women-theme-toast'],
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add to cart');
+      }
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      toast.error(err.message || 'Failed to add to cart', {
+        className: styles['women-theme-toast'],
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+
+  const addToWishlist = async (productId) => {
+    const product = collections.flatMap(c => c.products).find(p => p.id === productId);
+    if (!product) {
+      toast.error('Product not found', { className: styles['women-theme-toast'] });
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+      const endpoint = likedProducts.has(productId) ? '/api/liked/remove' : '/api/liked/add';
+      const body = user
+        ? { productId, name: product.name, price: product.currentPrice, imageUrl: product.image }
+        : { productId, name: product.name, price: product.currentPrice, imageUrl: product.image, sessionId };
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        setLikedProducts(prev => {
+          const newSet = new Set(prev);
+          if (likedProducts.has(productId)) {
+            newSet.delete(productId);
+          } else {
+            newSet.add(productId);
+          }
+          return newSet;
+        });
+        toast.success(likedProducts.has(productId) ? 'Removed from Wishlist!' : 'Added to Wishlist!', {
+          className: styles['women-theme-toast'],
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update wishlist');
+      }
+    } catch (err) {
+      console.error('Error updating wishlist:', err);
+      toast.error(err.message || 'Failed to update wishlist', {
+        className: styles['women-theme-toast'],
+      });
+    } finally {
+      setLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
