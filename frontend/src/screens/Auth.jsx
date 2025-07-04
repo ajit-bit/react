@@ -119,9 +119,18 @@ const AuthComponent = ({ onLogin }) => {
 
     const url = isLogin ? '/api/auth/login' : '/api/auth/register';
     try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`http://localhost:5000${url}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           ...formData,
           confirmPassword: undefined,
@@ -134,20 +143,34 @@ const AuthComponent = ({ onLogin }) => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        if (onLogin) onLogin(data.token);
-        toast.success(`${isLogin ? 'Login' : 'Signup'} successful!`);
+        if (onLogin) onLogin(data.token, data.user);
+        toast.success(`${isLogin ? 'Login' : 'Signup'} successful!`, {
+          position: 'top-right',
+          autoClose: 3000,
+        });
         setTimeout(() => navigate('/'), 1000);
       } else {
-        toast.error(data.message || 'Authentication failed');
+        toast.error(data.message || 'Authentication failed', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
     } catch (err) {
       console.error('Authentication error:', err);
-      toast.error('An error occurred during authentication');
+      let errorMessage = 'An error occurred during authentication';
+      if (err.message.includes('Failed to fetch')) {
+        errorMessage = 'Unable to connect to the server. Please check your network or server status.';
+      }
+      toast.error(errorMessage, {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
   const handleSocialLogin = (provider) => {
     toast.info(`${provider} login is not implemented yet.`, {
+      position: 'top-right',
       autoClose: 3000,
     });
   };

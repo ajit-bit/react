@@ -5,13 +5,14 @@ import Footer from './components/Footer';
 import Category from './screens/Category';
 import Blogs from './screens/Blog';
 import Home from './screens/Home';
-import Cart from './screens/Cart';
+import CartWishlist from './screens/CartWishlist';
 import AuthComponent from './screens/Auth';
 import Women from './screens/Women';
 import Men from './screens/Men';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems }) => {
   const location = useLocation();
@@ -37,33 +38,73 @@ const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems }) => 
 };
 
 const AppContent = ({ setCartItems, setLikedItems }) => {
+  const [user, setUser] = useState(null);
+  const sessionId = localStorage.getItem('sessionId') || uuidv4();
   const location = useLocation();
   const hideNavbarFooter = location.pathname === '/auth';
-  const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
+    if (!localStorage.getItem('sessionId')) {
+      localStorage.setItem('sessionId', sessionId);
+    }
     const storedToken = localStorage.getItem('token');
-    if (storedToken) setToken(storedToken);
-  }, []);
+    if (storedToken) {
+      checkLoginStatus();
+    } else {
+      setUser(null);
+    }
+  }, [sessionId]);
+
+  const checkLoginStatus = async () => {
+    try {
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        setUser(null);
+        return;
+      }
+      const res = await fetch("http://localhost:5000/api/auth/me", {
+        credentials: "include",
+        headers: { 'Authorization': `Bearer ${storedToken}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    } catch (err) {
+      console.error("Error checking login status:", err);
+      localStorage.removeItem('token');
+      setUser(null);
+    }
+  };
 
   const handleLogin = (token) => {
     localStorage.setItem('token', token);
-    setToken(token);
+    checkLoginStatus();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
   };
 
   return (
     <Layout hideNavbarFooter={hideNavbarFooter} setCartItems={setCartItems} setLikedItems={setLikedItems}>
       <Routes>
-        <Route path="/category/:categoryName" element={<Category setCartItems={setCartItems} setLikedItems={setLikedItems} />} />
+        <Route path="/category/:categoryName" element={<Category setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />} />
         <Route path="/jewellery-sets" element={<div>Jewellery Sets Page</div>} />
         <Route path="/collections" element={<div>Collections Page</div>} />
         <Route path="/new-arrivals" element={<div>New Arrivals Page</div>} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/bag" element={<Cart token={token} />} />
-        <Route path="/auth" element={<AuthComponent onLogin={handleLogin} />} />
-        <Route path="/women" element={<Women token={token} />} />
-        <Route path="/men" element={<Men token={token} />} />
-        <Route path="/" element={<Home token={token} />} />
+        <Route path="/bag" element={<CartWishlist type="cart" user={user} setCartItems={setCartItems} />} />
+        <Route path="/wishlist" element={<CartWishlist type="wishlist" user={user} setLikedItems={setLikedItems} />} />
+        <Route path="/auth" element={<AuthComponent onLogin={handleLogin} onLogout={handleLogout} />} />
+        <Route path="/women" element={<Women user={user} />} />
+        <Route path="/men" element={<Men user={user} />} />
+        <Route path="/" element={<Home user={user} />} />
       </Routes>
     </Layout>
   );

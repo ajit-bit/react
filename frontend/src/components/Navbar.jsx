@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Navbar.css';
 import searchLogo from '../../images/searchlogo.svg';
 import likeLogo from '../../images/like.svg';
@@ -22,12 +24,10 @@ const TopIcon = () => (
   </svg>
 );
 
-
-const Navbar = ({ setCartItems, setLikedItems }) => {
+const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
-  const [user, setUser] = useState(null);
   const [cartItems, setCartItemsLocal] = useState([]);
   const [likedItems, setLikedItemsLocal] = useState([]);
   const [products, setProducts] = useState([]);
@@ -39,11 +39,6 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
   const sidebarRef = useRef(null);
 
   useEffect(() => {
-    checkLoginStatus();
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
         setIsCartSidebarOpen(false);
@@ -52,39 +47,6 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const checkLoginStatus = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setUser(null);
-        return;
-      }
-      
-      const res = await fetch("http://localhost:5000/api/auth/me", {
-        credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-        await fetchCartItems(data.user.id);
-        await fetchLikedItems(data.user.id);
-      } else {
-        setUser(null);
-        setCartItemsLocal([]);
-        setLikedItemsLocal([]);
-        localStorage.removeItem('token');
-      }
-    } catch (err) {
-      console.error("Error checking login status", err);
-      setUser(null);
-      localStorage.removeItem('token');
-    }
-  };
 
   const fetchProducts = async () => {
     try {
@@ -97,8 +59,16 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       }
     } catch (err) {
       console.error("Error fetching products:", err);
+      toast.error("Failed to fetch products", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const fetchCartItems = async (userId) => {
     try {
@@ -121,6 +91,10 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       }
     } catch (err) {
       console.error("Error fetching cart items:", err);
+      toast.error("Failed to fetch cart items", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
@@ -145,11 +119,19 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       }
     } catch (err) {
       console.error("Error fetching liked items:", err);
+      toast.error("Failed to fetch liked items", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
   const addToCart = async (productId) => {
     if (!user) {
+      toast.warn("Please login to add items to cart", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
       navigate('/auth');
       return;
     }
@@ -166,17 +148,32 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       });
       if (response.ok) {
         await fetchCartItems(user.id);
+        toast.success("Added to Cart!", {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       } else {
         const errorData = await response.json();
-        alert(errorData.message || 'Failed to add to cart');
+        toast.error(errorData.message || 'Failed to add to cart', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
+      toast.error("Failed to add to cart", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
   const addToWishlist = async (productId) => {
     if (!user) {
+      toast.warn("Please login to add items to wishlist", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
       navigate('/auth');
       return;
     }
@@ -193,13 +190,23 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       });
       if (response.ok) {
         await fetchLikedItems(user.id);
+        toast.success("Added to Wishlist!", {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       } else {
         const errorData = await response.json();
-        alert(errorData.message || 'Failed to add to wishlist');
+        toast.error(errorData.message || 'Failed to add to wishlist', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
-    } catch (err)
-      {
+    } catch (err) {
       console.error("Error adding to wishlist:", err);
+      toast.error("Failed to add to wishlist", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
@@ -220,8 +227,16 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       setShowUserDropdown(false);
       localStorage.removeItem('token');
       navigate("/");
+      toast.success("Logged out successfully!", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     } catch (err) {
       console.error("Logout failed", err);
+      toast.error("Failed to log out", {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
 
@@ -278,7 +293,6 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
-
   const isMenRoute = location.pathname === '/men';
 
   return (
@@ -334,7 +348,8 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
               
               {user && showUserDropdown && (
                 <div className="account-dropdown">
-                  <span>Hello, {user.firstName}</span>
+                  <span>Hello, {user.firstName} {user.lastName}</span>
+                  <button onClick={(e) => { e.preventDefault(); handleNavigation('/profile'); }}>Profile</button>
                   <button onClick={(e) => { e.preventDefault(); logout(); }}>Logout</button>
                 </div>
               )}
@@ -423,8 +438,8 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
             )}
           </li>
           <li>
-            <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation('/auth'); }}>
-              {user ? 'Profile' : 'Login/Sign Up'}
+            <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
+              {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
             </a>
           </li>
         </ul>
@@ -446,7 +461,7 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
             className={`tab-link ${activeTab === 'liked' ? 'active' : ''}`}
             onClick={(e) => { e.preventDefault(); openTab('liked'); }}
           >
-            Liked
+            Wishlist
           </button>
         </div>
 
@@ -479,12 +494,12 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
         </div>
 
         <div className={`tab-content ${activeTab === 'liked' ? 'active' : ''}`}>
-          <h2>LIKED</h2>
+          <h2>WISHLIST</h2>
           <hr />
           {likedItems.length === 0 ? (
             <div>
               <p className="empty-message">No liked items yet.</p>
-              <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/liked'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+              <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/wishlist'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
             </div>
           ) : (
             <div className="items-container">
@@ -524,7 +539,7 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
       <div className="mobile-bottom-nav">
           <button onClick={() => handleNavigation(user ? '/profile' : '/auth')}>
               <img src={accountLogo} alt="Account" className="icon-svg"/>
-              <span>Account</span>
+              <span>{user ? 'Profile' : 'Account'}</span>
           </button>
           <button onClick={toggleMobileMenu}>
               <CategoriesIcon />
@@ -544,7 +559,6 @@ const Navbar = ({ setCartItems, setLikedItems }) => {
               <span>Top</span>
           </button>
       </div>
-
     </>
   );
 };

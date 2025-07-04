@@ -1,6 +1,6 @@
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import ring1 from '../images/ring1.jpg';
 import women1 from '../images/women1.jpg';
@@ -15,9 +15,7 @@ const Women = ({ setCartItems, setLikedItems }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const isWomenRoute = location.pathname === '/women';
 
   const sliderImages = [
     { src: women1, alt: 'Women Jewelry Slide 1' },
