@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/Category.module.css';
 import earring from '../assets/images/earring.png';
 import earring1 from '../assets/images/earring1.jpg';
@@ -32,7 +32,6 @@ const Category = ({ setCartItems, setLikedItems }) => {
     'https://images.pexels.com/photos/1445527/pexels-photo-1445527.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop',
   ];
 
-  // Use realistic ObjectId strings for product IDs
   const categoryData = {
     earrings: {
       title: 'Premium Earring Collection',
@@ -272,7 +271,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
   };
 
   return (
-    <div className={styles['category-page']}>
+    <div className={`${styles['category-page']} container-fluid px-0`}>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -285,20 +284,20 @@ const Category = ({ setCartItems, setLikedItems }) => {
         pauseOnHover
         theme={isMenRoute ? 'dark' : 'light'}
       />
-      <div className={styles['slideshow-container']}>
+      <div className={`${styles['slideshow-container']} w-100`}>
         <div
           className={styles['slideshow-wrapper']}
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {slideImages.map((image, index) => (
             <div key={index} className={styles.slide}>
-              <img src={image} alt={`Slide ${index + 1}`} />
+              <img src={image} alt={`Slide ${index + 1}`} className="w-100 h-100 object-fit-cover" />
               <div className={styles['slide-overlay']}>
                 <div className={styles['slide-content']}>
                   <h2 className={styles['slide-title']}>{currentCategory.subtitle}</h2>
                   <p className={styles['slide-subtitle']}>Discover our premium collection of handcrafted {normalizedCategory}</p>
                   <button
-                    className={styles['slide-button']}
+                    className="btn btn-warning text-dark fw-bold px-3 py-1 rounded-3"
                     onClick={() => navigate('/products')}
                   >
                     Shop Now
@@ -330,32 +329,33 @@ const Category = ({ setCartItems, setLikedItems }) => {
           ))}
         </div>
       </div>
-      <div className={styles['header-section']}>
-        <div className={styles['header-content']}>
-          <h1 className={styles['header-title']}>{currentCategory.title}</h1>
-          <p className={styles['header-description']}>{currentCategory.description}</p>
+      <div className="bg-white shadow-sm py-3 py-md-4">
+        <div className="container text-center">
+          <h1 className="display-6 fw-bold text-dark mb-2">{currentCategory.title}</h1>
+          <p className="text-muted fs-6 mx-auto" style={{ maxWidth: '36rem' }}>{currentCategory.description}</p>
         </div>
       </div>
-      <div className={styles['products-container']}>
+      <div className="container py-3 py-md-4">
         {currentCategory.products && currentCategory.products.length > 0 ? (
-          <div className={styles['products-grid']}>
+          <div className={`${styles['products-scroll-container']} d-flex flex-row gap-3 flex-nowrap overflow-auto px-3`}>
             {currentCategory.products.map((product) => (
-              <div key={product.id} className={styles['product-card']}>
+              <div key={product.id} className={`${styles['product-card']} flex-shrink-0`}>
                 <div className={styles['product-image-container']}>
                   <div className={styles['product-image-wrapper']}>
                     <img
                       src={product.image}
                       alt={product.name}
-                      className={`${styles['product-image']} ${styles['main-image']}`}
+                      className={`${styles['product-image']} ${styles['main-image']} w-100 h-100 object-fit-cover`}
                     />
                     <img
                       src={product.hoverImage}
                       alt={`${product.name} - alternate view`}
-                      className={`${styles['product-image']} ${styles['hover-image']}`}
+                      className={`${styles['product-image']} ${styles['hover-image']} w-100 h-100 object-fit-cover`}
                     />
+                    {product.badge && <span className={styles['product-badge']}>{product.badge}</span>}
                   </div>
                 </div>
-                <div className={styles['product-content']}>
+                <div className="p-2">
                   <h3 className={styles['product-name']}>{product.name}</h3>
                   <div className={styles['rating-container']}>
                     <div className={styles['stars-container']}>{renderStars(product.rating)}</div>
@@ -367,9 +367,9 @@ const Category = ({ setCartItems, setLikedItems }) => {
                       <span className={styles['original-price']}>Rs. {product.originalPrice.toFixed(2)}</span>
                     </div>
                   </div>
-                  <div className={styles['action-buttons']}>
+                  <div className="d-flex align-items-center gap-1">
                     <button
-                      className={styles['add-to-bag-button']}
+                      className="btn btn-warning text-dark fw-bold flex-grow-1 d-flex align-items-center justify-content-center gap-1"
                       onClick={() => addToCart(product.id)}
                       disabled={loading[product.id]}
                     >
@@ -378,7 +378,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
                     </button>
                     <button
                       onClick={() => addToWishlist(product.id)}
-                      className={`${styles['like-button']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
+                      className={`btn btn-outline-secondary rounded-circle p-1 ${likedProducts.has(product.id) ? styles.liked : ''}`}
                       disabled={loading[product.id]}
                     >
                       <Heart
@@ -391,7 +391,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
             ))}
           </div>
         ) : (
-          <p>No products available in this category.</p>
+          <p className="text-center text-muted">No products available in this category.</p>
         )}
       </div>
     </div>
