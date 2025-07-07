@@ -4,15 +4,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import men1 from '../images/men1.jpg';
-import men2 from '../images/men2.jpg';
-import men3 from '../images/men3.jpg';
-import menAmericanExpress from '../images/menamericanexpress.svg';
-import menGooglePay from '../images/mengooglepay.svg';
-import menMastercard from '../images/menmastercard.svg';
-import menPaytm from '../images/menpaytm.svg';
-import menVisa from '../images/menvisa.svg';
-import ring1 from '../images/ring1.jpg';
+import men1 from '../assets/images/men1.jpg';
+import men2 from '../assets/images/men2.jpg';
+import men3 from '../assets/images/men3.jpg';
+import ring1 from '../assets/images/ring1.jpg';
 import styles from '../styles/Men.module.css';
 
 const Men = ({ setCartItems, setLikedItems }) => {
@@ -491,54 +486,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
           </div>
         </div>
       </div>
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.footerContent}>
-            <div className={styles.footerBrand}>
-              <div className={styles.logos}>
-                <div className={styles.logosIcon}></div>
-                <div>
-                  <div className={styles.logosText}>AAISHA</div>
-                  <div className={styles.logosSubtext}>HOUSE OF SILVER</div>
-                </div>
-              </div>
-              <p className={styles.brandDescription}>
-                Unleash the radiance of your inner beauty with our premium silver jewelry brand - a perfect blend of sophistication and style.
-              </p>
-              <div className={styles.customSocialIcons}>
-                <button onClick={() => navigate('/social/facebook')}><i className="fab fa-facebook-f"></i></button>
-                <button onClick={() => navigate('/social/instagram')}><i className="fab fa-instagram"></i></button>
-                <button onClick={() => navigate('/social/pinterest')}><i className="fab fa-pinterest-p"></i></button>
-              </div>
-              <div className={styles.footerBottom}>
-                <div className={styles.paymentMethods}>
-                  <img src={menPaytm} alt="Paytm" className={styles.paymentIcon} />
-                  <img src={menGooglePay} alt="Google Pay" className={styles.paymentIcon} />
-                  <img src={menVisa} alt="Visa" className={styles.paymentIcon} />
-                  <img src={menMastercard} alt="Mastercard" className={styles.paymentIcon} />
-                  <img src={menAmericanExpress} alt="American Express" className={styles.paymentIcon} />
-                </div>
-              </div>
-            </div>
-            <div className={styles.footerSection}>
-              <h3>Account</h3>
-              <ul>
-                <li><button onClick={() => navigate('/dashboard')}>Dashboard</button></li>
-                <li><button onClick={() => navigate('/orders')}>Orders</button></li>
-                <li><button onClick={() => navigate('/wishlist')}>Wishlist</button></li>
-                <li><button onClick={() => navigate('/addresses')}>Addresses</button></li>
-              </ul>
-            </div>
-            <div className={styles.footerSection}>
-              <h3>Help</h3>
-              <ul>
-                <li><button onClick={() => navigate('/about')}>About Us</button></li>
-                <li><button onClick={() => navigate('/contact')}>Contact Support</button></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

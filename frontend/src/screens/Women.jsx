@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import women1 from '../images/women1.jpg';
-import women2 from '../images/women2.jpg';
-import women3 from '../images/women3.jpg';
-import ring1 from '../images/ring1.jpg';
+import women1 from '../assets/images/women1.jpg';
+import women2 from '../assets/images/women2.jpg';
+import women3 from '../assets/images/women3.jpg';
+import ring1 from '../assets/images/ring1.jpg';
 import styles from '../styles/Women.module.css';
 
 const Women = ({ user }) => {

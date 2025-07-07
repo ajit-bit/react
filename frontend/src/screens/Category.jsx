@@ -4,14 +4,14 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Heart, Star, ShoppingBag } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import styles from '../styles/Category.module.css';
-import earring from '../../images/earring.png';
-import earring1 from '../../images/earring1.jpg';
-import necklace from '../../images/ring.png';
-import necklace1 from '../../images/ring1.jpg';
-import ring from '../../images/ring.png';
-import ring1 from '../../images/ring1.jpg';
-import bracelet from '../../images/bracelet.png';
-import bracelet1 from '../../images/bracelet1.jpg';
+import earring from '../assets/images/earring.png';
+import earring1 from '../assets/images/earring1.jpg';
+import necklace from '../assets/images/ring.png';
+import necklace1 from '../assets/images/ring1.jpg';
+import ring from '../assets/images/ring.png';
+import ring1 from '../assets/images/ring1.jpg';
+import bracelet from '../assets/images/bracelet.png';
+import bracelet1 from '../assets/images/bracelet1.jpg';
 import { v4 as uuidv4 } from 'uuid';
 
 const Category = ({ setCartItems, setLikedItems }) => {

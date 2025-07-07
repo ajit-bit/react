@@ -1,29 +1,31 @@
 import { useEffect, useState } from 'react';
 import '../styles/Home.css';
 // Import all images
-import bracelet1 from '../../images/bracelet1.jpg';
-import chain1 from '../../images/chain.png';
-import earing1 from '../../images/earing1.jpg';
-import essentialsCasual from '../../images/essentials-casual.jpg';
-import essentialsVacation from '../../images/essentials-vacation.jpg';
-import essentialsWedding from '../../images/essentials-wedding.jpg';
-import essentialsWork from '../../images/essentials-work.jpg';
-import goldring from '../../images/goldring.jpg';
-import immg1 from '../../images/immg1.png';
-import immg2 from '../../images/immg2.png';
-import immg3 from '../../images/immg3.png';
-import immg4 from '../../images/immg4.png';
-import myntra from '../../images/myntra.png';
-import neck from '../../images/neck.jpg';
-import ring1 from '../../images/ring1.jpg';
-import silvernecklace from '../../images/silvernecklace.jpg';
-import slide1 from '../../images/slide1.png';
-import slide2 from '../../images/slide2.png';
-import slide3 from '../../images/slide3.png';
-import testimonial1 from '../../images/testimonial-1.jpg';
-import testimonial2 from '../../images/testimonial-2.jpg';
-import testimonial3 from '../../images/testimonial-3.jpg';
-import watch from '../../images/watch.jpg';
+import bracelet1 from '../assets/images/bracelet1.jpg';
+import chain1 from '../assets/images/chain.png';
+import earing1 from '../assets/images/earing1.jpg';
+import essentialsCasual from '../assets/images/essentials-casual.jpg';
+import essentialsVacation from '../assets/images/essentials-vacation.jpg';
+import essentialsWedding from '../assets/images/essentials-wedding.jpg';
+import essentialsWork from '../assets/images/essentials-work.jpg';
+import goldring from '../assets/images/goldring.jpg';
+import immg1 from '../assets/images/immg1.png';
+import immg2 from '../assets/images/immg2.png';
+import immg3 from '../assets/images/immg3.png';
+import immg4 from '../assets/images/immg4.png';
+import myntra from '../assets/images/myntra.png';
+import neck from '../assets/images/neck.jpg';
+import ring1 from '../assets/images/ring1.jpg';
+import silvernecklace from '../assets/images/silvernecklace.jpg';
+import slide1 from '../assets/images/slide1.png';
+import slide2 from '../assets/images/slide2.png';
+import slide3 from '../assets/images/slide3.png';
+import testimonial1 from '../assets/images/testimonial-1.jpg';
+import testimonial2 from '../assets/images/testimonial-2.jpg';
+import testimonial3 from '../assets/images/testimonial-3.jpg';
+import watch from '../assets/images/watch.jpg';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 
 

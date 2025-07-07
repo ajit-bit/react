@@ -1,14 +1,18 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import styles from './footer.module.css';
-import paytm from '../../images/paytm.svg';
-import googlepay from '../../images/googlepay.svg';
-import visa from '../../images/visa.svg';
-import mastercard from '../../images/mastercard.svg';
-import americanexpress from '../../images/americanexpress.svg';
+import paytm from '../assets/images/paytm.svg';
+import googlepay from '../assets/images/googlepay.svg';
+import visa from '../assets/images/visa.svg';
+import mastercard from '../assets/images/mastercard.svg';
+import americanexpress from '../assets/images/americanexpress.svg';
 
 const Footer = () => {
+  const location = useLocation();
+  const isMenSection = location.pathname === '/men';
+
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} ${isMenSection ? styles.darkTheme : ''}`}>
       <div className={styles.container}>
         <div className={styles.footerContent}>
           {/* Brand */}
@@ -48,14 +52,14 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Account */}
+          {/* Policy */}
           <div className={styles.footerSection}>
-            <h3>Account</h3>
+            <h3>Policy</h3>
             <ul>
-              <li><a href="#">Dashboard</a></li>
-              <li><a href="#">Orders</a></li>
-              <li><a href="#">Wishlist</a></li>
-              <li><a href="#">Addresses</a></li>
+              <li><a href="#">Shipping & Delivery Policy</a></li>
+              <li><a href="#">Return & Exchange Policy</a></li>
+              <li><a href="#">Payment Policy</a></li>
+              <li><a href="#">Grievance Redressal Policy</a></li>
             </ul>
           </div>
 
@@ -63,8 +67,20 @@ const Footer = () => {
           <div className={styles.footerSection}>
             <h3>Help</h3>
             <ul>
+              <li><a href="#">FAQ's</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          {/* About Us */}
+          <div className={styles.footerSection}>
+            <h3>About Us</h3>
+            <ul>
               <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact Support</a></li>
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">Contact Us</a></li>
             </ul>
           </div>
         </div>

@@ -5,6 +5,12 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+/* Dark Theme for Men's Section */
+.footer.darkTheme {
+  background-color: #000000;
+  color: #ffffff;
+}
+
 /* Top Footer Layout */
 .footerContent {
   display: flex;
@@ -53,10 +59,18 @@
   color: #333;
 }
 
+.footer.darkTheme .logosText {
+  color: #ffffff;
+}
+
 .logosSubtext {
   font-size: 12px;
   color: #888;
   letter-spacing: 2px;
+}
+
+.footer.darkTheme .logosSubtext {
+  color: #cccccc;
 }
 
 .brandDescription {
@@ -65,6 +79,10 @@
   line-height: 1.6;
   margin-top: 10px;
   text-align: left;
+}
+
+.footer.darkTheme .brandDescription {
+  color: #cccccc;
 }
 
 /* Footer Columns */
@@ -80,6 +98,10 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 15px;
+}
+
+.footer.darkTheme .footerSection h3 {
+  color: #ffffff;
 }
 
 .footerSection ul {
@@ -99,8 +121,16 @@
   transition: color 0.3s ease;
 }
 
+.footer.darkTheme .footerSection ul li a {
+  color: #cccccc;
+}
+
 .footerSection ul li a:hover {
   color: #d4af37;
+}
+
+.footer.darkTheme .footerSection ul li a:hover {
+  color: #ffd700;
 }
 
 /* Social Icons */
@@ -124,9 +154,19 @@
   text-decoration: none;
 }
 
+.footer.darkTheme .socialLink {
+  background-color: #333333;
+  color: #ffffff;
+}
+
 .socialLink:hover {
   background-color: #d4af37;
   color: white;
+}
+
+.footer.darkTheme .socialLink:hover {
+  background-color: #ffd700;
+  color: #000000;
 }
 
 /* Payment Icons */

@@ -3,10 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Navbar.css';
-import searchLogo from '../../images/searchlogo.svg';
-import likeLogo from '../../images/like.svg';
-import accountLogo from '../../images/acountlogo.svg';
-import shopLogo from '../../images/shoplogo.svg';
+import logo from '../assets/images/logo-nobg.png';
+import searchLogo from '../assets/images/searchlogo.svg';
+import likeLogo from '../assets/images/like.svg';
+import accountLogo from '../assets/images/acountlogo.svg';
+import shopLogo from '../assets/images/shoplogo.svg';
 
 // Inline SVG Icons for the mobile bottom nav
 const CategoriesIcon = () => (
@@ -313,7 +314,7 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
 
           <div className="logo">
             <a href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>
-              <img src="/images/logo-nobg.png" alt="Aisha" />
+              <img src={logo} alt="Aisha" />
             </a>
           </div>
 
