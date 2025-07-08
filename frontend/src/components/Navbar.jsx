@@ -9,7 +9,7 @@ import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
 import shopLogo from '../assets/images/shoplogo.svg';
 
-// Inline SVG Icons for the mobile bottom nav
+// Inline SVG Icons for the mobile bottom nav and back button
 const CategoriesIcon = () => (
   <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"></rect>
@@ -25,8 +25,15 @@ const TopIcon = () => (
   </svg>
 );
 
+const BackIcon = () => (
+  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+);
+
 const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuLevel, setMenuLevel] = useState(0); // 0 for main menu, 1 for submenu
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
   const [products, setProducts] = useState([]);
@@ -42,10 +49,20 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
         setIsCartSidebarOpen(false);
       }
+      if (!event.target.closest('.cat-links .all-jewellery') && !event.target.closest('.dropdown-menu')) {
+        setShowAllJewelryDropdown(false);
+      }
+      if (!event.target.closest('.cat-links .about') && !event.target.closest('.dropdown-menu')) {
+        setShowAboutDropdown(false);
+      }
+      if (!event.target.closest('.mobile-menu') && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+        setMenuLevel(0);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isMobileMenuOpen]);
 
   const fetchProducts = async () => {
     try {
@@ -280,6 +297,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setMenuLevel(0); // Reset to main menu when toggling
   };
 
   const toggleCartSidebar = (tab = 'cart') => {
@@ -294,6 +312,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowUserDropdown(false);
     setShowAllJewelryDropdown(false);
     setShowAboutDropdown(false);
+    setMenuLevel(0);
   };
 
   const openTab = (tabName) => {
@@ -302,12 +321,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const toggleAllJewelryDropdown = () => {
     setShowAllJewelryDropdown(!showAllJewelryDropdown);
-    setShowAboutDropdown(false); // Ensure only one dropdown is open at a time
+    setShowAboutDropdown(false);
   };
 
   const toggleAboutDropdown = () => {
     setShowAboutDropdown(!showAboutDropdown);
-    setShowAllJewelryDropdown(false); // Ensure only one dropdown is open at a time
+    setShowAllJewelryDropdown(false);
   };
 
   const handleNavigation = (path) => {
@@ -332,6 +351,10 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const isMenRoute = location.pathname === '/men';
+
+  const goBack = () => {
+    setMenuLevel(0);
+  };
 
   return (
     <>
@@ -408,12 +431,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
         <nav className="cat-strip" aria-label="Primary navigation">
           <ul className="cat-links">
-            <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
-              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }} style={{ cursor: 'pointer' }}>
+            <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
                 All Jewellery
               </a>
               {showAllJewelryDropdown && (
-                <div className="dropdown-menu" style={{ display: showAllJewelryDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
+                <div className="dropdown-menu">
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
@@ -426,11 +449,11 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>Best Seller</a></li>
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }} style={{ cursor: 'pointer' }}>
+              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
                 About
               </a>
               {showAboutDropdown && (
-                <div className="dropdown-menu" style={{ display: showAboutDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
+                <div className="dropdown-menu">
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/blogs'); }}>Blogs</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
@@ -448,38 +471,77 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       </header>
 
       <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        {menuLevel === 1 && (
+          <div className="mobile-menu-header">
+            <button className="back-button" onClick={goBack} aria-label="Go back">
+              <BackIcon />
+            </button>
+            <h2 className="mobile-menu-title">Menu</h2>
+          </div>
+        )}
+        {menuLevel === 0 && (
+          <div className="mobile-menu-header">
+            <h2 className="mobile-menu-title">Menu</h2>
+          </div>
+        )}
         <ul>
-          <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
-            <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
-            {showAllJewelryDropdown && (
-              <div className="dropdown-menu">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
-              </div>
-            )}
-          </li>
-          <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
-          <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
-          <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-            <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
-            {showAboutDropdown && (
-              <div className="dropdown-menu">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>Craftsmanship</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>Sustainability</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>Testimonials</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
-              </div>
-            )}
-          </li>
-          <li>
-            <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
-              {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
-            </a>
-          </li>
+          {menuLevel === 0 && (
+            <>
+              <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+                <a href="/products" onClick={(e) => { e.preventDefault(); setShowAllJewelryDropdown(!showAllJewelryDropdown); setMenuLevel(1); }}>
+                  All Jewellery
+                </a>
+                {showAllJewelryDropdown && (
+                  <div className="dropdown-menu">
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
+                  </div>
+                )}
+              </li>
+              <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
+              <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
+              <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
+                <a href="/about" onClick={(e) => { e.preventDefault(); setShowAboutDropdown(!showAboutDropdown); setMenuLevel(1); }}>
+                  About
+                </a>
+                {showAboutDropdown && (
+                  <div className="dropdown-menu">
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>Craftsmanship</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>Sustainability</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>Testimonials</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
+                  </div>
+                )}
+              </li>
+              <li>
+                <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
+                  {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
+                </a>
+              </li>
+            </>
+          )}
+          {menuLevel === 1 && showAllJewelryDropdown && (
+            <div className="dropdown-menu">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
+            </div>
+          )}
+          {menuLevel === 1 && showAboutDropdown && (
+            <div className="dropdown-menu">
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>Craftsmanship</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>Sustainability</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>Testimonials</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
+            </div>
+          )}
         </ul>
       </aside>
 
