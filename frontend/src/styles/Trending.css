@@ -1,0 +1,24 @@
+.trending-section .section-title {
+  font-family: 'Lora', serif;
+  font-weight: 500;
+}
+
+.jewelry-card {
+  transition: transform .3s, box-shadow .3s;
+}
+
+.jewelry-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+
+.jewelry-card .card-img-top {
+  border-radius: 0.5rem;
+  height: 200px;
+  object-fit: cover;
+}
+
+.jewelry-card .card-title {
+  font-size: 1rem;
+  color: #333;
+}

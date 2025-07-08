@@ -1,0 +1,32 @@
+.available-at-section h1 {
+    font-family: 'Lora', serif;
+}
+
+.title-divider {
+  width: 60px;
+  height: 2px;
+  background-color: #ccc;
+}
+
+.marketplace-logo .logo-circle {
+  width: 180px;
+  height: 100px;
+  background: white;
+  border-radius: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marketplace-logo:hover .logo-circle {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.logo-circle img {
+  max-width: 70%;
+  max-height: 70%;
+  object-fit: contain;
+}

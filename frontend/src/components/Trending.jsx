@@ -1,38 +1,37 @@
-// src/components/Trending.jsx
-
+import React from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import goldring from '../assets/images/goldring.jpg';
 import silvernecklace from '../assets/images/silvernecklace.jpg';
 import chain1 from '../assets/images/chain.png';
 import bracelet1 from '../assets/images/bracelet1.jpg';
 import ring1 from '../assets/images/ring1.jpg';
+import '../styles/Trending.css';
+
+const trendingItems = [
+    { img: goldring, title: "Elegant Gold Ring" },
+    { img: silvernecklace, title: "Silver Necklace" },
+    { img: chain1, title: "Diamond Earrings" },
+    { img: bracelet1, title: "Gold Bracelet" },
+    { img: ring1, title: "Silver Bracelet" },
+];
 
 const Trending = () => {
   return (
-    <section className="trending-section">
-      <h2 className="section-title"> Trending Jewelry </h2>
-      <div className="jewelry-container">
-        <div className="jewelry-card">
-          <img src={goldring} alt="Gold Ring" />
-          <h3>Elegant Gold Ring</h3>
-        </div>
-        <div className="jewelry-card">
-          <img src={silvernecklace} alt="Silver Necklace" />
-          <h3>Silver Necklace</h3>
-        </div>
-        <div className="jewelry-card">
-          <img src={chain1} alt="Diamond Earrings" />
-          <h3>Diamond Earrings</h3>
-        </div>
-        <div className="jewelry-card">
-          <img src={bracelet1} alt="Gold Bracelet" />
-          <h3>Gold Bracelet</h3>
-        </div>
-        <div className="jewelry-card">
-          <img src={ring1} alt="Silver Bracelet" />
-          <h3>Silver Bracelet</h3>
-        </div>
-      </div>
-    </section>
+    <Container as="section" className="trending-section text-center my-5">
+      <h2 className="section-title">Trending Jewelry</h2>
+      <Row className="justify-content-center g-4 mt-3">
+        {trendingItems.map((item, index) => (
+          <Col key={index} xs={12} sm={6} md={4} lg={2}>
+            <Card className="jewelry-card border-0 shadow-sm h-100">
+              <Card.Img variant="top" src={item.img} />
+              <Card.Body>
+                <Card.Title as="h3">{item.title}</Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

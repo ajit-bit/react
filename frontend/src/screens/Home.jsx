@@ -1,9 +1,9 @@
 import React from 'react';
 
-// Import the shared stylesheet
-import '../styles/Home.css';
+// Import Bootstrap CSS at the top level of your page/app
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Import all the new components
+// Import all the components (no changes here)
 import Slider from '../components/Slider';
 import CategoryCarousel from '../components/CategoryCarousel';
 import NewCollection from '../components/NewCollection';
@@ -17,10 +17,12 @@ import MustHaves from '../components/MustHaves';
 import AvailableAt from '../components/AvailableAt';
 import Testimonials from '../components/Testimonials';
 import Features from '../components/Features';
-import Footer from '../components/Footer'; 
+// Footer component was not provided, but would be imported here
+// import Footer from '../components/Footer'; 
+
 const Home = () => {
   return (
-    <div className="App">
+    <div>
       <Slider />
       <CategoryCarousel />
       <NewCollection />
@@ -34,6 +36,7 @@ const Home = () => {
       <AvailableAt />
       <Testimonials />
       <Features />
+      {/* <Footer /> */}
     </div>
   );
 };

@@ -1,37 +1,37 @@
-// src/components/Essentials.jsx
+import React from 'react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import essentialsVacation from '../assets/images/essentials-vacation.jpg';
 import essentialsWork from '../assets/images/essentials-work.jpg';
 import essentialsCasual from '../assets/images/essentials-casual.jpg';
 import essentialsWedding from '../assets/images/essentials-wedding.jpg';
+import '../styles/Essentials.css';
+
+const essentialsData = [
+  { img: essentialsVacation, title: "VACAY" },
+  { img: essentialsWork, title: "WORK" },
+  { img: essentialsCasual, title: "CASUAL" },
+  { img: essentialsWedding, title: "WEDDING" },
+];
 
 const Essentials = () => {
-    return (
-        <section className="section-essentials">
-            <h1 className="heading-essentials">Essentials For You</h1>
-            <div className="grid-essentials">
-                <div className="card-essentials">
-                    <img src={essentialsVacation} alt="Vacation Essentials" />
-                    <h2>VACAY</h2>
-                    <button>Discover</button>
-                </div>
-                <div className="card-essentials">
-                    <img src={essentialsWork} alt="Work Mode Essentials" />
-                    <h2>WORK</h2>
-                    <button>Discover</button>
-                </div>
-                <div className="card-essentials">
-                    <img src={essentialsCasual} alt="Casual Essentials" />
-                    <h2>CASUAL</h2>
-                    <button>Discover</button>
-                </div>
-                <div className="card-essentials">
-                    <img src={essentialsWedding} alt="Wedding Essentials" />
-                    <h2>WEDDING</h2>
-                    <button>Discover</button>
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <Container as="section" className="essentials-section my-5 text-center">
+      <h1 className="heading-essentials">Essentials For You</h1>
+      <Row className="g-4 mt-3">
+        {essentialsData.map((item, index) => (
+          <Col key={index} md={6} lg={3}>
+            <Card className="card-essentials border-0 shadow-lg h-100">
+              <Card.Img variant="top" src={item.img} />
+              <Card.Body className="d-flex flex-column">
+                <Card.Title as="h2">{item.title}</Card.Title>
+                <Button variant="dark" className="mt-auto discover-btn">Discover</Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
+  );
 };
 
 export default Essentials;

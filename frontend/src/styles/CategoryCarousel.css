@@ -1,0 +1,74 @@
+.category-carousel-container {
+  position: relative;
+  overflow: hidden;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.category-carousel-track {
+  display: flex;
+  transition: transform 0.8s ease-in-out;
+}
+
+.category-carousel-item {
+  flex: 0 0 270px; /* Fixed width for each item */
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.circle-image {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-color: #fcf9f3;
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.circle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.category-carousel-item:hover .circle-image img {
+  transform: scale(1.05);
+}
+
+.next-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 15px;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  z-index: 2;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .category-carousel-item {
+    flex: 0 0 50%; /* Show 2 items on tablets */
+  }
+  .circle-image {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .category-carousel-item {
+    flex: 0 0 100%; /* Show 1 item on mobile */
+  }
+  .circle-image {
+    width: 200px;
+    height: 200px;
+  }
+}

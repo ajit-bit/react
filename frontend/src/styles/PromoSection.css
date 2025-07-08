@@ -1,0 +1,126 @@
+/* Main container with the diagonal stripe background effect */
+.promo-section-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+  display: flex;
+  align-items: center; /* Vertically center the content */
+  padding: 40px 0;
+}
+
+.promo-section-hero::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -20%;
+  width: 140%;
+  height: 250px; /* Increased height for better coverage */
+  background: #f0e6da;
+  transform: translateY(-50%) rotate(-6deg);
+  z-index: 0; /* Place the stripe behind the content */
+}
+
+/* Ensure the Bootstrap Row and Col content appears above the stripe */
+.promo-section-hero .container-fluid,
+.promo-section-hero .row {
+  position: relative;
+  z-index: 1;
+}
+
+/* Styles for the individual promo "cards" (which are now Cols) */
+.promo-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-card-1 {
+  background: #fafafa;
+}
+
+.promo-card-2 {
+  background: #fcf3ec;
+}
+
+.promo-image {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Text content styling */
+.promo-content {
+  max-width: 380px;
+}
+
+.promo-subtitle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.promo-title {
+  font-family: 'Lora', serif;
+  font-size: 32px;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.promo-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* Custom button styles to match the original design */
+.discover-button {
+  padding: 10px 28px;
+  font-size: 14px;
+  text-transform: none; /* Override Bootstrap's default button text transform if any */
+  letter-spacing: 0.5px;
+  border-radius: 0; /* For sharp corners */
+  border-width: 1px;
+}
+
+.discover-button:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsive adjustments */
+@media (min-width: 992px) {
+  /* Add margin between image and text only on large screens */
+  .promo-image {
+    margin-right: 60px;
+  }
+}
+
+@media (max-width: 991px) {
+  /* On medium and smaller screens, stack image and text vertically */
+  .promo-card .d-lg-flex {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .promo-title {
+    font-size: 24px;
+  }
+  .discover-button {
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .promo-image {
+    width: 280px;
+  }
+  .promo-title {
+    font-size: 20px;
+  }
+}

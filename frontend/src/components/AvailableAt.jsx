@@ -1,35 +1,32 @@
-// src/components/AvailableAt.jsx
-
 import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 import myntra from '../assets/images/myntra.png';
+import '../styles/AvailableAt.css';
+
+const marketplaces = [
+    { name: 'Amazon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png', style: {} },
+    { name: 'Flipkart', logo: 'https://logos-world.net/wp-content/uploads/2020/11/Flipkart-Logo.png', style: {} },
+    { name: 'Myntra', logo: myntra, style: { height: '50px' } },
+];
 
 const AvailableAt = () => {
   return (
-    <section className="available-at-section">
-      <h1>AVAILABLE AT</h1>
-      <div className="title-divider"></div>
-      
-      <div className="marketplace-logos">
-        <a href="#" className="marketplace-logo">
-          <div className="logo-circle">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png" alt="Amazon" className="marketplace-icon" />
-          </div>
-          <p>Amazon</p>
-        </a>
-        <a href="#" className="marketplace-logo">
-          <div className="logo-circle">
-            <img src="https://logos-world.net/wp-content/uploads/2020/11/Flipkart-Logo.png" alt="Flipkart" className="marketplace-icon" />
-          </div>
-          <p>Flipkart</p>
-        </a>
-        <a href="#" className="marketplace-logo">
-          <div className="logo-circle">
-            <img src={myntra} alt="Myntra" className="marketplace-icon" style={{height: '50px'}} />
-          </div>
-          <p>Myntra</p>
-        </a>
-      </div>
-    </section>
+    <Container as="section" className="available-at-section text-center py-5">
+      <h1 className="fw-light">AVAILABLE AT</h1>
+      <div className="title-divider mx-auto"></div>
+      <Row className="justify-content-center align-items-center g-5 mt-4">
+        {marketplaces.map((place, index) => (
+          <Col key={index} xs="auto">
+            <a href="#" className="marketplace-logo text-decoration-none">
+              <div className="logo-circle shadow-sm">
+                <img src={place.logo} alt={place.name} style={place.style} />
+              </div>
+              <p className="mt-2 fw-bold text-dark">{place.name}</p>
+            </a>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

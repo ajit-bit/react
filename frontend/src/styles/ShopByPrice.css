@@ -1,0 +1,73 @@
+.shop-by-price-section {
+  background: #fffaf5;
+}
+
+.shop-by-price-section .section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.shop-by-price-section .section-title::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background: #d4af37;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 2px;
+}
+
+.price-card {
+  border: 1px solid #f0e6da;
+  border-radius: 16px;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.price-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.1) !important;
+}
+
+.price-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #5c4c3c;
+}
+
+.price-value {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #d4af37;
+  margin: 10px 0;
+}
+
+.price-btn {
+  background: #d4af37;
+  border: none;
+  color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background .3s ease;
+}
+
+.price-btn:hover {
+  background: #b89227;
+}
+
+.price-card.premium {
+  background: linear-gradient(to bottom, #fff6e5, #fce3ec);
+  border-color: #e6d0bd;
+}
+
+.price-card.premium .price-label,
+.price-card.premium .price-value {
+  color: #a75d5d;
+}

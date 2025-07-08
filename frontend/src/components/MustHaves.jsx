@@ -1,39 +1,37 @@
-// src/components/MustHaves.jsx
-
 import React from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import earing1 from '../assets/images/earing1.jpg';
 import neck from '../assets/images/neck.jpg';
 import ring1 from '../assets/images/ring1.jpg';
 import bracelet1 from '../assets/images/bracelet1.jpg';
 import chain1 from '../assets/images/chain.png';
+import '../styles/MustHaves.css';
+
+const mustHavesItems = [
+    { img: earing1, title: 'Elegant Earrings' },
+    { img: neck, title: 'Classic Necklace' },
+    { img: ring1, title: 'Stylish Ring' },
+    { img: bracelet1, title: 'Trendy Bracelet' },
+    { img: chain1, title: 'Delicate Pendant' },
+];
 
 const MustHaves = () => {
   return (
-    <div className="must-haves">
-      <h3>Must Haves</h3>
-      <div className="items-grid">
-        <div className="item-card">
-          <img src={earing1} alt="Earrings" />
-          <p>Elegant Earrings</p>
-        </div>
-        <div className="item-card">
-          <img src={neck} alt="Necklace" />
-          <p>Classic Necklace</p>
-        </div>
-        <div className="item-card">
-          <img src={ring1} alt="Ring" />
-          <p>Stylish Ring</p>
-        </div>
-        <div className="item-card">
-          <img src={bracelet1} alt="Bracelet" />
-          <p>Trendy Bracelet</p>
-        </div>
-        <div className="item-card">
-          <img src={chain1} alt="Pendant" />
-          <p>Delicate Pendant</p>
-        </div>
-      </div>
-    </div>
+    <Container as="section" className="must-haves-section text-center my-5">
+      <h3 className="section-title">Must Haves</h3>
+      <Row className="justify-content-center g-4 mt-4">
+        {mustHavesItems.map((item, index) => (
+            <Col key={index} xs={6} md={4} lg={2}>
+                 <Card className="item-card border-0">
+                    <Card.Img variant="top" src={item.img} />
+                    <Card.Body>
+                        <Card.Text as="p">{item.title}</Card.Text>
+                    </Card.Body>
+                </Card>
+            </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

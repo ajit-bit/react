@@ -1,65 +1,56 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Container, Button } from 'react-bootstrap';
 import ring1 from '../assets/images/ring1.jpg';
+import '../styles/CategoryCarousel.css';
+
+const categories = [
+  { name: 'MANGALSUTRA', img: ring1 },
+  { name: 'NECKLACE', img: ring1 },
+  { name: 'RING', img: ring1 },
+  { name: 'BRACELET', img: ring1 },
+  { name: 'EARRINGS', img: ring1 },
+  { name: 'PENDANTS', img: ring1 },
+];
 
 const CategoryCarousel = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
 
+  // Auto-scroll logic
   useEffect(() => {
     const interval = setInterval(() => {
-      setCarouselIndex(prev => (prev >= 5 ? 0 : prev + 1));
+      setCarouselIndex(prev => (prev >= categories.length - 1 ? 0 : prev + 1));
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   const nextCarouselSlide = () => {
-    setCarouselIndex(prev => (prev >= 5 ? 0 : prev + 1));
+    setCarouselIndex(prev => (prev >= categories.length - 1 ? 0 : prev + 1));
   };
+  
+  // Calculate the item width + gap dynamically if needed, or use a fixed value.
+  // Assuming a carousel item width of 270px including padding/margin.
+  const itemWidth = 270;
 
   return (
-    <>
-      <h1>Everyday Demi-fine Jewellery</h1>
-      <div className="carousel-container">
-        <div className="carousel-track" id="carouselTrack" style={{ transform: `translateX(-${carouselIndex * 270}px)` }}>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Mangalsutra" />
+    <Container as="section" className="py-5 text-center">
+      <h1 className="h2 fw-light">Everyday Demi-fine Jewellery</h1>
+      <div className="category-carousel-container mt-4">
+        <div 
+          className="category-carousel-track" 
+          style={{ transform: `translateX(-${carouselIndex * itemWidth}px)` }}
+        >
+          {categories.map((category, index) => (
+            <div className="category-carousel-item" key={index}>
+              <div className="circle-image">
+                <img src={category.img} alt={category.name} />
+              </div>
+              <p className="mt-3 fw-bold">{category.name}</p>
             </div>
-            <p>MANGALSUTRA</p>
-          </div>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Necklace" />
-            </div>
-            <p>NECKLACE</p>
-          </div>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Ring" />
-            </div>
-            <p>RING</p>
-          </div>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Bracelet" />
-            </div>
-            <p>BRACELET</p>
-          </div>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Mangalsutra" />
-            </div>
-            <p>MANGALSUTRA</p>
-          </div>
-          <div className="carousel-item">
-            <div className="circle">
-              <img src={ring1} alt="Necklace" />
-            </div>
-            <p>NECKLACE</p>
-          </div>
+          ))}
         </div>
-        <button className="next-btn" onClick={nextCarouselSlide}>❯</button>
+        <Button variant="light" className="next-btn shadow" onClick={nextCarouselSlide}>❯</Button>
       </div>
-    </>
+    </Container>
   );
 };
 
