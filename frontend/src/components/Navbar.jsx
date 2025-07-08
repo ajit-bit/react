@@ -25,12 +25,10 @@ const TopIcon = () => (
   </svg>
 );
 
-const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
+const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
-  const [cartItems, setCartItemsLocal] = useState([]);
-  const [likedItems, setLikedItemsLocal] = useState([]);
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
@@ -71,65 +69,71 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
     fetchProducts();
   }, []);
 
-  const fetchCartItems = async (userId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
-        credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+  useEffect(() => {
+    const fetchCartItems = async (identifier) => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/cart/${identifier}`, {
+          credentials: "include",
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const normalizedItems = data.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          }));
+          if (setCartItems) setCartItems(normalizedItems);
         }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name,
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
-        }));
-        setCartItemsLocal(normalizedItems);
-        if (setCartItems) setCartItems(normalizedItems);
+      } catch (err) {
+        console.error("Error fetching cart items:", err);
+        toast.error("Failed to fetch cart items", {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
-    } catch (err) {
-      console.error("Error fetching cart items:", err);
-      toast.error("Failed to fetch cart items", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-    }
-  };
+    };
 
-  const fetchLikedItems = async (userId) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/liked/${userId}`, {
-        credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+    const fetchLikedItems = async (identifier) => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/liked/${identifier}`, {
+          credentials: "include",
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const normalizedItems = data.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          }));
+          if (setLikedItems) setLikedItems(normalizedItems);
         }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name,
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
-        }));
-        setLikedItemsLocal(normalizedItems);
-        if (setLikedItems) setLikedItems(normalizedItems);
+      } catch (err) {
+        console.error("Error fetching liked items:", err);
+        toast.error("Failed to fetch liked items", {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
-    } catch (err) {
-      console.error("Error fetching liked items:", err);
-      toast.error("Failed to fetch liked items", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+    };
+
+    const sessionId = localStorage.getItem('sessionId') || '';
+    const identifier = user ? user.id : sessionId;
+    if (identifier) {
+      fetchCartItems(identifier);
+      fetchLikedItems(identifier);
     }
-  };
+  }, [user]);
 
   const addToCart = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to cart", {
+    const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
+    if (!identifier) {
+      toast.warn("Please login or create a session to add items to cart", {
         position: 'top-right',
         autoClose: 3000,
       });
@@ -138,17 +142,34 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         credentials: "include",
-        body: JSON.stringify({ productId, userId: user.id })
+        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
       });
       if (response.ok) {
-        await fetchCartItems(user.id);
+        const fetchCartItems = async (identifier) => {
+          const response = await fetch(`http://localhost:5000/api/cart/${identifier}`, {
+            credentials: "include",
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          });
+          if (response.ok) {
+            const data = await response.json();
+            const normalizedItems = data.map(item => ({
+              id: item.productId || item.id,
+              name: item.product?.name || item.name,
+              price: parseFloat(item.product?.price || item.price || 0),
+              imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            }));
+            if (setCartItems) setCartItems(normalizedItems);
+          }
+        };
+        await fetchCartItems(identifier);
         toast.success("Added to Cart!", {
           position: 'top-right',
           autoClose: 3000,
@@ -170,8 +191,9 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
   };
 
   const addToWishlist = async (productId) => {
-    if (!user) {
-      toast.warn("Please login to add items to wishlist", {
+    const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
+    if (!identifier) {
+      toast.warn("Please login or create a session to add items to wishlist", {
         position: 'top-right',
         autoClose: 3000,
       });
@@ -180,17 +202,34 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/liked/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         credentials: "include",
-        body: JSON.stringify({ productId, userId: user.id })
+        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
       });
       if (response.ok) {
-        await fetchLikedItems(user.id);
+        const fetchLikedItems = async (identifier) => {
+          const response = await fetch(`http://localhost:5000/api/liked/${identifier}`, {
+            credentials: "include",
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          });
+          if (response.ok) {
+            const data = await response.json();
+            const normalizedItems = data.map(item => ({
+              id: item.productId || item.id,
+              name: item.product?.name || item.name,
+              price: parseFloat(item.product?.price || item.price || 0),
+              imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            }));
+            if (setLikedItems) setLikedItems(normalizedItems);
+          }
+        };
+        await fetchLikedItems(identifier);
         toast.success("Added to Wishlist!", {
           position: 'top-right',
           autoClose: 3000,
@@ -221,8 +260,6 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
         }
       });
       setUser(null);
-      setCartItemsLocal([]);
-      setLikedItemsLocal([]);
       if (setCartItems) setCartItems([]);
       if (setLikedItems) setLikedItems([]);
       setShowUserDropdown(false);
@@ -265,12 +302,12 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
 
   const toggleAllJewelryDropdown = () => {
     setShowAllJewelryDropdown(!showAllJewelryDropdown);
-    setShowAboutDropdown(false);
+    setShowAboutDropdown(false); // Ensure only one dropdown is open at a time
   };
 
   const toggleAboutDropdown = () => {
     setShowAboutDropdown(!showAboutDropdown);
-    setShowAllJewelryDropdown(false);
+    setShowAllJewelryDropdown(false); // Ensure only one dropdown is open at a time
   };
 
   const handleNavigation = (path) => {
@@ -371,12 +408,12 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
 
         <nav className="cat-strip" aria-label="Primary navigation">
           <ul className="cat-links">
-            <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
-              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
+            <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
+              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }} style={{ cursor: 'pointer' }}>
                 All Jewellery
               </a>
               {showAllJewelryDropdown && (
-                <div className="dropdown-menu">
+                <div className="dropdown-menu" style={{ display: showAllJewelryDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
@@ -389,11 +426,11 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>Best Seller</a></li>
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
+              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }} style={{ cursor: 'pointer' }}>
                 About
               </a>
               {showAboutDropdown && (
-                <div className="dropdown-menu">
+                <div className="dropdown-menu" style={{ display: showAboutDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/blogs'); }}>Blogs</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
@@ -412,7 +449,7 @@ const Navbar = ({ setCartItems, setLikedItems, user, setUser }) => {
 
       <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
         <ul>
-          <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+          <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
             <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
             {showAllJewelryDropdown && (
               <div className="dropdown-menu">

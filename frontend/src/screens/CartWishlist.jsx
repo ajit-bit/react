@@ -1,77 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/CartWishlist.module.css';
 import { v4 as uuidv4 } from 'uuid';
 
-const CartWishlist = ({ type = 'cart', user, setCartItems, setLikedItems }) => {
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
+const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems, setLikedItems }) => {
   const navigate = useNavigate();
   const isCart = type === 'cart';
-  const apiBase = isCart ? 'cart' : 'liked';
   const title = isCart ? 'Your Bag' : 'Your Wishlist';
   const sessionId = localStorage.getItem('sessionId') || uuidv4();
-
-  useEffect(() => {
-    if (!localStorage.getItem('sessionId')) {
-      localStorage.setItem('sessionId', sessionId);
-    }
-    loadItems(user?.id || sessionId);
-  }, [user, type, loadItems, sessionId]);
-
-
-  const loadItems = useCallback(
-    async (identifier) => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/${apiBase}/${identifier}`, {
-          credentials: 'include',
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.length === 0) {
-            setItems([]);
-            setTotal(0);
-            isCart ? setCartItems([]) : setLikedItems([]);
-            return;
-          }
-          const normalizedItems = data.map(item => ({
-            id: item._id,
-            productId: item.productId,
-            name: item.name || 'Unnamed Product',
-            price: parseFloat(item.price || 0),
-            imageUrl: item.imageUrl || '/images/default-product.jpg',
-            quantity: item.quantity || 1,
-          }));
-          const calculatedTotal = isCart
-            ? normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-            : 0;
-          setItems(normalizedItems);
-          setTotal(calculatedTotal);
-          isCart ? setCartItems(normalizedItems) : setLikedItems(normalizedItems);
-        } else {
-          throw new Error(`Failed to fetch ${type} items`);
-        }
-      } catch (err) {
-        console.error(`Error fetching ${type} items:`, err);
-        setItems([]);
-        setTotal(0);
-        isCart ? setCartItems([]) : setLikedItems([]);
-        toast.error(`Failed to load ${type} items`, {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-      }
-    },
-    [apiBase, isCart, setCartItems, setLikedItems, type]
-  );
+  const items = isCart ? cartItems : likedItems;
+  const total = isCart ? items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) : 0;
 
   const deleteItem = async (productId) => {
     try {
       const token = localStorage.getItem('token');
+      const apiBase = isCart ? 'cart' : 'liked';
       const response = await fetch(`http://localhost:5000/api/${apiBase}/remove`, {
         method: 'POST',
         credentials: 'include',
@@ -86,11 +31,28 @@ const CartWishlist = ({ type = 'cart', user, setCartItems, setLikedItems }) => {
         }),
       });
       if (response.ok) {
+        const data = await response.json();
+        if (isCart) {
+          setCartItems(data.cartItems.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+            quantity: item.quantity || 1,
+          })));
+        } else {
+          setLikedItems(data.likedItems.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+            quantity: item.quantity || 1,
+          })));
+        }
         toast.success(`Item removed from ${type}!`, {
           position: 'top-right',
           autoClose: 3000,
         });
-        await loadItems(user?.id || sessionId);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || `Failed to remove item from ${type}`);
@@ -123,9 +85,14 @@ const CartWishlist = ({ type = 'cart', user, setCartItems, setLikedItems }) => {
           position: 'top-right',
           autoClose: 3000,
         });
-        await loadItems(user?.id || sessionId);
         if (!isCart) {
-          await loadItems(user?.id || sessionId);
+          setCartItems(data.cartItems.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg',
+            quantity: item.quantity || 1,
+          })));
         }
       } else {
         const errorData = await response.json();
@@ -183,7 +150,7 @@ const CartWishlist = ({ type = 'cart', user, setCartItems, setLikedItems }) => {
               <div className={styles.info}>
                 <h3>{item.name}</h3>
                 <p>Price: ₹{item.price.toFixed(2)}</p>
-                {isCart && <p>Quantity: {item.quantity}</p>}
+                {isCart && <p>Quantity: {item.quantity || 1}</p>}
               </div>
               <div className={styles.buttons}>
                 <button
