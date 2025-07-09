@@ -27,13 +27,11 @@ const CategoryCarousel = () => {
     setCarouselIndex(prev => (prev >= categories.length - 1 ? 0 : prev + 1));
   };
   
-  // Calculate the item width + gap dynamically if needed, or use a fixed value.
-  // Assuming a carousel item width of 270px including padding/margin.
   const itemWidth = 270;
 
   return (
     <Container as="section" className="py-5 text-center">
-      <h1 className="h2 fw-light">Everyday Demi-fine Jewellery</h1>
+      <h1 className="h2 carouselTitle">Everyday Demi-fine Jewellery</h1>
       <div className="category-carousel-container mt-4">
         <div 
           className="category-carousel-track" 

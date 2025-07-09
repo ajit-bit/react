@@ -155,13 +155,13 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
               <div className={styles.buttons}>
                 <button
                   className={styles.actionBtn}
-                  onClick={() => handleAction(item.productId, item.name)}
+                  onClick={() => handleAction(item.id, item.name)}
                 >
                   {isCart ? 'Buy Now' : 'Add to Cart'}
                 </button>
                 <button
                   className={styles.deleteBtn}
-                  onClick={() => deleteItem(item.productId)}
+                  onClick={() => deleteItem(item.id)}
                 >
                   Remove
                 </button>

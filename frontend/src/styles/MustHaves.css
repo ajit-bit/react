@@ -1,10 +1,7 @@
 .must-haves-section .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a2732;
-  border-bottom: 2px solid #d4af37;
-  padding-bottom: 8px;
-  display: inline-block;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color:#FFC107 ;
 }
 
 .item-card {

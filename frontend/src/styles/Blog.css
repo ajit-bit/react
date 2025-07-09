@@ -1,507 +1,142 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans&family=Lora&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans&display=swap');
 
-:root {
-  --gold-light: #f7c823;
-  --gold-dark: #d8a300;
-  --white: #ffffff;
-  --black: #000;
-  --promo: #d5cef6;
+.blog-page-background {
+  background-color: #FAF3E0; 
 }
 
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.page-content-wrapper {
+  padding-top: 80px;
 }
 
-.blog-container {
-  font-family: 'Open Sans', sans-serif;
-  background: #fff;
-  color: #333;
-  line-height: 1.6;
+.font-playfair {
+  font-family: 'Playfair Display', serif;
 }
 
-.promo {
-  background: var(--promo);
-  color: var(--black);
-  text-align: center;
-  font-size: 14px;
+.blog-post-category-header {
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
   font-weight: 600;
-  letter-spacing: 1.2px;
-  padding: 6px 10px;
-}
-
-.nav-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 35px 96px;
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
-  color: var(--white);
-}
-
-.burger {
-  --size: 26px;
-  position: absolute;
-  left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-  width: var(--size);
-  height: var(--size);
-  cursor: pointer;
-}
-
-.burger span, .burger::before, .burger::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--white);
-  transition: .3s;
-}
-
-.burger span {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.burger::before {
-  top: 0;
-}
-
-.burger::after {
-  bottom: 0;
-}
-
-.burger.open span {
-  opacity: 0;
-}
-
-.burger.open::before {
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.burger.open::after {
-  bottom: auto;
-  top: 50%;
-  transform: translateY(-50%) rotate(-45deg);
-}
-
-.logo {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.logo img {
-  height: 60px;
-}
-
-.icon-bar {
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 24px;
-}
-
-.icon-bar a {
-  --edge: 44px;
-  --ico: 28px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--edge);
-  height: var(--edge);
-  border-radius: 50%;
-  outline: none;
-}
-
-.icon-bar a::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: transparent;
-  border: 2px solid transparent;
-  transform: scale(.65);
-  opacity: 0;
-  transition: transform .3s, background .3s, border-color .3s, opacity .3s;
-}
-
-.icon-bar a img {
-  width: var(--ico);
-  height: var(--ico);
-  filter: invert(1);
-  transition: filter .3s;
-}
-
-.icon-bar a:hover::before,
-.icon-bar a:focus::before {
-  background: var(--white);
-  border-color: rgba(255, 255, 255, .25);
-  transform: scale(1);
-  opacity: 1;
-}
-
-.icon-bar a:hover img,
-.icon-bar a:focus img {
-  filter: invert(60%) sepia(96%) saturate(680%) hue-rotate(-5deg) brightness(102%) contrast(92%);
-}
-
-.icon-bar a:focus-visible::before {
-  box-shadow: 0 0 0 3px var(--gold-light);
-}
-
-.icon-link {
-  position: relative;
-}
-
-.badge {
-  position: absolute;
-  top: -6px;
-  right: -9px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--white);
-  color: var(--gold-dark);
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cat-strip {
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
-  color: var(--white);
-}
-
-.cat-links {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  padding: 14px 12px;
-}
-
-.cat-links a {
-  color: var(--white);
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 15px;
-  letter-spacing: .5px;
-  position: relative;
-}
-
-.cat-links a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 0;
-  height: 2px;
-  background: var(--white);
-  transition: .3s;
-}
-
-.cat-links a:hover::after {
-  width: 100%;
-}
-
-.gender-strip {
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
-  color: var(--white);
-  text-align: center;
-  padding: 10px 0;
-}
-
-.gender-strip a {
-  color: var(--white);
-  font-weight: 700;
-  font-size: 16px;
-  text-decoration: none;
-  margin: 0 6px;
-}
-
-.gender-strip a.active,
-.gender-strip a:hover {
-  color: var(--gold-dark);
-}
-
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 78%;
-  max-width: 300px;
-  height: 100%;
-  background: var(--white);
-  padding: 110px 24px 40px;
-  overflow-y: auto;
-  transition: left .4s;
-  z-index: 1200;
-}
-
-.mobile-menu.open {
-  left: 0;
-}
-
-.mobile-menu ul {
-  list-style: none;
-}
-
-.mobile-menu a {
-  display: block;
-  padding: 14px 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--gold-dark);
-  text-decoration: none;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .25);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s;
-  z-index: 1100;
-}
-
-.overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.blog-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-}
-
-.blog-card {
-  border: 1px solid #eee;
-  padding: 15px;
-  position: relative;
-  background: #fff;
-}
-
-.blog-date {
-  position: absolute;
-  background: #f2f2f2;
-  top: 15px;
-  left: 15px;
-  font-size: 14px;
-  text-align: center;
-  padding: 5px 10px;
-  font-weight: bold;
-  z-index: 10;
-}
-
-.blog-date span {
-  display: block;
-  font-size: 12px;
-  color: #999;
-}
-
-.blog-card img {
-  width: 100%;
-  height: auto;
-  margin-top: 40px;
-}
-
-.blog-category {
-  margin: 15px 0 5px;
-  font-size: 12px;
+  font-size: 0.8rem;
+  color: #555;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #888;
 }
 
-.blog-card h2 {
-  font-size: 16px;
-  margin-bottom: 10px;
-  font-weight: bold;
+.blog-card-image-wrapper {
+  position: relative;
+  overflow: hidden;
 }
 
-.blog-card p {
-  font-size: 14px;
-  color: #666;
+.blog-card-custom {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.blog-card a {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 14px;
-  color: goldenrod;
-  text-decoration: none;
+.blog-card-custom:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.12) !important;
 }
 
-.video-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  border-radius: 50%;
-  padding: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  z-index: 5;
-}
-
-.custom-footer {
-  background: #f8f8f8;
-  padding: 40px 20px;
-  border-top: 1px solid #eee;
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
+.blog-date-badge {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+  border-radius: 50% !important;
+  width: 100px;
+  height: 100px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-}
-
-.custom-footer-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  width: 100%;
-}
-
-.custom-footer-brand {
-  flex: 1;
-  min-width: 250px;
-}
-
-.custom-logo {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.custom-logo-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
+  justify-content: center;
+  font-size: 1.1rem;
   font-weight: bold;
+  line-height: 1;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.custom-logo-subtext {
-  font-size: 12px;
-  color: #666;
+.blog-date-badge span {
+  font-size: 0.7em;
+  font-weight: normal;
+  margin-top: 2px;
 }
 
-.custom-brand-description {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 20px;
+.video-overlay-icon {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
-.custom-social-icons a {
-  font-size: 20px;
-  color: #333;
-  margin-right: 15px;
-  text-decoration: none;
+.blog-card-custom:hover .video-overlay-icon {
+  opacity: 1;
 }
 
-.custom-footer-section {
-  flex: 1;
-  min-width: 150px;
+.blog-read-more-btn {
+  border-color: goldenrod;
+  color: goldenrod;
+  font-weight: bold;
+  padding: 0.4rem 1.2rem;
+  transition: all 0.2s ease-in-out;
 }
 
-.custom-footer-section h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  margin-bottom: 15px;
+.blog-read-more-btn:hover {
+  background-color: goldenrod;
+  border-color: goldenrod;
+  color: white;
 }
 
-.custom-footer-section ul {
-  list-style: none;
-}
 
-.custom-footer-section ul li {
-  margin-bottom: 10px;
-}
+/*
+=====================================================
+  Mobile Horizontal Scroll Styles (New)
+=====================================================
+*/
+/* This media query targets tablets and phones (screens smaller than 992px) */
+@media (max-width: 991.98px) {
 
-.custom-footer-section ul li a {
-  color: #666;
-  text-decoration: none;
-  font-size: 14px;
-}
+  .mobile-horizontal-scroll {
+    /* 1. Turn the Row into a flex container that doesn't wrap */
+    display: flex;
+    flex-wrap: nowrap;
+    
+    /* 2. Enable horizontal scrolling */
+    overflow-x: auto;
 
-.custom-footer-section ul li a:hover {
-  color: var(--gold-dark);
-}
+    /* 3. Add padding to the container for spacing and prevent clipping */
+    /* This replicates the horizontal padding of the Container */
+    padding-left: 1rem; 
+    padding-right: 1rem;
+    
+    /* 4. Add some space below the scrollbar */
+    padding-bottom: 1.5rem;
 
-.custom-footer-bottom {
-  margin-top: 20px;
-}
-
-.custom-payment-methods img {
-  height: 30px;
-  margin-right: 10px;
-}
-
-@media (max-width: 1023px) {
-  .icon-bar {
-    gap: 20px;
+    /* 5. Hide the ugly scrollbar on browsers that support it */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 
-  .icon-bar a {
-    --edge: 38px;
-    --ico: 24px;
-  }
-}
-
-@media (max-width: 767px) {
-  .burger {
-    display: block;
-  }
-
-  .cat-strip {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .mobile-horizontal-scroll::-webkit-scrollbar {
     display: none;
   }
 
-  .nav-row {
-    padding: 20px 24px;
+  .mobile-horizontal-scroll > .col {
+    /* 6. Make each card take up most of the screen to encourage scrolling */
+    flex: 0 0 80%; /* Don't grow, don't shrink, and have a base width of 80% */
+    max-width: 320px; /* Prevents cards from getting too wide on tablets */
+
+    /* 7. Since we removed the 'g-5' class, we need to add our own horizontal gap */
+    margin-right: 1rem;
   }
 
-  .logo img {
-    height: 52px;
+  /* Ensure the last card doesn't have a margin */
+  .mobile-horizontal-scroll > .col:last-child {
+      margin-right: 0;
   }
 
-  .icon-bar {
-    gap: 5px;
+  /* Ensure the button and text align to the center on mobile */
+  .blog-card-custom .card-body {
+    align-items: center;
   }
-
-  .icon-bar a {
-    --edge: 32px;
-    --ico: 20px;
-  }
-
-  .mobile-menu a {
-    font-size: 20px;
-  }
-
-  .container {
-    flex-direction: column;
-  }
-
-  .blog-grid {
-    grid-template-columns: 1fr;
+  .blog-card-custom .card-title {
+    text-align: center;
   }
 }

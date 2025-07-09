@@ -1,11 +1,7 @@
 .new-collection-container .main-title {
-  text-align: center;
-  font-size: 32px;
-  font-family: 'Lora', serif;
-  font-weight: 400;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color:#FFC107 ;
 }
 
 .new-collection-container .title-divider {

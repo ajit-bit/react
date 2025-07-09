@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 import logo from '../assets/images/logo-nobg.png';
-import searchLogo from '../assets/images/searchlogo.svg';
 import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
 import shopLogo from '../assets/images/shoplogo.svg';
 
-// Inline SVG Icons for the mobile bottom nav
+// Inline SVG Icons for the mobile bottom nav and back button
 const CategoriesIcon = () => (
   <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"></rect>
@@ -25,14 +25,29 @@ const TopIcon = () => (
   </svg>
 );
 
+const BackIcon = () => (
+  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+);
+
 const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuLevel, setMenuLevel] = useState(0); // 0 for main menu, 1 for submenu
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
   const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const sidebarRef = useRef(null);
@@ -42,10 +57,23 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
         setIsCartSidebarOpen(false);
       }
+      if (!event.target.closest('.cat-links .all-jewellery') && !event.target.closest('.dropdown-menu')) {
+        setShowAllJewelryDropdown(false);
+      }
+      if (!event.target.closest('.cat-links .about') && !event.target.closest('.dropdown-menu')) {
+        setShowAboutDropdown(false);
+      }
+      if (!event.target.closest('.mobile-menu') && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+        setMenuLevel(0);
+      }
+      if (!event.target.closest('.icon-bar .search-link') && !event.target.closest('.search-dropdown')) {
+        setShowSearchDropdown(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isMobileMenuOpen]);
 
   const fetchProducts = async () => {
     try {
@@ -280,6 +308,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setMenuLevel(0); // Reset to main menu when toggling
   };
 
   const toggleCartSidebar = (tab = 'cart') => {
@@ -294,6 +323,8 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowUserDropdown(false);
     setShowAllJewelryDropdown(false);
     setShowAboutDropdown(false);
+    setShowSearchDropdown(false);
+    setMenuLevel(0);
   };
 
   const openTab = (tabName) => {
@@ -302,12 +333,16 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const toggleAllJewelryDropdown = () => {
     setShowAllJewelryDropdown(!showAllJewelryDropdown);
-    setShowAboutDropdown(false); // Ensure only one dropdown is open at a time
+    setShowAboutDropdown(false);
   };
 
   const toggleAboutDropdown = () => {
     setShowAboutDropdown(!showAboutDropdown);
-    setShowAllJewelryDropdown(false); // Ensure only one dropdown is open at a time
+    setShowAllJewelryDropdown(false);
+  };
+
+  const toggleSearchDropdown = () => {
+    setShowSearchDropdown(!showSearchDropdown);
   };
 
   const handleNavigation = (path) => {
@@ -333,6 +368,20 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const isMenRoute = location.pathname === '/men';
 
+  const goBack = () => {
+    setMenuLevel(0);
+    setShowAllJewelryDropdown(false);
+    setShowAboutDropdown(false);
+  };
+
+  const searchOptions = [
+    { label: 'Earrings', path: '/category/earrings' },
+    { label: 'Rings', path: '/category/rings' },
+    { label: 'Necklaces', path: '/category/necklaces' },
+    { label: 'Bracelets', path: '/category/bracelets' },
+    { label: 'Jewellery Sets', path: '/jewellery-sets' },
+  ];
+
   return (
     <>
       <header className={`navbar-header ${isMenRoute ? 'men-theme' : ''}`}>
@@ -357,12 +406,26 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
           <nav className="icon-bar" aria-label="Quick actions">
             <button 
-              className="icon-link"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/search'); }}
+              className="icon-link search-link"
+              onClick={(e) => { e.preventDefault(); toggleSearchDropdown(); }}
               aria-label="Search"
             >
-              <img src={searchLogo} alt="Search" className="icon-svg" />
+              <SearchIcon />
             </button>
+            {showSearchDropdown && (
+              <div className="search-dropdown dropdown-menu">
+                {searchOptions.map((option) => (
+                  <a
+                    key={option.path}
+                    href={option.path}
+                    onClick={(e) => { e.preventDefault(); handleNavigation(option.path); }}
+                    className="dropdown-item"
+                  >
+                    {option.label}
+                  </a>
+                ))}
+              </div>
+            )}
             
             <button 
               className="icon-link"
@@ -408,12 +471,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
         <nav className="cat-strip" aria-label="Primary navigation">
           <ul className="cat-links">
-            <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
-              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }} style={{ cursor: 'pointer' }}>
+            <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+              <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
                 All Jewellery
               </a>
               {showAllJewelryDropdown && (
-                <div className="dropdown-menu" style={{ display: showAllJewelryDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
+                <div className="dropdown-menu">
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
@@ -426,11 +489,11 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>Best Seller</a></li>
             <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }} style={{ cursor: 'pointer' }}>
+              <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
                 About
               </a>
               {showAboutDropdown && (
-                <div className="dropdown-menu" style={{ display: showAboutDropdown ? 'block' : 'none', position: 'absolute', background: '#fff', padding: '10px', border: '1px solid #ccc', zIndex: 1000 }}>
+                <div className="dropdown-menu">
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/blogs'); }}>Blogs</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
@@ -448,39 +511,83 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       </header>
 
       <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        <ul>
-          <li className={`all-jewelry ${showAllJewelryDropdown ? 'active' : ''}`}>
-            <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>All Jewellery</a>
-            {showAllJewelryDropdown && (
-              <div className="dropdown-menu">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>Bracelets</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>Jewellery Sets</a>
+        <div className="mobile-menu-header">
+          <button className="back-button" onClick={goBack} aria-label="Go back">
+            <BackIcon />
+          </button>
+          <h2 className="mobile-menu-title">Menu</h2>
+        </div>
+        <div className="menu-content">
+          <ul className="list-group">
+            {menuLevel === 0 && (
+              <>
+                <li className="list-group-item">
+                  <a href="/products" onClick={(e) => { e.preventDefault(); setShowAllJewelryDropdown(!showAllJewelryDropdown); setMenuLevel(1); }}>
+                    <CategoriesIcon /> All Jewellery
+                  </a>
+                </li>
+                <li className="list-group-item">
+                  <a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>
+                    <CategoriesIcon /> Collections
+                  </a>
+                </li>
+                <li className="list-group-item">
+                  <a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>
+                    <CategoriesIcon /> New Arrivals
+                  </a>
+                </li>
+                <li className="list-group-item">
+                  <a href="/about" onClick={(e) => { e.preventDefault(); setShowAboutDropdown(!showAboutDropdown); setMenuLevel(1); }}>
+                    <CategoriesIcon /> About
+                  </a>
+                </li>
+                <li className="list-group-item">
+                  <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
+                    <img src={accountLogo} alt="Account" className="icon-svg" /> {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
+                  </a>
+                </li>
+              </>
+            )}
+            {menuLevel === 1 && showAllJewelryDropdown && (
+              <div className="dropdown-menu list-group submenu">
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>
+                  <CategoriesIcon /> Earrings
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>
+                  <CategoriesIcon /> Rings
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>
+                  <CategoriesIcon /> Necklaces
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/category/bracelets'); }}>
+                  <CategoriesIcon /> Bracelets
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/jewellery-sets'); }}>
+                  <CategoriesIcon /> Jewellery Sets
+                </a>
               </div>
             )}
-          </li>
-          <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
-          <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
-          <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
-            <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>About</a>
-            {showAboutDropdown && (
-              <div className="dropdown-menu">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>Craftsmanship</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>Sustainability</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>Testimonials</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
+            {menuLevel === 1 && showAboutDropdown && (
+              <div className="dropdown-menu list-group submenu">
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>
+                  <CategoriesIcon /> Our Story
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/craftsmanship'); }}>
+                  <CategoriesIcon /> Craftsmanship
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/sustainability'); }}>
+                  <CategoriesIcon /> Sustainability
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/testimonials'); }}>
+                  <CategoriesIcon /> Testimonials
+                </a>
+                <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>
+                  <CategoriesIcon /> Contact Us
+                </a>
               </div>
             )}
-          </li>
-          <li>
-            <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
-              {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
-            </a>
-          </li>
-        </ul>
+          </ul>
+        </div>
       </aside>
 
       {(isMobileMenuOpen || isCartSidebarOpen) && (
@@ -507,15 +614,15 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           <h2>SHOPPING CART</h2>
           <hr />
           {cartItems.length === 0 ? (
-            <div>
+            <div className="text-center">
               <p className="empty-message">Your cart is empty.</p>
-              <img src={shopLogo} alt="Shopping Cart" onClick={(e) => { e.preventDefault(); navigate('/bag'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+              <img src={shopLogo} alt="Shopping Cart" onClick={(e) => { e.preventDefault(); navigate('/bag'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto' }} />
             </div>
           ) : (
             <div className="items-container">
               {cartItems.map((item) => (
                 <div key={item.id} className="cart-item">
-                  <img src={item.imageUrl} alt={item.name} />
+                  <img src={item.imageUrl} alt={item.name} className="img-fluid" />
                   <h3>{item.name}</h3>
                   <p>₹{item.price.toFixed(2)}</p>
                 </div>
@@ -523,10 +630,10 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             </div>
           )}
           <div className="subtotal">Subtotal: ₹{cartTotal.toFixed(2)}</div>
-          <button className="return-to-shop" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
+          <button className="return-to-shop btn btn-outline-primary w-100" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             RETURN TO SHOP
           </button>
-          <button className="proceed-checkout" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
+          <button className="proceed-checkout btn btn-primary w-100" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
             PROCEED TO SECURE CHECKOUT
           </button>
         </div>
@@ -535,22 +642,22 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           <h2>WISHLIST</h2>
           <hr />
           {likedItems.length === 0 ? (
-            <div>
+            <div className="text-center">
               <p className="empty-message">No liked items yet.</p>
-              <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/wishlist'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto', display: 'block' }} />
+              <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/wishlist'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto' }} />
             </div>
           ) : (
             <div className="items-container">
               {likedItems.map((item) => (
                 <div key={item.id} className="liked-item">
-                  <img src={item.imageUrl} alt={item.name} />
+                  <img src={item.imageUrl} alt={item.name} className="img-fluid" />
                   <h3>{item.name}</h3>
                   <p>₹{item.price.toFixed(2)}</p>
                 </div>
               ))}
             </div>
           )}
-          <button className="return-to-shop" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
+          <button className="return-to-shop btn btn-outline-primary w-100" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             GO TO WISHLIST
           </button>
         </div>
@@ -561,12 +668,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           <div className="product-grid">
             {products.map((product) => (
               <div key={product.id} className="product-card">
-                <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} />
+                <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} className="img-fluid" />
                 <h3>{product.name}</h3>
                 <p>₹{product.price.toFixed(2)}</p>
                 <div className="product-actions">
-                  <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }}>Add to Cart</button>
-                  <button onClick={(e) => { e.preventDefault(); addToWishlist(product.id); }}>Add to Wishlist</button>
+                  <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }} className="btn btn-outline-success">Add to Cart</button>
+                  <button onClick={(e) => { e.preventDefault(); addToWishlist(product.id); }} className="btn btn-outline-danger">Add to Wishlist</button>
                 </div>
               </div>
             ))}
@@ -575,24 +682,24 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       )}
       
       <div className="mobile-bottom-nav">
-          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')}>
+          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')} className="nav-btn">
               <img src={accountLogo} alt="Account" className="icon-svg"/>
               <span>{user ? 'Profile' : 'Account'}</span>
           </button>
-          <button onClick={toggleMobileMenu}>
+          <button onClick={toggleMobileMenu} className="nav-btn">
               <CategoriesIcon />
               <span>Categories</span>
           </button>
-          <button className="cart-button" onClick={() => toggleCartSidebar('cart')}>
+          <button className="cart-button nav-btn" onClick={() => toggleCartSidebar('cart')}>
               <img src={shopLogo} alt="Cart" className="icon-svg"/>
               {cartItems.length > 0 && <span className="badge">{cartItems.length}</span>}
               <span>Cart</span>
           </button>
-          <button onClick={() => handleNavigation('/search')}>
-              <img src={searchLogo} alt="Search" className="icon-svg"/>
+          <button onClick={toggleSearchDropdown} className="nav-btn">
+              <SearchIcon />
               <span>Search</span>
           </button>
-          <button onClick={scrollToTop}>
+          <button onClick={scrollToTop} className="nav-btn">
               <TopIcon />
               <span>Top</span>
           </button>

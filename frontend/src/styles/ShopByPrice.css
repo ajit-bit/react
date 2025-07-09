@@ -3,13 +3,9 @@
 }
 
 .shop-by-price-section .section-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
-  display: inline-block;
-  margin-bottom: 30px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color:#FFC107 ;
 }
 
 .shop-by-price-section .section-title::after {

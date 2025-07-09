@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card, Image } from 'react-bootstrap';
+import { Container, Card, Image, Carousel, Row, Col } from 'react-bootstrap';
 import testimonial1 from '../assets/images/testimonial-1.jpg';
 import testimonial2 from '../assets/images/testimonial-2.jpg';
 import testimonial3 from '../assets/images/testimonial-3.jpg';
@@ -23,35 +23,73 @@ const testimonialsData = [
     img: testimonial3,
     name: "Mia L.",
     title: "Repeat Customer"
-  }
+  },
 ];
 
+
+const chunkArray = (array, size) => {
+  const chunkedArr = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunkedArr.push(array.slice(i, i + size));
+  }
+  return chunkedArr;
+};
+
 const Testimonials = () => {
+  const testimonialChunks = chunkArray(testimonialsData, 3);
+
+  const renderTestimonialCard = (item) => (
+    <Card className="testimonial-card border-0 shadow-sm h-100">
+      <Card.Body>
+        <div className="testimonial-rating">★★★★★</div>
+        <Card.Text className="testimonial-text">{item.text}</Card.Text>
+        <div className="d-flex align-items-center mt-4">
+          <Image src={item.img} roundedCircle className="author-image" />
+          <div className="ms-3 text-start">
+            <p className="author-name mb-0">{item.name}</p>
+            <p className="author-title mb-0">{item.title}</p>
+          </div>
+        </div>
+      </Card.Body>
+    </Card>
+  );
+
   return (
     <Container as="section" className="testimonials-section text-center my-5">
       <h1 className="fw-light">WHAT OUR CLIENTS SAY</h1>
       <div className="title-divider mx-auto"></div>
-      <Row className="g-4 mt-4">
-        {testimonialsData.map((item, index) => (
-          <Col key={index} lg={4}>
-            <Card className="testimonial-card border-0 shadow-sm h-100">
-              <Card.Body>
-                <div className="testimonial-rating">★★★★★</div>
-                <Card.Text className="testimonial-text">
-                  {item.text}
-                </Card.Text>
-                <div className="d-flex align-items-center mt-4">
-                  <Image src={item.img} roundedCircle className="author-image" />
-                  <div className="ms-3 text-start">
-                    <p className="author-name mb-0">{item.name}</p>
-                    <p className="author-title mb-0">{item.title}</p>
-                  </div>
+
+      <div className="d-none d-md-block">
+        <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
+          {testimonialChunks.map((chunk, index) => (
+            <Carousel.Item key={index}>
+              <Row className="g-4 justify-content-center">
+                {chunk.map((item, itemIndex) => (
+                  <Col key={itemIndex} md={4}>
+                    {renderTestimonialCard(item)}
+                  </Col>
+                ))}
+              </Row>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
+
+
+      <div className="d-block d-md-none">
+        <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
+          {testimonialsData.map((item, index) => (
+            <Carousel.Item key={index}>
+              <div className="d-flex justify-content-center py-4">
+                <div className="testimonial-container">
+                  {renderTestimonialCard(item)}
                 </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
+
     </Container>
   );
 };

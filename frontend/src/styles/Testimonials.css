@@ -1,5 +1,7 @@
 .testimonials-section h1 {
   font-family: 'Lora', serif;
+  font-weight: 500;
+  color:#FFC107 ;
 }
 
 .title-divider {
@@ -45,4 +47,20 @@
 .author-title {
   font-size: 0.9rem;
   color: #777;
+}
+
+.testimonial-container {
+  max-width: 700px;
+  width: 80%;
+}
+
+.testimonials-section .carousel-control-prev,
+.testimonials-section .carousel-control-next {
+  width: 5%;
+}
+
+
+.testimonials-section .carousel-control-prev-icon,
+.testimonials-section .carousel-control-next-icon {
+  filter: invert(1);
 }

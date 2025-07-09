@@ -19,7 +19,8 @@ const Essentials = () => {
       <h1 className="heading-essentials">Essentials For You</h1>
       <Row className="g-4 mt-3">
         {essentialsData.map((item, index) => (
-          <Col key={index} md={6} lg={3}>
+
+          <Col key={index} xs={6} md={6} lg={3}> 
             <Card className="card-essentials border-0 shadow-lg h-100">
               <Card.Img variant="top" src={item.img} />
               <Card.Body className="d-flex flex-column">

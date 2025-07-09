@@ -1,10 +1,7 @@
 .essentials-section .heading-essentials {
-  font-family: 'Lora', serif;
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 40px;
-  position: relative;
-  display: inline-block;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color:#FFC107 ;
 }
 
 .essentials-section .heading-essentials::after {

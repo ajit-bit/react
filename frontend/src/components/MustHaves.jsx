@@ -13,6 +13,7 @@ const mustHavesItems = [
     { img: ring1, title: 'Stylish Ring' },
     { img: bracelet1, title: 'Trendy Bracelet' },
     { img: chain1, title: 'Delicate Pendant' },
+    { img: neck, title: 'Jewlery Set' },
 ];
 
 const MustHaves = () => {

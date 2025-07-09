@@ -5,7 +5,9 @@
 }
 
 .newsletter-content h2 {
-  font-family: 'Lora', serif;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color:#FFC107 ;
 }
 
 .submit-arrow {
@@ -22,7 +24,7 @@
 }
 
 .newsletter-image-col {
-  height: 400px; /* Give the column a fixed height */
+  height: 400px; 
 }
 
 .newsletter-image {

@@ -1,10 +1,9 @@
-/* Main container with the diagonal stripe background effect */
 .promo-section-hero {
   position: relative;
   overflow: hidden;
   min-height: 500px;
   display: flex;
-  align-items: center; /* Vertically center the content */
+  align-items: center;
   padding: 40px 0;
 }
 
@@ -14,20 +13,18 @@
   top: 50%;
   left: -20%;
   width: 140%;
-  height: 250px; /* Increased height for better coverage */
+  height: 250px; 
   background: #f0e6da;
   transform: translateY(-50%) rotate(-6deg);
-  z-index: 0; /* Place the stripe behind the content */
+  z-index: 0; 
 }
 
-/* Ensure the Bootstrap Row and Col content appears above the stripe */
 .promo-section-hero .container-fluid,
 .promo-section-hero .row {
   position: relative;
   z-index: 1;
 }
 
-/* Styles for the individual promo "cards" (which are now Cols) */
 .promo-card {
   display: flex;
   align-items: center;
@@ -67,6 +64,7 @@
   font-size: 32px;
   margin-bottom: 16px;
   letter-spacing: 1px;
+  color: #000;
 }
 
 .promo-text {

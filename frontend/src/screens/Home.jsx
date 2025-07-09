@@ -1,9 +1,7 @@
 import React from 'react';
 
-// Import Bootstrap CSS at the top level of your page/app
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Import all the components (no changes here)
 import Slider from '../components/Slider';
 import CategoryCarousel from '../components/CategoryCarousel';
 import NewCollection from '../components/NewCollection';
@@ -17,12 +15,12 @@ import MustHaves from '../components/MustHaves';
 import AvailableAt from '../components/AvailableAt';
 import Testimonials from '../components/Testimonials';
 import Features from '../components/Features';
-// Footer component was not provided, but would be imported here
-// import Footer from '../components/Footer'; 
 
 const Home = () => {
   return (
     <div>
+      <br />
+      <br />
       <Slider />
       <CategoryCarousel />
       <NewCollection />

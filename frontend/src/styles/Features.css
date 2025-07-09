@@ -2,11 +2,18 @@
   background-color: #fffdf8;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
+  overflow: hidden; 
+}
+
+.feature-item-marquee {
+  margin: 0 40px; 
 }
 
 .feature-item {
   transition: transform 0.3s ease;
   padding: 10px;
+  max-width: 250px; 
+  margin: 0 auto; 
 }
 
 .feature-item:hover {

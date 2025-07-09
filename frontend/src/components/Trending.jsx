@@ -13,6 +13,7 @@ const trendingItems = [
     { img: chain1, title: "Diamond Earrings" },
     { img: bracelet1, title: "Gold Bracelet" },
     { img: ring1, title: "Silver Bracelet" },
+    { img: goldring, title: "Silver Ring" },
 ];
 
 const Trending = () => {
@@ -21,7 +22,7 @@ const Trending = () => {
       <h2 className="section-title">Trending Jewelry</h2>
       <Row className="justify-content-center g-4 mt-3">
         {trendingItems.map((item, index) => (
-          <Col key={index} xs={12} sm={6} md={4} lg={2}>
+          <Col key={index} xs={6} sm={6} md={4} lg={2}>
             <Card className="jewelry-card border-0 shadow-sm h-100">
               <Card.Img variant="top" src={item.img} />
               <Card.Body>
