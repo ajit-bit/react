@@ -10,10 +10,18 @@
   transition: transform 0.8s ease-in-out;
 }
 
+.category-carousel-track.no-transition {
+  transition: none;
+}
+
 .category-carousel-item {
-  flex: 0 0 270px; /* Fixed width for each item */
+  flex: 0 0 270px; 
   box-sizing: border-box;
   padding: 10px;
+}
+
+.category-carousel-name{
+  color: black;
 }
 
 .circle-image {
@@ -61,7 +69,7 @@
 
 @media screen and (max-width: 768px) {
   .category-carousel-item {
-    flex: 0 0 50%; /* Show 2 items on tablets */
+    flex: 0 0 50%; 
   }
   .circle-image {
     width: 180px;
@@ -71,7 +79,7 @@
 
 @media screen and (max-width: 480px) {
   .category-carousel-item {
-    flex: 0 0 100%; /* Show 1 item on mobile */
+    flex: 0 0 100%; 
   }
   .circle-image {
     width: 200px;

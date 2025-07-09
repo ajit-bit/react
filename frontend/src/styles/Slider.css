@@ -1,7 +1,7 @@
 .home-slider {
   background: #f9f5f0;
   min-height: 500px;
-  height: 80vh;
+  height: 85vh; 
 }
 
 .home-slider .carousel-inner,
@@ -9,15 +9,8 @@
   height: 100%;
 }
 
-.slide-content {
-  padding: 3rem 5rem;
-  height: 100%;
-}
-
 .text-container {
-  max-width: 500px;
-  flex: 1;
-  text-align: left;
+  padding: 2rem; 
 }
 
 .text-container h4 {
@@ -28,12 +21,13 @@
   margin-bottom: 0.5rem;
 }
 
-.text-container h1 {
+.text-container span {
   font-family: 'Lora', serif;
-  font-size: 3rem;
+  font-size: 4rem; /* Made larger to be more prominent */
   margin: 0.5rem 0 1rem 0;
   font-weight: bold;
   line-height: 1.2;
+  color: #FDB813; /* ADDED: Gold color to match your image */
 }
 
 .text-container p {
@@ -63,41 +57,23 @@
 }
 
 .slide-image {
-  max-width: 400px;
-  width: 100%;
-  height: auto;
+  max-height: 75vh;
   object-fit: contain;
-  flex-shrink: 0;
+  margin: 0 auto;
 }
 
-/* Customizing Bootstrap Carousel Controls */
-.home-slider .carousel-control-prev-icon,
-.home-slider .carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  padding: 1.2rem;
-}
-
-/* Responsive */
 @media (max-width: 992px) {
-  .slide-content {
-    flex-direction: column;
-    text-align: center;
-    padding: 2rem;
+  .text-container h1 {
+    font-size: 3rem;
   }
   .text-container {
-    text-align: center;
-  }
-  .slide-image {
-    max-width: 80%;
-    margin-top: 2rem;
-    order: -1;
+    padding: 2rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .text-container h1 {
-    font-size: 2rem;
+    font-size: 2.2rem; 
   }
   .shop-now-btn {
     padding: 10px 20px;

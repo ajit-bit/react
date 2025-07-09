@@ -21,6 +21,7 @@ const Home = () => {
     <div>
       <br />
       <br />
+      <br />
       <Slider />
       <CategoryCarousel />
       <NewCollection />
