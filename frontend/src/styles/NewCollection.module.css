@@ -1,26 +1,26 @@
-.new-collection-container .main-title {
+.newCollectionContainer .mainTitle {
     font-family: 'Lora', serif;
     font-weight: 500;
     color:#FFC107 ;
 }
 
-.new-collection-container .title-divider {
+.newCollectionContainer .titleDivider {
   width: 80px;
   height: 3px;
   background-color: #c9a96e;
   margin: 0 auto 60px;
 }
 
-.image-container {
+.imageContainer {
   position: relative;
   overflow: hidden;
   width: 100%;
   height: 100%;
-  min-height: 280px; /* Minimum height for smaller containers */
+  min-height: 280px; 
   transition: all 0.4s ease;
 }
 
-.image-container .jewelry-image {
+.imageContainer .jewelryImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -28,16 +28,16 @@
   transition: transform 0.4s ease;
 }
 
-.image-container:hover {
+.imageContainer:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-.image-container:hover .jewelry-image {
+.imageContainer:hover .jewelryImage {
   transform: scale(1.03);
 }
 
-.text-overlay {
+.textOverlay {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -47,13 +47,13 @@
   padding: 0 10px;
   width: 100%;
   color: #fff;
-  background: rgba(0,0,0,0.3); /* Add a slight background for readability */
+  background: rgba(0,0,0,0.3);
   padding: 20px;
   border-radius: 5px;
 }
 
-.overlay-title,
-.overlay-titles {
+.overlayTitle,
+.overlayTitles {
   font-family: 'Montserrat', sans-serif;
   font-size: 26px;
   font-weight: 700;
@@ -63,7 +63,7 @@
   line-height: 1.3;
 }
 
-.overlay-subtitle {
+.overlaySubtitle {
   font-family: 'Montserrat', sans-serif;
   font-size: 15px;
   font-weight: 500;
@@ -71,7 +71,7 @@
   letter-spacing: 0.5px;
 }
 
-.discover-btn {
+.discoverBtn {
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -80,19 +80,19 @@
   background: transparent;
   border: 2px solid #fff;
   padding: 10px 26px;
-  border-radius: 999px; /* oval shape */
+  border-radius: 999px;
   text-decoration: none;
   letter-spacing: 1px;
   transition: all 0.3s ease;
 }
 
-.discover-btn:hover {
+.discoverBtn:hover {
   background-color: #fff;
   color: #000;
 }
 
 @media (max-width: 991px) {
-    .image-container {
+    .imageContainer {
         min-height: 350px;
     }
 }

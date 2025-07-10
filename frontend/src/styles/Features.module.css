@@ -1,26 +1,26 @@
-.feature-section {
+.featureSection {
   background-color: #fffdf8;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   overflow: hidden; 
 }
 
-.feature-item-marquee {
+.featureItemMarquee {
   margin: 0 40px; 
 }
 
-.feature-item {
+.featureItem {
   transition: transform 0.3s ease;
   padding: 10px;
   max-width: 250px; 
   margin: 0 auto; 
 }
 
-.feature-item:hover {
+.featureItem:hover {
   transform: translateY(-5px);
 }
 
-.icon-circle {
+.iconCircle {
   width: 70px;
   height: 70px;
   background-color: #fef5e7;
@@ -33,17 +33,17 @@
   transition: background-color 0.3s ease, color 0.3s, transform 0.3s ease;
 }
 
-.feature-item:hover .icon-circle {
+.featureItem:hover .iconCircle {
   background-color: #d4af37;
   color: #fff;
   transform: scale(1.1);
 }
 
-.feature-item h4 {
+.featureItem h4 {
   font-size: 1.1rem;
   color: #333;
 }
 
-.feature-item p {
+.featureItem p {
   font-size: 0.9rem;
 }

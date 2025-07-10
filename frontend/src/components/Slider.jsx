@@ -1,10 +1,9 @@
 import React from 'react';
 import { Carousel, Row, Col } from 'react-bootstrap';
+import styles from '../styles/Slider.module.css';
 import slide1 from '../assets/images/slide1.png';
 import slide2 from '../assets/images/slide2.png';
 import slide3 from '../assets/images/slide3.png';
-
-import '../styles/Slider.css';
 
 const Slider = () => {
   const slides = [
@@ -32,20 +31,20 @@ const Slider = () => {
   ];
 
   return (
-    <Carousel interval={5000} controls={false} className="home-slider">
+    <Carousel interval={5000} controls={false} className={styles.homeSlider}>
       {slides.map((slide, index) => (
         <Carousel.Item key={index}>
           <Row className="m-0 h-100 align-items-center px-lg-5">
-            <Col lg={6} className="text-container text-start order-2 order-lg-1">
+            <Col lg={6} className={`${styles.textContainer} text-start order-2 order-lg-1`}>
               <h4>{slide.subtitle}</h4>
               <span>{slide.title}</span>
               <p>{slide.description}</p>
-              <button className="shop-now-btn">Shop now</button>
+              <button className={styles.shopNowBtn}>Shop now</button>
             </Col>
             
             <Col lg={6} className="order-1 order-lg-2">
               <img
-                className="d-block w-100 slide-image"
+                className={`d-block w-100 ${styles.slideImage}`}
                 src={slide.image}
                 alt={slide.alt}
               />

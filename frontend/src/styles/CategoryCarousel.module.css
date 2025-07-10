@@ -1,30 +1,31 @@
-.category-carousel-container {
+.categoryCarouselContainer {
   position: relative;
   overflow: hidden;
   max-width: 1400px;
   margin: auto;
 }
 
-.category-carousel-track {
+.categoryCarouselTrack {
   display: flex;
   transition: transform 0.8s ease-in-out;
 }
 
-.category-carousel-track.no-transition {
+
+.categoryCarouselTrack.noTransition {
   transition: none;
 }
 
-.category-carousel-item {
+.categoryCarouselItem {
   flex: 0 0 270px; 
   box-sizing: border-box;
   padding: 10px;
 }
 
-.category-carousel-name{
+.categoryCarouselName {
   color: black;
 }
 
-.circle-image {
+.circleImage {
   width: 250px;
   height: 250px;
   border-radius: 50%;
@@ -37,18 +38,18 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.circle-image img {
+.circleImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.category-carousel-item:hover .circle-image img {
+.categoryCarouselItem:hover .circleImage img {
   transform: scale(1.05);
 }
 
-.next-btn {
+.nextBtn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -61,27 +62,28 @@
   line-height: 1;
 }
 
-.carouselTitle{
+.carouselTitle {
    font-family: 'Lora', serif;
     font-weight: 500;
     color:#FFC107 ;
 }
 
+
 @media screen and (max-width: 768px) {
-  .category-carousel-item {
+  .categoryCarouselItem {
     flex: 0 0 50%; 
   }
-  .circle-image {
+  .circleImage {
     width: 180px;
     height: 180px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .category-carousel-item {
+  .categoryCarouselItem {
     flex: 0 0 100%; 
   }
-  .circle-image {
+  .circleImage {
     width: 200px;
     height: 200px;
   }

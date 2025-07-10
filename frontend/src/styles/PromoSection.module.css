@@ -1,4 +1,4 @@
-.promo-section-hero {
+.promoSectionHero {
   position: relative;
   overflow: hidden;
   min-height: 500px;
@@ -7,7 +7,7 @@
   padding: 40px 0;
 }
 
-.promo-section-hero::before {
+.promoSectionHero::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -19,39 +19,38 @@
   z-index: 0; 
 }
 
-.promo-section-hero .container-fluid,
-.promo-section-hero .row {
+.promoSectionHero :global(.container-fluid),
+.promoSectionHero :global(.row) {
   position: relative;
   z-index: 1;
 }
 
-.promo-card {
+.promoCard {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.promo-card-1 {
+.promoCard1 {
   background: #fafafa;
 }
 
-.promo-card-2 {
+.promoCard2 {
   background: #fcf3ec;
 }
 
-.promo-image {
+.promoImage {
   width: 400px;
   max-width: 100%;
   height: auto;
   object-fit: contain;
 }
 
-/* Text content styling */
-.promo-content {
+.promoContent {
   max-width: 380px;
 }
 
-.promo-subtitle {
+.promoSubtitle {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -59,7 +58,7 @@
   color: #555;
 }
 
-.promo-title {
+.promoTitle {
   font-family: 'Lora', serif;
   font-size: 32px;
   margin-bottom: 16px;
@@ -67,58 +66,54 @@
   color: #000;
 }
 
-.promo-text {
+.promoText {
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 24px;
   color: #333;
 }
 
-/* Custom button styles to match the original design */
-.discover-button {
+.discoverButton {
   padding: 10px 28px;
   font-size: 14px;
-  text-transform: none; /* Override Bootstrap's default button text transform if any */
+  text-transform: none;
   letter-spacing: 0.5px;
-  border-radius: 0; /* For sharp corners */
+  border-radius: 0;
   border-width: 1px;
 }
 
-.discover-button:hover {
+.discoverButton:hover {
     background-color: #333;
     color: #fff;
 }
 
-/* Responsive adjustments */
 @media (min-width: 992px) {
-  /* Add margin between image and text only on large screens */
-  .promo-image {
+  .promoImage {
     margin-right: 60px;
   }
 }
 
 @media (max-width: 991px) {
-  /* On medium and smaller screens, stack image and text vertically */
-  .promo-card .d-lg-flex {
+  .promoCard :global(.d-lg-flex) {
     flex-direction: column;
   }
 }
 
 @media (max-width: 768px) {
-  .promo-title {
+  .promoTitle {
     font-size: 24px;
   }
-  .discover-button {
+  .discoverButton {
     padding: 10px 22px;
     font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
-  .promo-image {
+  .promoImage {
     width: 280px;
   }
-  .promo-title {
+  .promoTitle {
     font-size: 20px;
   }
 }

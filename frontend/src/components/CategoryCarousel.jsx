@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Button } from 'react-bootstrap';
+import styles from '../styles/CategoryCarousel.module.css';
 import ring1 from '../assets/images/ring1.jpg';
-import '../styles/CategoryCarousel.css';
 
 const categories = [
   { name: 'MANGALSUTRA', img: ring1 },
@@ -40,7 +40,6 @@ const CategoryCarousel = () => {
   
   useEffect(() => {
     if (isTransitionDisabled) {
-
       setTimeout(() => {
         setTransitionDisabled(false);
       }, 50);
@@ -63,24 +62,24 @@ const CategoryCarousel = () => {
   
   return (
     <Container as="section" className="py-5 text-center">
-      <h1 className="h2 carouselTitle">Everyday Demi-fine Jewellery</h1>
-      <div className="category-carousel-container mt-4">
+      <h1 className={`h2 ${styles.carouselTitle}`}>Everyday Demi-fine Jewellery</h1>
+      <div className={`${styles.categoryCarouselContainer} mt-4`}>
         <div 
           ref={trackRef}
-          className={`category-carousel-track ${isTransitionDisabled ? 'no-transition' : ''}`}
+          className={`${styles.categoryCarouselTrack} ${isTransitionDisabled ? styles.noTransition : ''}`}
           style={{ transform: `translateX(-${currentIndex * itemWidth}px)` }}
           onTransitionEnd={handleTransitionEnd}
         >
           {loopedCategories.map((category, index) => (
-            <div className="category-carousel-item" key={index}>
-              <div className="circle-image">
+            <div className={styles.categoryCarouselItem} key={index}>
+              <div className={styles.circleImage}>
                 <img src={category.img} alt={category.name} />
               </div>
-              <p className="mt-3 fw-bold category-carousel-name">{category.name}</p>
+              <p className={`mt-3 fw-bold ${styles.categoryCarouselName}`}>{category.name}</p>
             </div>
           ))}
         </div>
-        <Button variant="light" className="next-btn shadow" onClick={handleNext}>❯</Button>
+        <Button variant="light" className={`${styles.nextBtn} shadow`} onClick={handleNext}>❯</Button>
       </div>
     </Container>
   );

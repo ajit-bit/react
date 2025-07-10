@@ -1,9 +1,9 @@
 import React from 'react';
 import { Container, Card, Image, Carousel, Row, Col } from 'react-bootstrap';
+import styles from '../styles/Testimonials.module.css';
 import testimonial1 from '../assets/images/testimonial-1.jpg';
 import testimonial2 from '../assets/images/testimonial-2.jpg';
 import testimonial3 from '../assets/images/testimonial-3.jpg';
-import '../styles/Testimonials.css';
 
 const testimonialsData = [
   {
@@ -39,15 +39,15 @@ const Testimonials = () => {
   const testimonialChunks = chunkArray(testimonialsData, 3);
 
   const renderTestimonialCard = (item) => (
-    <Card className="testimonial-card border-0 shadow-sm h-100">
+    <Card className={`${styles.testimonialCard} border-0 shadow-sm h-100`}>
       <Card.Body>
-        <div className="testimonial-rating">★★★★★</div>
-        <Card.Text className="testimonial-text">{item.text}</Card.Text>
+        <div className={styles.testimonialRating}>★★★★★</div>
+        <Card.Text className={styles.testimonialText}>{item.text}</Card.Text>
         <div className="d-flex align-items-center mt-4">
-          <Image src={item.img} roundedCircle className="author-image" />
+          <Image src={item.img} roundedCircle className={styles.authorImage} />
           <div className="ms-3 text-start">
-            <p className="author-name mb-0">{item.name}</p>
-            <p className="author-title mb-0">{item.title}</p>
+            <p className={`${styles.authorName} mb-0`}>{item.name}</p>
+            <p className={`${styles.authorTitle} mb-0`}>{item.title}</p>
           </div>
         </div>
       </Card.Body>
@@ -55,10 +55,11 @@ const Testimonials = () => {
   );
 
   return (
-    <Container as="section" className="testimonials-section text-center my-5">
+    <Container as="section" className={`${styles.testimonialsSection} text-center my-5`}>
       <h1 className="fw-light">WHAT OUR CLIENTS SAY</h1>
-      <div className="title-divider mx-auto"></div>
+      <div className={`${styles.titleDivider} mx-auto`}></div>
 
+      {/* Desktop Carousel */}
       <div className="d-none d-md-block">
         <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
           {testimonialChunks.map((chunk, index) => (
@@ -75,13 +76,13 @@ const Testimonials = () => {
         </Carousel>
       </div>
 
-
+      {/* Mobile Carousel */}
       <div className="d-block d-md-none">
         <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
           {testimonialsData.map((item, index) => (
             <Carousel.Item key={index}>
               <div className="d-flex justify-content-center py-4">
-                <div className="testimonial-container">
+                <div className={styles.testimonialContainer}>
                   {renderTestimonialCard(item)}
                 </div>
               </div>
@@ -89,7 +90,6 @@ const Testimonials = () => {
           ))}
         </Carousel>
       </div>
-
     </Container>
   );
 };

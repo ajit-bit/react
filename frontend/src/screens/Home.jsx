@@ -22,6 +22,7 @@ const Home = () => {
       <br />
       <br />
       <br />
+      <br />
       <Slider />
       <CategoryCarousel />
       <NewCollection />

@@ -1,19 +1,19 @@
-.home-slider {
+.homeSlider {
   background: #f9f5f0;
   min-height: 500px;
   height: 85vh; 
 }
 
-.home-slider .carousel-inner,
-.home-slider .carousel-item {
+.homeSlider :global(.carousel-inner),
+.homeSlider :global(.carousel-item) {
   height: 100%;
 }
 
-.text-container {
+.textContainer {
   padding: 2rem; 
 }
 
-.text-container h4 {
+.textContainer h4 {
   text-transform: uppercase;
   color: #777;
   letter-spacing: 1px;
@@ -21,23 +21,23 @@
   margin-bottom: 0.5rem;
 }
 
-.text-container span {
+.textContainer span {
   font-family: 'Lora', serif;
-  font-size: 4rem; /* Made larger to be more prominent */
+  font-size: 4rem;
   margin: 0.5rem 0 1rem 0;
   font-weight: bold;
   line-height: 1.2;
-  color: #FDB813; /* ADDED: Gold color to match your image */
+  color: #FDB813;
 }
 
-.text-container p {
+.textContainer p {
   color: #666;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   font-size: 16px;
 }
 
-.shop-now-btn {
+.shopNowBtn {
   padding: 12px 24px;
   border: 2px solid #333;
   color: #111827;
@@ -50,32 +50,32 @@
   transition: all 0.3s ease;
 }
 
-.shop-now-btn:hover {
+.shopNowBtn:hover {
   background: #333;
   color: #fff;
   transform: translateY(-2px);
 }
 
-.slide-image {
+.slideImage {
   max-height: 75vh;
   object-fit: contain;
   margin: 0 auto;
 }
 
 @media (max-width: 992px) {
-  .text-container h1 {
+  .textContainer h1 {
     font-size: 3rem;
   }
-  .text-container {
+  .textContainer {
     padding: 2rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .text-container h1 {
+  .textContainer h1 {
     font-size: 2.2rem; 
   }
-  .shop-now-btn {
+  .shopNowBtn {
     padding: 10px 20px;
   }
 }

@@ -1,9 +1,8 @@
 import React from 'react';
-
 import { Container, Row, Col } from 'react-bootstrap';
 import Marquee from "react-fast-marquee";
-import useMediaQuery from '../hooks/useMediaQuery'; 
-import '../styles/Features.css';
+import useMediaQuery from '../hooks/useMediaQuery';
+import styles from '../styles/Features.module.css';
 
 const featuresData = [
   { icon: "fas fa-truck", title: "Free Shipping", text: "On orders over ₹1999" },
@@ -13,8 +12,8 @@ const featuresData = [
 ];
 
 const FeatureItem = ({ feature }) => (
-  <div className="feature-item text-center">
-    <div className="icon-circle mx-auto mb-3">
+  <div className={`${styles.featureItem} text-center`}>
+    <div className={`${styles.iconCircle} mx-auto mb-3`}>
       <i className={feature.icon}></i>
     </div>
     <h4 className="fw-bold">{feature.title}</h4>
@@ -23,16 +22,15 @@ const FeatureItem = ({ feature }) => (
 );
 
 const Features = () => {
-
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
-    <section className="feature-section py-5">
+    <section className={`${styles.featureSection} py-5`}>
       <Container>
         {isMobile ? (
           <Marquee pauseOnHover={true} speed={50} gradient={false}>
             {featuresData.map((feature, index) => (
-              <div key={index} className="feature-item-marquee">
+              <div key={index} className={styles.featureItemMarquee}>
                 <FeatureItem feature={feature} />
               </div>
             ))}
