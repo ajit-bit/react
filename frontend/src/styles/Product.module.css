@@ -1,0 +1,87 @@
+.product-page {
+  background-color: #f8f9fa;
+  padding-top: 120px; /* Increased to 120px to ensure product name is visible below fixed navbar */
+  position: relative;
+  z-index: 900;
+}
+
+.image-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-image {
+  max-height: 500px;
+}
+
+.thumbnail-image {
+  cursor: pointer;
+  transition: border 0.2s ease;
+}
+
+.thumbnail-image:hover {
+  border: 2px solid #ffc107 !important;
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.current-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+}
+
+.original-price {
+  font-size: 1rem;
+  color: #6c757d;
+  text-decoration: line-through;
+}
+
+.stars-container {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+  color: #ccc;
+}
+
+.star.filled {
+  color: #ffc107;
+}
+
+.star.half-filled {
+  color: #ffc107;
+}
+
+.bag-icon, .heart-icon, .back-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.heart-icon.liked {
+  fill: #dc3545;
+  color: #dc3545;
+}
+
+.product-theme-toast {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ffc107;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .product-page {
+    padding-top: 90px; /* Adjusted for mobile with smaller navbar height (50px + 40px buffer) */
+  }
+}

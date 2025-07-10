@@ -9,6 +9,7 @@ import CartWishlist from './screens/CartWishlist';
 import AuthComponent from './screens/Auth';
 import Women from './screens/Women';
 import Men from './screens/Men';
+import Product from './screens/Product'; // Import the Product component
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -120,6 +121,10 @@ const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
         <Route
           path="/men"
           element={<Men user={user} setCartItems={setCartItems} setLikedItems={setLikedItems} />}
+        />
+        <Route
+          path="/product/:productId"
+          element={<Product setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />}
         />
         <Route
           path="/"
