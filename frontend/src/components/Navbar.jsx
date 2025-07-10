@@ -40,7 +40,7 @@ const SearchIcon = () => (
 
 const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [menuLevel, setMenuLevel] = useState(0); // 0 for main menu, 1 for submenu
+  const [menuLevel, setMenuLevel] = useState(0);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
   const [products, setProducts] = useState([]);
@@ -75,25 +75,21 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/products", {
-        credentials: "include"
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
-      }
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      toast.error("Failed to fetch products", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-    }
-  };
-
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products", { credentials: "include" });
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          console.error("Failed to fetch products:", response.status);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        toast.error("Failed to fetch products", { position: 'top-right', autoClose: 3000 });
+      }
+    };
     fetchProducts();
   }, []);
 
@@ -107,6 +103,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         });
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched cart items:", data);
           const normalizedItems = data.map(item => ({
             id: item.productId || item.id,
             name: item.product?.name || item.name,
@@ -114,13 +111,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
           }));
           if (setCartItems) setCartItems(normalizedItems);
+        } else {
+          console.error("Failed to fetch cart items:", response.status);
         }
       } catch (err) {
         console.error("Error fetching cart items:", err);
-        toast.error("Failed to fetch cart items", {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error("Failed to fetch cart items", { position: 'top-right', autoClose: 3000 });
       }
     };
 
@@ -133,6 +129,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         });
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched liked items:", data);
           const normalizedItems = data.map(item => ({
             id: item.productId || item.id,
             name: item.product?.name || item.name,
@@ -140,13 +137,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
           }));
           if (setLikedItems) setLikedItems(normalizedItems);
+        } else {
+          console.error("Failed to fetch liked items:", response.status);
         }
       } catch (err) {
         console.error("Error fetching liked items:", err);
-        toast.error("Failed to fetch liked items", {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error("Failed to fetch liked items", { position: 'top-right', autoClose: 3000 });
       }
     };
 
@@ -161,120 +157,112 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const addToCart = async (productId) => {
     const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
     if (!identifier) {
-      toast.warn("Please login or create a session to add items to cart", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.warn("Please login or create a session to add items to cart", { position: 'top-right', autoClose: 3000 });
       navigate('/auth');
       return;
     }
-
     try {
       const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { 'Authorization': `Bearer ${token}` }),
-        },
+        headers: { "Content-Type": "application/json", ...(token && { 'Authorization': `Bearer ${token}` }) },
         credentials: "include",
         body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
       });
       if (response.ok) {
-        const fetchCartItems = async (identifier) => {
-          const response = await fetch(`http://localhost:5000/api/cart/${identifier}`, {
-            credentials: "include",
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-          });
-          if (response.ok) {
-            const data = await response.json();
-            const normalizedItems = data.map(item => ({
-              id: item.productId || item.id,
-              name: item.product?.name || item.name,
-              price: parseFloat(item.product?.price || item.price || 0),
-              imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
-            }));
-            if (setCartItems) setCartItems(normalizedItems);
-          }
-        };
-        await fetchCartItems(identifier);
-        toast.success("Added to Cart!", {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+        }));
+        if (setCartItems) setCartItems(normalizedItems);
+        toast.success("Added to Cart!", { position: 'top-right', autoClose: 3000 });
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to add to cart', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error(errorData.message || 'Failed to add to cart', { position: 'top-right', autoClose: 3000 });
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error("Failed to add to cart", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.error("Failed to add to cart", { position: 'top-right', autoClose: 3000 });
     }
   };
 
   const addToWishlist = async (productId) => {
     const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
     if (!identifier) {
-      toast.warn("Please login or create a session to add items to wishlist", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.warn("Please login or create a session to add items to wishlist", { position: 'top-right', autoClose: 3000 });
       navigate('/auth');
       return;
     }
-
     try {
       const token = localStorage.getItem('token');
       const response = await fetch("http://localhost:5000/api/liked/add", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { 'Authorization': `Bearer ${token}` }),
-        },
+        headers: { "Content-Type": "application/json", ...(token && { 'Authorization': `Bearer ${token}` }) },
         credentials: "include",
         body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
       });
       if (response.ok) {
-        const fetchLikedItems = async (identifier) => {
-          const response = await fetch(`http://localhost:5000/api/liked/${identifier}`, {
-            credentials: "include",
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-          });
-          if (response.ok) {
-            const data = await response.json();
-            const normalizedItems = data.map(item => ({
-              id: item.productId || item.id,
-              name: item.product?.name || item.name,
-              price: parseFloat(item.product?.price || item.price || 0),
-              imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
-            }));
-            if (setLikedItems) setLikedItems(normalizedItems);
-          }
-        };
-        await fetchLikedItems(identifier);
-        toast.success("Added to Wishlist!", {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        const data = await response.json();
+        const normalizedItems = data.map(item => ({
+          id: item.productId || item.id,
+          name: item.product?.name || item.name,
+          price: parseFloat(item.product?.price || item.price || 0),
+          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+        }));
+        if (setLikedItems) setLikedItems(normalizedItems);
+        toast.success("Added to Wishlist!", { position: 'top-right', autoClose: 3000 });
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to add to wishlist', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error(errorData.message || 'Failed to add to wishlist', { position: 'top-right', autoClose: 3000 });
       }
     } catch (err) {
       console.error("Error adding to wishlist:", err);
-      toast.error("Failed to add to wishlist", {
-        position: 'top-right',
-        autoClose: 3000,
+      toast.error("Failed to add to wishlist", { position: 'top-right', autoClose: 3000 });
+    }
+  };
+
+  const removeItem = async (productId, type) => {
+    const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
+    if (!identifier) return;
+    try {
+      const token = localStorage.getItem('token');
+      const endpoint = type === 'cart' ? '/api/cart/remove' : '/api/liked/remove';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token && { 'Authorization': `Bearer ${token}` }) },
+        credentials: 'include',
+        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
       });
+      if (response.ok) {
+        const data = await response.json();
+        if (type === 'cart') {
+          const normalizedItems = data.cartItems.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          }));
+          setCartItems(normalizedItems);
+        } else {
+          const normalizedItems = data.likedItems.map(item => ({
+            id: item.productId || item.id,
+            name: item.product?.name || item.name,
+            price: parseFloat(item.product?.price || item.price || 0),
+            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+          }));
+          setLikedItems(normalizedItems);
+        }
+        toast.success(`Item removed from ${type}!`, { position: 'top-right', autoClose: 3000 });
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || `Failed to remove item from ${type}`, { position: 'top-right', autoClose: 3000 });
+      }
+    } catch (err) {
+      console.error(`Error removing from ${type}:`, err);
+      toast.error(`Failed to remove item from ${type}`, { position: 'top-right', autoClose: 3000 });
     }
   };
 
@@ -283,9 +271,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       await fetch("http://localhost:5000/api/auth/logout", {
         method: "POST",
         credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       setUser(null);
       if (setCartItems) setCartItems([]);
@@ -293,22 +279,16 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       setShowUserDropdown(false);
       localStorage.removeItem('token');
       navigate("/");
-      toast.success("Logged out successfully!", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.success("Logged out successfully!", { position: 'top-right', autoClose: 3000 });
     } catch (err) {
       console.error("Logout failed", err);
-      toast.error("Failed to log out", {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.error("Failed to log out", { position: 'top-right', autoClose: 3000 });
     }
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    setMenuLevel(0); // Reset to main menu when toggling
+    setMenuLevel(0);
   };
 
   const toggleCartSidebar = (tab = 'cart') => {
@@ -359,10 +339,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -621,10 +598,18 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           ) : (
             <div className="items-container">
               {cartItems.map((item) => (
-                <div key={item.id} className="cart-item">
-                  <img src={item.imageUrl} alt={item.name} className="img-fluid" />
-                  <h3>{item.name}</h3>
-                  <p>₹{item.price.toFixed(2)}</p>
+                <div key={item.id} className="cart-item d-flex align-items-center mb-3">
+                  <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                  <div className="flex-grow-1">
+                    <h3>{item.name}</h3>
+                    <p>₹{item.price.toFixed(2)}</p>
+                  </div>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => removeItem(item.id, 'cart')}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>
@@ -649,10 +634,18 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           ) : (
             <div className="items-container">
               {likedItems.map((item) => (
-                <div key={item.id} className="liked-item">
-                  <img src={item.imageUrl} alt={item.name} className="img-fluid" />
-                  <h3>{item.name}</h3>
-                  <p>₹{item.price.toFixed(2)}</p>
+                <div key={item.id} className="liked-item d-flex align-items-center mb-3">
+                  <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                  <div className="flex-grow-1">
+                    <h3>{item.name}</h3>
+                    <p>₹{item.price.toFixed(2)}</p>
+                  </div>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => removeItem(item.id, 'liked')}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>
