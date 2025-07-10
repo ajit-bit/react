@@ -4,7 +4,7 @@
   --white: #ffffff;
   --black: #000;
   --gray-dark: #2c2c2c;
-  --promo: #d5cef6;
+  --promo: #FFFACD; /* Updated from violet (#d5cef6) to lemon yellow */
   --transition-speed: 0.3s;
 }
 
@@ -615,7 +615,6 @@
 .mobile-menu .list-group-item a:hover {
   background: var(--gold-light);
   color: var(--black);
-  border-radius: 8px;
 }
 
 .navbar-header.men-theme .mobile-menu .list-group-item a:hover {

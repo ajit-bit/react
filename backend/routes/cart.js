@@ -62,6 +62,36 @@ router.post('/add', async (req, res) => {
   }
 });
 
+router.post('/remove', async (req, res) => {
+  const { productId, userId, sessionId } = req.body;
+  if (!productId) {
+    return res.status(400).json({ message: 'productId required' });
+  }
+  if (!userId && !sessionId) {
+    return res.status(400).json({ message: 'userId or sessionId required' });
+  }
+
+  try {
+    const query = userId ? { userId, productId } : { sessionId, productId };
+    console.log('Removing cart item with query:', query);
+    await Cart.deleteOne(query);
+
+    const cartItems = await Cart.find(userId ? { userId } : { sessionId });
+    const normalizedItems = cartItems.map(item => ({
+      _id: item._id,
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      imageUrl: item.imageUrl,
+      quantity: item.quantity,
+    }));
+    res.json({ cartItems: normalizedItems });
+  } catch (err) {
+    console.error('Remove from cart error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { sessionId } = req.body;

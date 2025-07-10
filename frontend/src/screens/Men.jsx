@@ -1,6 +1,5 @@
-
 import { Heart, ShoppingBag, Star } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,66 +11,57 @@ import styles from '../styles/Men.module.css';
 
 const Men = ({ setCartItems, setLikedItems }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState({});
   const navigate = useNavigate();
   const sessionId = localStorage.getItem('sessionId') || uuidv4();
+  const shopLoveRef = useRef(null);
+  const reviewRef = useRef(null);
+  const carouselRef = useRef(null);
 
   const sliderImages = [
-    { src: men1, alt: 'Men Jewelry Slide 1' },
-    { src: men2, alt: 'Men Jewelry Slide 2' },
-    { src: men3, alt: 'Men Jewelry Slide 3' },
+    { src: men1, alt: 'Men Jewelry Slide 1 - Aaiisha House Silverware', text: 'Discover unique handmade jewelry bracelets with elegant silver accessories from Aaiisha House deals. A stylish wristband and trendy adornment for a chic, luxurious look.' },
+    { src: men2, alt: 'Men Jewelry Slide 2 - Season Best Offer', text: 'Shop the season’s best sale with premium quality silver edge ornaments. Enjoy a discount offer on durable, polished chain links and a free gift with purchase.' },
+    { src: men3, alt: 'Men Jewelry Slide 3 - Exclusive Design', text: 'Explore exclusive handmade artisan-crafted wrist jewelry. This special edition metallic gleam accessory is a valuable keepsake and statement piece for modern fashion.' },
   ];
 
-  const reviewSlides = [
-    [
-      {
-        stars: 5,
-        text: "Pretty good stuff salty! They are helpful, and go the extra mile to ensure customer satisfaction. It's refreshing to find a brand that truly values its customers.",
-        author: "Dixtia Patel",
-        title: "Fashion Influencer",
-        image: ring1,
-      },
-      {
-        stars: 5,
-        text: "Omg! Everything is just superb and high quality, can wait to try more. they are perfect for lounging on the beach or by the pool. I wore those chains and studs in my goa trip.",
-        author: "Md Shad",
-        title: "Content Creator",
-        image: ring1,
-      },
-      {
-        stars: 5,
-        text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
-        author: "Laakshi Pathak",
-        title: "Makeup Artist",
-        image: ring1,
-      },
-    ],
-    [
-      {
-        stars: 5,
-        text: "Amazing quality and fast delivery. The jewelry looks exactly like the pictures and feels premium. Highly recommended!",
-        author: "Customer Review",
-        title: "Verified Buyer",
-        image: ring1,
-      },
-      {
-        stars: 5,
-        text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
-        author: "Laakshi Pathak",
-        title: "Makeup Artist",
-        image: ring1,
-      },
-      {
-        stars: 5,
-        text: "I'm obsessed with the quality of the accessories from Salty. The materials used are durable and long-lasting! And also they have great customer support",
-        author: "Laakshi Pathak",
-        title: "Makeup Artist",
-        image: ring1,
-      },
-    ],
+  const shopLoveItems = [
+    { src: ring1, alt: 'Bracelets - Stylish Wristband', category: 'Bracelets', text: 'Handcrafted bracelets, a trendy fashion accessory with elegant design and shiny polish.' },
+    { src: ring1, alt: 'Chains - Elegant Chain Link', category: 'Chains', text: 'Luxurious chains with metallic gleam, a durable and stylish ornament for any occasion.' },
+    { src: ring1, alt: 'Rings - Refined Adornment', category: 'Rings', text: 'Exquisite rings, a refined silverware piece with intricate details and timeless appeal.' },
+    { src: ring1, alt: 'Earrings - Cool Tone Accessory', category: 'Earrings', text: 'Chic earrings with a cool tone, a unique decorative item for a sophisticated look.' },
+  ];
+
+  const reviewItems = [
+    {
+      stars: 5,
+      text: "Amazing Aaiisha House silver edge accessories! The handmade jewelry was a cherished gift with fast, free delivery. Highly recommended by this verified buyer.",
+      author: "Dixtia Patel",
+      title: "Fashion Influencer",
+      image: ring1,
+    },
+    {
+      stars: 5,
+      text: "Superb quality from Aaiisha House! The trendy wristband was a delightful purchase with a discount offer. Excellent customer service and a free gift touch!",
+      author: "Md Shad",
+      title: "Content Creator",
+      image: ring1,
+    },
+    {
+      stars: 5,
+      text: "Outstanding handmade chain links! The luxurious design and reliable craftsmanship made this a treasured keepsake. Great value and satisfaction guaranteed.",
+      author: "Laakshi Pathak",
+      title: "Makeup Artist",
+      image: ring1,
+    },
+    {
+      stars: 4,
+      text: "Impressed with the elegant silverware from Aaiisha House. The shiny polish and sturdy build exceeded my expectations as a verified shopper.",
+      author: "Customer Review",
+      title: "Verified Buyer",
+      image: ring1,
+    },
   ];
 
   const collections = [
@@ -130,14 +120,8 @@ const Men = ({ setCartItems, setLikedItems }) => {
     const sliderInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     }, 5000);
-    const reviewInterval = setInterval(() => {
-      setCurrentReviewSlide((prev) => (prev + 1) % reviewSlides.length);
-    }, 7000);
-    return () => {
-      clearInterval(sliderInterval);
-      clearInterval(reviewInterval);
-    };
-  }, [sliderImages.length, reviewSlides.length]);
+    return () => clearInterval(sliderInterval);
+  }, [sliderImages.length]);
 
   const checkLoginStatus = async () => {
     try {
@@ -345,52 +329,33 @@ const Men = ({ setCartItems, setLikedItems }) => {
         pauseOnHover
         theme="dark"
       />
-      <section className={styles.slider}>
-        <div className={`${styles.slide} ${currentSlide === 0 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Curated for Him</h4>
-            <h1>BOLD STATEMENTS</h1>
-            <p>Discover powerful jewelry made for modern men — statement chains, sleek rings, and versatile accessories.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[0].src} alt={sliderImages[0].alt} />
-        </div>
-        <div className={`${styles.slide} ${currentSlide === 1 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Season's Best</h4>
-            <h1>SILVER EDGE</h1>
-            <p>Refined designs in cool silver tones — perfect for layering or wearing solely solo. Command attention with confidence.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[1].src} alt={sliderImages[1].alt} />
-        </div>
-        <div className={`${styles.slide} ${currentSlide === 2 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Urban Appeal</h4>
-            <h1>STREET STYLE</h1>
-            <p>From casual wear to special occasions, elevate your style with pieces that make every moment count.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[2].src} alt={sliderImages[2].alt} />
-        </div>
-        <div className={styles.sliderNav}>
-          <button
-            className={styles.prev}
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length)}
-          ></button>
-          <button
-            className={styles.next}
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % sliderImages.length)}
-          ></button>
+      <section className={styles.slider} ref={carouselRef}>
+        <div className={styles.carouselInner} style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          {sliderImages.map((slide, index) => (
+            <div
+              key={index}
+              className={`${styles.carouselItem} ${currentSlide === index ? styles.active : ''}`}
+            >
+              <div className={styles.carouselContent}>
+                <img src={slide.src} alt={slide.alt} className={styles.carouselImage} />
+                <div className={styles.text}>
+                  <h4>Curated for Him - Aaiisha House</h4>
+                  <h1>Bold Statements in Silver</h1>
+                  <p>{slide.text}</p>
+                  <button onClick={() => navigate('/products')} className="btn btn-outline-dark">Shop Exclusive Deals</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
       {collections.map((collection, collectionIndex) => (
         <div key={collectionIndex} className={styles.collection}>
           <h2>{collection.name}</h2>
           <button className={styles.viewMore} onClick={() => navigate('/collections')}>View All</button>
-          <div className={styles['products-grid']}>
+          <div className={styles.productsGrid}>
             {collection.products.map((product) => (
-              <div key={product.id} className={styles['product-card']}>
+              <div key={product.id} className={styles.productCard}>
                 <div className={styles['product-image-container']}>
                   <div className={styles['product-image-wrapper']}>
                     <img
@@ -443,50 +408,41 @@ const Men = ({ setCartItems, setLikedItems }) => {
         </div>
       ))}
       <div className={styles.shopLove}>
-        <h2>Shop What You Love</h2>
-        <div className={styles.cards}>
-          {['Bracelets', 'Chains', 'Rings', 'Earrings'].map((category, index) => (
-            <div key={index} className={styles.card} onClick={() => navigate('/products')}>
-              <img src={ring1} alt={category} />
+        <h2>Shop What You Love - Aaiisha House Deals</h2>
+        <div className={styles.shopLoveSlider} ref={shopLoveRef}>
+          {shopLoveItems.map((item, index) => (
+            <div key={index} className={styles.shopLoveCard}>
+              <div className={styles['product-image-container']}>
+                <div className={styles['product-image-wrapper']}>
+                  <img src={item.src} alt={item.alt} className={styles['product-image']} />
+                </div>
+              </div>
               <div className={styles.cardContent}>
-                <h3>{category}</h3>
+                <h3>{item.category}</h3>
+                <p className={styles.reviewText}>{item.text}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
       <div className={styles.reviews}>
-        <h2>Our Customers ♥ Us</h2>
-        <div className={styles.reviewCarousel}>
-          {reviewSlides.map((slideGroup, slideIndex) => (
-            <div key={slideIndex} className={`${styles.reviewSlide} ${currentReviewSlide === slideIndex ? styles.active : ''}`}>
-              {slideGroup.map((review, reviewIndex) => (
-                <div key={reviewIndex} className={styles.reviewCard}>
-                  <div className={styles.reviewStars}>{renderStars(review.stars)}</div>
-                  <p className={styles.reviewText}>{review.text}</p>
-                  <div className={styles.reviewer}>
-                    <img src={review.image} alt={review.author} />
-                    <div className={styles.reviewerInfo}>
-                      <h4>{review.author}</h4>
-                      <p>{review.title}</p>
-                    </div>
-                  </div>
+        <h2>Our Customers ♥ Us - Aaiisha House Reviews</h2>
+        <div className={styles.reviewCarousel} ref={reviewRef}>
+          {reviewItems.map((review, index) => (
+            <div key={index} className={styles.reviewCard}>
+              <div className={styles.reviewStars}>{renderStars(review.stars)}</div>
+              <p className={styles.reviewText}>{review.text}</p>
+              <div className={styles.reviewer}>
+                <img src={review.image} alt={review.author} />
+                <div className={styles.reviewerInfo}>
+                  <h4>{review.author}</h4>
+                  <p>{review.title}</p>
                 </div>
-              ))}
+              </div>
             </div>
           ))}
-          <div className={styles.reviewIndicators}>
-            {reviewSlides.map((_, index) => (
-              <div
-                key={index}
-                className={`${styles.reviewIndicator} ${currentReviewSlide === index ? styles.active : ''}`}
-                onClick={() => setCurrentReviewSlide(index)}
-              ></div>
-            ))}
-          </div>
         </div>
       </div>
-      
     </div>
   );
 };

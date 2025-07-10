@@ -14,13 +14,14 @@ const Women = ({ user }) => {
   const [currentReviewSlide, setCurrentReviewSlide] = useState(0);
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [loading, setLoading] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
   const sessionId = localStorage.getItem('sessionId') || uuidv4();
 
   const sliderImages = [
-    { src: women1, alt: 'Women Jewelry Slide 1' },
-    { src: women2, alt: 'Women Jewelry Slide 2' },
-    { src: women3, alt: 'Women Jewelry Slide 3' },
+    { src: women1, alt: 'Women Jewelry Slide 1', text: 'Discover effortlessly elegant jewelry made for modern women — delicate rings, dainty chains, and versatile charms.' },
+    { src: women2, alt: 'Women Jewelry Slide 2', text: 'Refined designs in warm gold tones — perfect for layering or wearing solo. Shine with subtle sophistication.' },
+    { src: women3, alt: 'Women Jewelry Slide 3', text: 'From bridal sets to festive picks, elevate your style with pieces that make every moment unforgettable.' },
   ];
 
   const reviewSlides = [
@@ -127,14 +128,18 @@ const Women = ({ user }) => {
     const sliderInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
     }, 5000);
-    const reviewInterval = setInterval(() => {
-      setCurrentReviewSlide((prev) => (prev + 1) % reviewSlides.length);
-    }, 7000);
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
       clearInterval(sliderInterval);
-      clearInterval(reviewInterval);
+      window.removeEventListener('resize', handleResize);
     };
-  }, [sliderImages.length, reviewSlides.length]);
+  }, [sliderImages.length]);
 
   const addToCart = async (productId) => {
     const product = collections.flatMap(c => c.products).find(p => p.id === productId);
@@ -252,32 +257,23 @@ const Women = ({ user }) => {
         theme="light"
       />
       <section className={styles.slider}>
-        <div className={`${styles.slide} ${currentSlide === 0 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Curated for Her</h4>
-            <h1>EVERYDAY GLAM</h1>
-            <p>Discover effortlessly elegant jewelry made for modern women — delicate rings, dainty chains, and versatile charms.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[0].src} alt={sliderImages[0].alt} />
-        </div>
-        <div className={`${styles.slide} ${currentSlide === 1 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Season's Highlights</h4>
-            <h1>GOLDEN GRACE</h1>
-            <p>Refined designs in warm gold tones — perfect for layering or wearing solo. Shine with subtle sophistication.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[1].src} alt={sliderImages[1].alt} />
-        </div>
-        <div className={`${styles.slide} ${currentSlide === 2 ? styles.active : ''}`}>
-          <div className={styles.text}>
-            <h4>Timeless Charm</h4>
-            <h1>STATEMENT SETS</h1>
-            <p>From bridal sets to festive picks, elevate your style with pieces that make every moment unforgettable.</p>
-            <button onClick={() => navigate('/products')}>Shop now</button>
-          </div>
-          <img src={sliderImages[2].src} alt={sliderImages[2].alt} />
+        <div className={styles.carouselInner} style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          {sliderImages.map((slide, index) => (
+            <div
+              key={index}
+              className={`${styles.carouselItem} ${currentSlide === index ? styles.active : ''}`}
+            >
+              <div className={styles.carouselContent}>
+                <img src={slide.src} alt={slide.alt} className={styles.carouselImage} />
+                <div className={styles.text}>
+                  <h4>Curated for Her</h4>
+                  <h1>{index === 0 ? 'EVERYDAY GLAM' : index === 1 ? 'GOLDEN GRACE' : 'STATEMENT SETS'}</h1>
+                  <p>{slide.text}</p>
+                  <button onClick={() => navigate('/products')}>Shop now</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
         <div className={styles['slider-nav']}>
           <button
@@ -350,14 +346,18 @@ const Women = ({ user }) => {
       ))}
       <div className={styles['shop-love']}>
         <h2>Shop by Category</h2>
-        <div className={styles.cards}>
+        <div className={styles['shop-love-slider']}>
           {['Necklaces', 'Bracelets', 'Earrings', 'Rings'].map((category, index) => (
             <div
               key={index}
               className={styles.card}
               onClick={() => navigate(`/${category.toLowerCase()}`)}
             >
-              <img src={ring1} alt={category} />
+              <div className={styles['product-image-container']}>
+                <div className={styles['product-image-wrapper']}>
+                  <img src={ring1} alt={category} className={styles['product-image']} />
+                </div>
+              </div>
               <div className={styles['card-content']}>
                 <h3>{category}</h3>
               </div>
@@ -366,34 +366,67 @@ const Women = ({ user }) => {
         </div>
       </div>
       <div className={styles.reviews}>
-        <h2>Our Customers ♥ Us</h2>
+        <h2>Our Shoppers ♥ Us</h2>
         <div className={styles['review-carousel']}>
-          {reviewSlides.map((slideGroup, slideIndex) => (
-            <div key={slideIndex} className={`${styles['review-slide']} ${currentReviewSlide === slideIndex ? styles.active : ''}`}>
-              {slideGroup.map((review, reviewIndex) => (
-                <div key={reviewIndex} className={styles['review-card']}>
-                  <div className={styles['review-stars']}>{renderStars(review.stars)}</div>
-                  <p className={styles['review-text']}>{review.text}</p>
-                  <div className={styles.reviewer}>
-                    <img src={review.image} alt={review.author} />
-                    <div className={styles['reviewer-info']}>
-                      <h4>{review.author}</h4>
-                      <p>{review.title}</p>
+          <div
+            className={styles['review-slides-container']}
+            style={{
+              position: 'relative',
+              width: '100%',
+              overflow: isMobile ? 'auto' : 'hidden',
+              scrollSnapType: isMobile ? 'x mandatory' : 'none',
+              scrollBehavior: isMobile ? 'smooth' : 'auto',
+            }}
+          >
+            <div
+              className={styles['review-inner']}
+              style={{
+                display: 'flex',
+                transition: isMobile ? 'none' : 'transform 0.5s ease-in-out',
+                transform: isMobile ? 'none' : `translateX(-${currentReviewSlide * 100}%)`,
+              }}
+            >
+              {reviewSlides.map((slideGroup, slideIndex) => (
+                <div
+                  key={slideIndex}
+                  className={styles['review-slide']}
+                  style={{
+                    minWidth: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '30px',
+                    flexShrink: 0,
+                    scrollSnapAlign: isMobile ? 'start' : 'none',
+                  }}
+                >
+                  {slideGroup.map((review, reviewIndex) => (
+                    <div key={reviewIndex} className={styles['review-card']}>
+                      <div className={styles['review-stars']}>{renderStars(review.stars)}</div>
+                      <p className={styles['review-text']}>{review.text}</p>
+                      <div className={styles.reviewer}>
+                        <img src={review.image} alt={review.author} />
+                        <div className={styles['reviewer-info']}>
+                          <h4>{review.author}</h4>
+                          <p>{review.title}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               ))}
             </div>
-          ))}
-          <div className={styles['review-indicators']}>
-            {reviewSlides.map((_, index) => (
-              <div
-                key={index}
-                className={`${styles['review-indicator']} ${currentReviewSlide === index ? styles.active : ''}`}
-                onClick={() => setCurrentReviewSlide(index)}
-              ></div>
-            ))}
           </div>
+          {!isMobile && (
+            <div className={styles['review-indicators']}>
+              {reviewSlides.map((_, index) => (
+                <div
+                  key={index}
+                  className={`${styles['review-indicator']} ${currentReviewSlide === index ? styles.active : ''}`}
+                  onClick={() => setCurrentReviewSlide(index)}
+                ></div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
