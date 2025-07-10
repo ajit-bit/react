@@ -9,18 +9,19 @@ import CartWishlist from './screens/CartWishlist';
 import AuthComponent from './screens/Auth';
 import Women from './screens/Women';
 import Men from './screens/Men';
-import Product from './screens/Product'; // Import the Product component
+import Product from './screens/Product';
+import Profile from './screens/Profile'; // Import the Profile component
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems, user }) => {
+const Layout = ({ children, hideNavbarFooter, setCartItems, setLikedItems, user, setUser }) => {
   const location = useLocation();
   return (
     <div className={`layout-container ${hideNavbarFooter ? 'auth-layout' : ''}`}>
-      {!hideNavbarFooter && <Navbar setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />}
+      {!hideNavbarFooter && <Navbar setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} setUser={setUser} />}
       <main className="main-content">{children}</main>
       {!hideNavbarFooter && <Footer />}
       <ToastContainer
@@ -95,7 +96,13 @@ const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
   };
 
   return (
-    <Layout hideNavbarFooter={hideNavbarFooter} setCartItems={setCartItems} setLikedItems={setLikedItems} user={user}>
+    <Layout
+      hideNavbarFooter={hideNavbarFooter}
+      setCartItems={setCartItems}
+      setLikedItems={setLikedItems}
+      user={user}
+      setUser={setUser}
+    >
       <Routes>
         <Route
           path="/category/:categoryName"
@@ -107,13 +114,34 @@ const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
         <Route path="/blogs" element={<Blogs />} />
         <Route
           path="/bag"
-          element={<CartWishlist type="cart" user={user} cartItems={cartItems} setCartItems={setCartItems} likedItems={likedItems} setLikedItems={setLikedItems} />}
+          element={
+            <CartWishlist
+              type="cart"
+              user={user}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              likedItems={likedItems}
+              setLikedItems={setLikedItems}
+            />
+          }
         />
         <Route
           path="/wishlist"
-          element={<CartWishlist type="wishlist" user={user} cartItems={cartItems} setCartItems={setCartItems} likedItems={likedItems} setLikedItems={setLikedItems} />}
+          element={
+            <CartWishlist
+              type="wishlist"
+              user={user}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              likedItems={likedItems}
+              setLikedItems={setLikedItems}
+            />
+          }
         />
-        <Route path="/auth" element={<AuthComponent onLogin={handleLogin} onLogout={handleLogout} />} />
+        <Route
+          path="/auth"
+          element={<AuthComponent onLogin={handleLogin} onLogout={handleLogout} />}
+        />
         <Route
           path="/women"
           element={<Women user={user} />}
@@ -125,6 +153,10 @@ const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
         <Route
           path="/product/:productId"
           element={<Product setCartItems={setCartItems} setLikedItems={setLikedItems} user={user} />}
+        />
+        <Route
+          path="/profile"
+          element={<Profile user={user} setUser={setUser} />}
         />
         <Route
           path="/"
