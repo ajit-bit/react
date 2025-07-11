@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingBag, Star, ArrowLeft } from 'lucide-react';
-import { toast, ToastContainer } from 'react-toastify';
+// src/components/Product.jsx
+
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ArrowLeft, Check, ChevronDown, Heart, ShoppingBag, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles/Product.module.css';
-import women1 from '../assets/images/women1.jpg';
-import men1 from '../assets/images/men1.jpg';
-import ring1 from '../assets/images/ring1.jpg';
-import earring from '../assets/images/earring.png';
-import earring1 from '../assets/images/earring1.jpg';
-import necklace from '../assets/images/ring.png';
-import necklace1 from '../assets/images/ring1.jpg';
-import ring from '../assets/images/ring.png';
+
+// ... (keep all your image imports)
 import bracelet from '../assets/images/bracelet.png';
 import bracelet1 from '../assets/images/bracelet1.jpg';
+import earring from '../assets/images/earring.png';
+import earring1 from '../assets/images/earring1.jpg';
+import men1 from '../assets/images/men1.jpg';
+import { default as necklace, default as ring } from '../assets/images/ring.png';
+import { default as necklace1, default as ring1 } from '../assets/images/ring1.jpg';
+import women1 from '../assets/images/women1.jpg';
 
-const Product = ({ setCartItems, setLikedItems }) => {
+
+const chProduct = ({ setCartItems, setLikedItems }) => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -26,8 +29,12 @@ const Product = ({ setCartItems, setLikedItems }) => {
   const [user, setUser] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Consolidated product data from Women.jsx, Men.jsx, and Category.jsx
-  const allProducts = [
+  const [quantity, setQuantity] = useState(1);
+  const [isAdded, setIsAdded] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState('description');
+
+  // ... (keep your allProducts array exactly the same)
+    const allProducts = [
     // From Women.jsx
     { id: '507f1f77bcf86cd799439071', name: 'Elegant Rose Ring', originalPrice: 1200, currentPrice: 949, reviews: 14, rating: 5, image: ring1, hoverImage: women1, description: 'A delicate rose gold ring with intricate floral detailing, perfect for everyday elegance or special occasions.', category: 'rings' },
     { id: '507f1f77bcf86cd799439072', name: 'Pearl Stud Necklace', originalPrice: 1000, currentPrice: 799, reviews: 9, rating: 4, image: ring1, hoverImage: women1, description: 'Elegant pearl stud necklace for a classic look.', category: 'necklaces' },
@@ -104,7 +111,7 @@ const Product = ({ setCartItems, setLikedItems }) => {
     { id: '507f1f77bcf86cd799439046', name: 'Elegant Charm Bracelet - Silver', originalPrice: 1200, currentPrice: 999, reviews: 540, rating: 4.7, image: bracelet, hoverImage: bracelet1, description: 'A luxurious silver charm bracelet with heart-shaped pendants, crafted for elegance and sophistication.', category: 'bracelets' },
     { id: '507f1f77bcf86cd799439047', name: 'Elegant Charm Bracelet - Silver', originalPrice: 1200, currentPrice: 999, reviews: 540, rating: 4.7, image: bracelet, hoverImage: bracelet1, description: 'A luxurious silver charm bracelet with heart-shaped pendants, crafted for elegance and sophistication.', category: 'bracelets' },
   ];
-
+  // ... (keep all your useEffects and data fetching functions here)
   useEffect(() => {
     if (!localStorage.getItem('sessionId')) {
       localStorage.setItem('sessionId', sessionId);
@@ -134,7 +141,7 @@ const Product = ({ setCartItems, setLikedItems }) => {
         setUser(null);
         await fetchLikedItems(sessionId);
         toast.error("Session expired, please log in again", {
-          className: styles['product-theme-toast'],
+          className: styles.toastError,
         });
       }
     } catch (err) {
@@ -142,7 +149,7 @@ const Product = ({ setCartItems, setLikedItems }) => {
       setUser(null);
       await fetchLikedItems(sessionId);
       toast.error("Failed to check login status", {
-        className: styles['product-theme-toast'],
+        className: styles.toastError,
       });
     }
   };
@@ -153,7 +160,7 @@ const Product = ({ setCartItems, setLikedItems }) => {
       setProduct(foundProduct);
       setSelectedImage(foundProduct.image);
     } else {
-      toast.error("Product not found", { className: styles['product-theme-toast'] });
+      toast.error("Product not found", { className: styles.toastError });
       navigate('/products');
     }
   };
@@ -183,7 +190,7 @@ const Product = ({ setCartItems, setLikedItems }) => {
       console.error("Error fetching cart items:", err);
       setCartItems([]);
       toast.error("Failed to fetch cart items", {
-        className: styles['product-theme-toast'],
+        className: styles.toastError,
       });
     }
   };
@@ -213,44 +220,49 @@ const Product = ({ setCartItems, setLikedItems }) => {
       console.error("Error fetching liked items:", err);
       setLikedItems([]);
       toast.error("Failed to fetch liked items", {
-        className: styles['product-theme-toast'],
+        className: styles.toastError,
       });
     }
   };
-
-  const addToCart = async (productId) => {
-    if (!product) {
-      toast.error("Product not found", { className: styles['product-theme-toast'] });
-      return;
-    }
+  
+  const handleAddToCart = async () => {
+    if (!product || isAdded) return;
 
     setLoading(prev => ({ ...prev, cart: true }));
     try {
+      // ... (API call logic is the same)
       const token = localStorage.getItem('token');
       const headers = token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
-      const body = user
-        ? { productId, name: product.name, price: product.currentPrice, imageUrl: product.image }
-        : { productId, name: product.name, price: product.currentPrice, imageUrl: product.image, sessionId };
+      const body = {
+        productId: product.id,
+        name: product.name,
+        price: product.currentPrice,
+        imageUrl: product.image,
+        quantity,
+        ...(user ? {} : { sessionId })
+      };
+      
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers,
         credentials: "include",
         body: JSON.stringify(body),
       });
+
       if (response.ok) {
         await fetchCartItems(user ? user.id : sessionId);
-        toast.success("Added to Cart!", {
-          className: styles['product-theme-toast'],
+        toast.success("Added to Bag!", {
+          className: styles.toastSuccess,
         });
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to add to cart");
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error(err.message || "Failed to add to cart", {
-        className: styles['product-theme-toast'],
-      });
+      toast.error(err.message || "Failed to add to cart", { className: styles.toastError });
     } finally {
       setLoading(prev => ({ ...prev, cart: false }));
     }
@@ -258,12 +270,13 @@ const Product = ({ setCartItems, setLikedItems }) => {
 
   const addToWishlist = async (productId) => {
     if (!product) {
-      toast.error("Product not found", { className: styles['product-theme-toast'] });
+      toast.error("Product not found", { className: styles.toastError });
       return;
     }
 
     setLoading(prev => ({ ...prev, wishlist: true }));
     try {
+      // ... (API call logic is the same)
       const token = localStorage.getItem('token');
       const headers = token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
       const endpoint = likedProducts.has(productId) ? "/api/liked/remove" : "/api/liked/add";
@@ -276,10 +289,12 @@ const Product = ({ setCartItems, setLikedItems }) => {
         credentials: "include",
         body: JSON.stringify(body),
       });
+
       if (response.ok) {
         await fetchLikedItems(user ? user.id : sessionId);
-        toast.success(likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!", {
-          className: styles['product-theme-toast'],
+        const message = likedProducts.has(productId) ? "Removed from Wishlist!" : "Added to Wishlist!";
+        toast.success(message, {
+          className: styles.toastSuccess,
         });
       } else {
         const errorData = await response.json();
@@ -287,113 +302,127 @@ const Product = ({ setCartItems, setLikedItems }) => {
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
-      toast.error(err.message || "Failed to update wishlist", {
-        className: styles['product-theme-toast'],
-      });
+      toast.error(err.message || "Failed to update wishlist", { className: styles.toastError });
     } finally {
       setLoading(prev => ({ ...prev, wishlist: false }));
     }
   };
 
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`${styles.star} ${
-          i < Math.floor(rating)
-            ? styles.filled
-            : i < rating
-            ? styles['half-filled']
-            : ''
-        }`}
-      />
-    ));
+  // --- HELPER FUNCTIONS MOVED HERE ---
+  const renderStars = (rating) => Array.from({ length: 5 }, (_, i) => <Star key={i} className={`${styles.star} ${i < rating ? styles.filled : ''}`} />);
+  
+  const handleQuantityChange = (amount) => {
+    setQuantity(prev => Math.max(1, prev + amount));
   };
 
+  const calculateDiscount = (original, current) => {
+    if (original <= current) return 0;
+    return Math.round(((original - current) / original) * 100);
+  };
+
+  // --- RENDER LOGIC STARTS HERE ---
   if (!product) {
     return <div className="container text-center py-5">Loading...</div>;
   }
+  
+  const discount = calculateDiscount(product.originalPrice, product.currentPrice);
 
   return (
-    <div className={`${styles['product-page']} container-fluid px-0 py-4`} style={{ paddingTop: '120px' }}>
+    <div className={styles.productPage}>
       <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
+        position="bottom-right"
+        autoClose={2500}
+        hideProgressBar
         newestOnTop={false}
         closeOnClick
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
         pauseOnHover
         theme="light"
       />
+      
       <div className="container">
-        {/* Back Button */}
-        <button
-          className="btn btn-outline-secondary mb-3 d-flex align-items-center gap-2"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className={styles['back-icon']} />
-          <span>Back</span>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <ArrowLeft size={18} />
+          <span>Back to products</span>
         </button>
-        <div className="row g-4">
-          {/* Image Section */}
+        <div className="row g-4 g-lg-5">
           <div className="col-lg-6">
-            <div className={styles['image-container']}>
-              <img
-                src={selectedImage}
-                alt={product.name}
-                className={`${styles['main-image']} w-100 h-auto object-fit-contain rounded`}
-              />
-              <div className="d-flex flex-wrap gap-2 mt-3">
-                {[product.image, product.hoverImage].map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`${product.name} view ${index + 1}`}
-                    className={`${styles['thumbnail-image']} rounded cursor-pointer`}
-                    onClick={() => setSelectedImage(img)}
-                    style={{ width: '80px', height: '80px', objectFit: 'cover', border: selectedImage === img ? '2px solid #ffc107' : '1px solid #ddd' }}
-                  />
+            <div className={styles.imagePanel}>
+              <div className={styles.imageZoomContainer}>
+                <img key={selectedImage} src={selectedImage} alt={product.name} className={styles.mainImage} />
+              </div>
+              <div className={styles.thumbnailContainer}>
+                {[product.image, product.hoverImage].filter(Boolean).map((img, index) => (
+                  <img key={index} src={img} alt={`${product.name} view ${index + 1}`} className={`${styles.thumbnailImage} ${selectedImage === img ? styles.thumbnailActive : ''}`} onClick={() => setSelectedImage(img)} />
                 ))}
               </div>
             </div>
           </div>
-          {/* Details Section */}
           <div className="col-lg-6">
-            <h1 className="display-5 fw-bold mb-3">{product.name}</h1>
-            <div className="d-flex align-items-center mb-3">
-              <div className={styles['stars-container']}>{renderStars(product.rating)}</div>
-              <span className="ms-2 text-muted">{product.reviews} reviews</span>
-            </div>
-            <div className={styles['price-container']}>
-              <span className={styles['current-price']}>Rs. {product.currentPrice.toFixed(2)}</span>
-              <span className={styles['original-price']}>Rs. {product.originalPrice.toFixed(2)}</span>
-            </div>
-            <p className="text-muted my-4">{product.description}</p>
-            <div className="d-flex align-items-center gap-2 mb-4">
-              <button
-                className="btn btn-warning text-dark fw-bold flex-grow-1 d-flex align-items-center justify-content-center gap-2 py-2"
-                onClick={() => addToCart(product.id)}
-                disabled={loading.cart}
-              >
-                <ShoppingBag className={styles['bag-icon']} />
-                <span>{loading.cart ? 'Adding...' : 'Add to Bag'}</span>
-              </button>
-              <button
-                onClick={() => addToWishlist(product.id)}
-                className={`btn btn-outline-secondary rounded-circle p-2 ${likedProducts.has(product.id) ? styles.liked : ''}`}
-                disabled={loading.wishlist}
-              >
-                <Heart
-                  className={`${styles['heart-icon']} ${likedProducts.has(product.id) ? styles.liked : ''}`}
-                />
-              </button>
-            </div>
-            <div>
-              <h5>Category</h5>
-              <p className="text-capitalize">{product.category}</p>
+            <div className={styles.detailsPanel}>
+              <h1 className={styles.productTitle}>{product.name}</h1>
+              <div className={styles.reviewContainer}>
+                <div className={styles.starsContainer}>{renderStars(product.rating)}</div>
+                <a href="#reviews" className={styles.reviewCount}>{product.reviews} reviews</a>
+              </div>
+              <div className={styles.priceContainer}>
+                <span className={styles.currentPrice}>Rs. {product.currentPrice.toFixed(2)}</span>
+                <span className={styles.originalPrice}>Rs. {product.originalPrice.toFixed(2)}</span>
+                {discount > 0 && <span className={styles.discountBadge}>{discount}% OFF</span>}
+              </div>
+              
+              <div className={styles.actionsGrid}>
+                <div className={styles.quantitySelector}>
+                  <button onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>-</button>
+                  <input type="text" value={quantity} readOnly />
+                  <button onClick={() => handleQuantityChange(1)}>+</button>
+                </div>
+                <button
+                  className={`${styles.addToCartButton} ${isAdded ? styles.addedToCartButton : ''}`}
+                  onClick={handleAddToCart}
+                  disabled={loading.cart || isAdded}
+                >
+                  {isAdded ? (
+                    <>
+                      <Check size={22} />
+                      <span>Added!</span>
+                    </>
+                  ) : loading.cart ? (
+                    <span>Adding...</span>
+                  ) : (
+                    <>
+                      <ShoppingBag size={22} />
+                      <span>Add to Bag</span>
+                    </>
+                  )}
+                </button>
+                <button onClick={() => addToWishlist(product.id)} className={`${styles.wishlistButton} ${likedProducts.has(product.id) ? styles.liked : ''}`} disabled={loading.wishlist} aria-label="Add to wishlist">
+                  <Heart className={styles.heartIcon} size={22} />
+                </button>
+              </div>
+
+              <div className={styles.accordion}>
+                <div className={styles.accordionItem}>
+                  <button className={styles.accordionHeader} onClick={() => setOpenAccordion(openAccordion === 'description' ? null : 'description')}>
+                    <span>Product Description</span>
+                    <ChevronDown className={`${styles.accordionIcon} ${openAccordion === 'description' ? styles.accordionIconOpen : ''}`} />
+                  </button>
+                  <div className={`${styles.accordionContent} ${openAccordion === 'description' ? styles.accordionContentOpen : ''}`}>
+                    <p>{product.description}</p>
+                  </div>
+                </div>
+                <div className={styles.accordionItem}>
+                  <button className={styles.accordionHeader} onClick={() => setOpenAccordion(openAccordion === 'details' ? null : 'details')}>
+                    <span>Materials & Care</span>
+                    <ChevronDown className={`${styles.accordionIcon} ${openAccordion === 'details' ? styles.accordionIconOpen : ''}`} />
+                  </button>
+                  <div className={`${styles.accordionContent} ${openAccordion === 'details' ? styles.accordionContentOpen : ''}`}>
+                    <p>Crafted from premium 925 Sterling Silver with 18k Gold Plating. To maintain its shine, avoid contact with perfumes and lotions. Clean gently with a soft, dry cloth.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

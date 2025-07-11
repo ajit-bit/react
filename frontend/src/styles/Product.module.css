@@ -1,87 +1,377 @@
-.product-page {
+/* src/styles/Product.module.css */
+
+/* Keep ALL styles from the previous version until the very end of the file */
+
+/* ... (all the styles for .productPage, animations, .backButton, .imagePanel, .detailsPanel, etc. remain the same) ... */
+
+/* General Page Setup */
+.productPage {
   background-color: #f8f9fa;
-  padding-top: 120px; /* Increased to 120px to ensure product name is visible below fixed navbar */
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
   position: relative;
   z-index: 900;
+  overflow-x: hidden; /* Prevent horizontal scroll from animations */
 }
 
-.image-container {
-  background-color: #fff;
+/* Animations */
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.backButton:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+/* Image Panel & Zoom */
+.imagePanel {
+  background-color: #ffffff;
   padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 100px;
+}
+
+.imageZoomContainer {
+  overflow: hidden;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: zoom-in;
 }
 
-.main-image {
-  max-height: 500px;
+.mainImage {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: cover;
+  border-radius: 8px;
+  animation: fadeIn 0.4s ease-in-out;
+  transition: transform 0.3s ease;
 }
 
-.thumbnail-image {
+.imageZoomContainer:hover .mainImage {
+  transform: scale(1.15);
+}
+
+.thumbnailContainer {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.thumbnailImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
   cursor: pointer;
-  transition: border 0.2s ease;
+  opacity: 0.8;
+  transition: all 0.2s ease-in-out;
 }
 
-.thumbnail-image:hover {
-  border: 2px solid #ffc107 !important;
+.thumbnailImage:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  border-color: #dee2e6;
 }
 
-.price-container {
+.thumbnailActive {
+  border-color: #ffc107;
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Details Panel */
+.detailsPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Applying Staggered Animations */
+.detailsPanel > * {
+  animation: stagger-in 0.6s ease-out both;
+}
+
+.productTitle { animation-delay: 0.1s; font-size: 2.5rem; font-weight: 700; line-height: 1.2; color: #212529; }
+.reviewContainer { animation-delay: 0.2s; display: flex; align-items: center; gap: 12px; }
+.priceContainer { animation-delay: 0.3s; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.actionsGrid { animation-delay: 0.4s; }
+.accordion { animation-delay: 0.5s; }
+
+.starsContainer { display: flex; gap: 4px; }
+.star { width: 20px; height: 20px; color: #dee2e6; }
+.star.filled { color: #ffc107; }
+
+.reviewCount {
+  font-size: 0.9rem;
+  color: #6c757d;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all .2s ease;
+}
+.reviewCount:hover { color: #212529; border-bottom-color: #adb5bd;}
+
+.currentPrice { font-size: 2rem; font-weight: 700; color: #000; }
+.originalPrice { font-size: 1.1rem; color: #6c757d; text-decoration: line-through; }
+
+.discountBadge {
+  background-color: #fdf2f2;
+  color: #dc3545;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Actions Grid (Quantity + Buttons) */
+.actionsGrid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.quantitySelector {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.current-price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-}
-
-.original-price {
-  font-size: 1rem;
-  color: #6c757d;
-  text-decoration: line-through;
-}
-
-.stars-container {
-  display: flex;
-  gap: 5px;
-}
-
-.star {
-  width: 20px;
-  height: 20px;
-  color: #ccc;
-}
-
-.star.filled {
-  color: #ffc107;
-}
-
-.star.half-filled {
-  color: #ffc107;
-}
-
-.bag-icon, .heart-icon, .back-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.heart-icon.liked {
-  fill: #dc3545;
-  color: #dc3545;
-}
-
-.product-theme-toast {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
   background-color: #fff;
-  color: #000;
-  border: 1px solid #ffc107;
 }
 
-/* Responsive adjustments */
+.quantitySelector button {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 300;
+  padding: 0 12px;
+  height: 53px;
+  cursor: pointer;
+  color: #495057;
+  transition: background-color 0.2s;
+}
+.quantitySelector button:hover:not(:disabled) { background-color: #f8f9fa; }
+.quantitySelector button:disabled { cursor: not-allowed; opacity: 0.5; }
+.quantitySelector button:first-of-type { border-right: 1px solid #dee2e6; }
+.quantitySelector button:last-of-type { border-left: 1px solid #dee2e6; }
+
+.quantitySelector input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.quantitySelector input:focus { outline: none; }
+
+.addToCartButton {
+  grid-column: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  height: 55px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #ffc107, #ffdb6e);
+  color: #212529;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.addToCartButton:hover:not(:disabled) {
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+  transform: translateY(-3px);
+}
+.addToCartButton.addedToCartButton {
+  background: linear-gradient(45deg, #28a745, #34c759);
+  color: white;
+}
+.addToCartButton:disabled { cursor: not-allowed; opacity: 0.8; }
+
+.wishlistButton {
+  grid-column: 3 / 4;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.wishlistButton:hover:not(:disabled) { border-color: #adb5bd; background-color: #f8f9fa; transform: translateY(-3px); }
+.wishlistButton.liked { border-color: #dc3545; background-color: #fdf2f2; }
+.wishlistButton.liked .heartIcon { fill: #dc3545; color: #dc3545; animation: heartBeat 0.4s ease-in-out; }
+.heartIcon { color: #6c757d; transition: all 0.2s ease-in-out; }
+
+/* Accordion */
+.accordion {
+  border-top: 1px solid #e9ecef;
+  padding-top: 24px;
+}
+.accordionItem { border-bottom: 1px solid #e9ecef; }
+.accordionHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  cursor: pointer;
+}
+.accordionIcon { transition: transform 0.3s ease; }
+.accordionIconOpen { transform: rotate(180deg); }
+.accordionContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+.accordionContent p {
+  padding: 0 0 16px 0;
+  margin: 0;
+  line-height: 1.6;
+  color: #495057;
+}
+.accordionContentOpen { max-height: 200px; /* Adjust if content is longer */ }
+
+
+/* Toast Notification Styling */
+.toastSuccess, .toastError {
+  background-color: #fff !important;
+  color: #333 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 10px 16px !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+}
+
+.toastSuccess {
+  border-left: 5px solid #28a745 !important; /* Green for success */
+}
+
+.toastError {
+  border-left: 5px solid #dc3545 !important; /* Red for error */
+}
+
+/* Style the close button */
+.toastSuccess .Toastify__close-button, .toastError .Toastify__close-button {
+  color: #999 !important;
+  opacity: 0.8 !important;
+}
+.toastSuccess .Toastify__close-button:hover, .toastError .Toastify__close-button:hover {
+  opacity: 1 !important;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+  .productPage {
+    padding-top: 80px;
+  }
+
+  .imagePanel {
+    position: static; /* Remove sticky behavior on scroll */
+  }
+
+  .productTitle {
+    font-size: 2rem;
+  }
+}
+
 @media (max-width: 767.98px) {
-  .product-page {
-    padding-top: 90px; /* Adjusted for mobile with smaller navbar height (50px + 40px buffer) */
+  .detailsPanel {
+    gap: 20px;
+  }
+  
+  /* Center align text content on mobile */
+  .productTitle, .reviewContainer, .priceContainer {
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* Mobile Button Layout */
+  .actionsGrid {
+    display: flex; /* Change from grid to flex */
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: 12px;
+  }
+
+  .addToCartButton {
+    order: 1; /* Appears in the first row */
+    flex-grow: 1; /* Takes up available space next to wishlist button */
+    height: 50px; /* Slightly smaller for mobile */
+    font-size: 1rem;
+  }
+
+  .wishlistButton {
+    order: 2; /* Appears in the first row */
+    height: 50px;
+    width: 50px;
+    flex-shrink: 0; /* Prevents it from shrinking */
+  }
+
+  .quantitySelector {
+    order: 3; /* Appears in the second row */
+    width: 100%; /* Takes full width */
+    justify-content: center; /* Centers the content */
+    height: 50px;
+  }
+
+  .quantitySelector button {
+    height: 48px;
+  }
+}
+
+/* --- NEW DESKTOP-ONLY TOAST POSITION --- */
+@media (min-width: 768px) {
+  /* This targets the container react-toastify creates */
+  .Toastify__toast-container--bottom-center {
+    bottom: 1em;
+    right: 1em;
+    left: auto;
+    transform: translateX(0);
   }
 }
