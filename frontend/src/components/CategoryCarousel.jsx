@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import styles from '../styles/CategoryCarousel.module.css';
-import ring1 from '../assets/images/ring1.jpg';
+import ring1 from '../assets/images/ring1.jpg'; // Using a placeholder image
 
+// Reordered to match the image
 const categories = [
+  { name: 'PENDANTS', img: ring1 },
   { name: 'MANGALSUTRA', img: ring1 },
   { name: 'NECKLACE', img: ring1 },
   { name: 'RING', img: ring1 },
   { name: 'BRACELET', img: ring1 },
   { name: 'EARRINGS', img: ring1 },
-  { name: 'PENDANTS', img: ring1 },
 ];
 
 const loopedCategories = [...categories, ...categories];
 
 const CategoryCarousel = () => {
+  // CORRECTED THIS LINE: removed the extra '='
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitionDisabled, setTransitionDisabled] = useState(false);
   const trackRef = useRef(null);
@@ -61,8 +63,10 @@ const CategoryCarousel = () => {
   const itemWidth = 270;
   
   return (
-    <Container as="section" className="py-5 text-center">
-      <h1 className={`h2 ${styles.carouselTitle}`}>Everyday Demi-fine Jewellery</h1>
+    // Added a section class for the background color
+    <Container as="section" className={`${styles.carouselSection} py-5 text-center`}>
+      {/* Removed the 'h2' class to let our custom style take over */}
+      <h1 className={styles.carouselTitle}>Everyday Demi-fine Jewellery</h1>
       <div className={`${styles.categoryCarouselContainer} mt-4`}>
         <div 
           ref={trackRef}
@@ -79,7 +83,10 @@ const CategoryCarousel = () => {
             </div>
           ))}
         </div>
-        <Button variant="light" className={`${styles.nextBtn} shadow`} onClick={handleNext}>❯</Button>
+        {/* Changed to a standard HTML button for full styling control */}
+        <button className={styles.nextBtn} onClick={handleNext} aria-label="Next category">
+          ❯
+        </button>
       </div>
     </Container>
   );

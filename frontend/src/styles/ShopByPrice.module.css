@@ -1,11 +1,11 @@
-.shopByPriceSection {
+.shopByPriceSection {    
   background: #fffaf5;
 }
 
 .shopByPriceSection .sectionTitle {
     font-family: 'Lora', serif;
     font-weight: 500;
-    color:#FFC107 ;
+    color: #d4af37; /* Changed to match button and underline for consistency */
 }
 
 .shopByPriceSection .sectionTitle::after {
@@ -33,6 +33,7 @@
   font-size: 1rem;
   font-weight: 500;
   color: #5c4c3c;
+  margin-bottom: 0;
 }
 
 .priceValue {
@@ -44,18 +45,26 @@
 }
 
 .priceBtn {
+  background: #007bff; /* This is the blue color you were seeing */
+  /* Your desired golden color is below, now it will apply correctly! */
   background: #d4af37;
   border: none;
   color: #fff;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  /* Using a fixed value to get the rounded square from the image */
+  border-radius: 8px;
+  width: 45px;
+  height: 45px;
   cursor: pointer;
   transition: background .3s ease;
+  
+  /* Added these lines to perfectly center the arrow icon */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .priceBtn:hover {
-  background: #b89227;
+  background: #b89227; /* Darker gold for hover effect */
 }
 
 .priceCard.premium {
@@ -66,4 +75,13 @@
 .priceCard.premium .priceLabel,
 .priceCard.premium .priceValue {
   color: #a75d5d;
+}
+
+/* Optional: Style the button on the premium card to match its theme */
+.priceCard.premium .priceBtn {
+  background: #a75d5d;
+}
+
+.priceCard.premium .priceBtn:hover {
+  background: #8e4a4a;
 }

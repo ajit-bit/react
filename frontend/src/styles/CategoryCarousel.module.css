@@ -10,7 +10,6 @@
   transition: transform 0.8s ease-in-out;
 }
 
-
 .categoryCarouselTrack.noTransition {
   transition: none;
 }
@@ -21,21 +20,27 @@
   padding: 10px;
 }
 
+/* Updated styles to match the image */
 .categoryCarouselName {
-  color: black;
+  color: #383838;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
 }
 
 .circleImage {
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  background-color: #fcf9f3;
+  background-color: #ffffff; /* Changed to pure white */
   margin: auto;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  /* Added a subtle shadow inside for depth */
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.07));
 }
 
 .circleImage img {
@@ -49,23 +54,40 @@
   transform: scale(1.05);
 }
 
+/* Updated button style to match the image */
 .nextBtn {
   position: absolute;
-  top: 50%;
+  top: 125px; /* Vertically centers on the 250px image */
   transform: translateY(-50%);
-  right: 15px;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
   z-index: 2;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px; /* Changed from circle to rounded square */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease;
 }
 
+.nextBtn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Updated Title styles to override Bootstrap and match the image */
 .carouselTitle {
-   font-family: 'Lora', serif;
-    font-weight: 500;
-    color:#FFC107 ;
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  color: #FFC107;
+  text-align: center;
+  font-size: 2.25rem; /* Replaces the font-size from the 'h2' class */
 }
 
 
@@ -77,6 +99,9 @@
     width: 180px;
     height: 180px;
   }
+  .nextBtn {
+    top: 90px;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -86,5 +111,8 @@
   .circleImage {
     width: 200px;
     height: 200px;
+  }
+  .nextBtn {
+    top: 100px;
   }
 }

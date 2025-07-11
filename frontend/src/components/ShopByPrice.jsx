@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+// Note: 'Button' is no longer imported from 'react-bootstrap'
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import styles from '../styles/ShopByPrice.module.css';
 
 const ShopByPrice = () => {
@@ -13,7 +14,10 @@ const ShopByPrice = () => {
               <Card.Body>
                 <p className={styles.priceLabel}>Under</p>
                 <p className={styles.priceValue}>₹999</p>
-                <Button className={styles.priceBtn}><i className="fas fa-chevron-right"></i></Button>
+                {/* Changed to a standard HTML button */}
+                <button className={styles.priceBtn} aria-label="Shop under 999">
+                  <i className="fas fa-chevron-right"></i>
+                </button>
               </Card.Body>
             </Card>
           </Col>
@@ -22,7 +26,10 @@ const ShopByPrice = () => {
               <Card.Body>
                 <p className={styles.priceLabel}>Under</p>
                 <p className={styles.priceValue}>₹2999</p>
-                <Button className={styles.priceBtn}><i className="fas fa-chevron-right"></i></Button>
+                {/* Changed to a standard HTML button */}
+                <button className={styles.priceBtn} aria-label="Shop under 2999">
+                  <i className="fas fa-chevron-right"></i>
+                </button>
               </Card.Body>
             </Card>
           </Col>
@@ -31,7 +38,10 @@ const ShopByPrice = () => {
               <Card.Body>
                 <p className={styles.priceLabel}>Under</p>
                 <p className={styles.priceValue}>₹4999</p>
-                <Button className={styles.priceBtn}><i className="fas fa-chevron-right"></i></Button>
+                {/* Changed to a standard HTML button */}
+                <button className={styles.priceBtn} aria-label="Shop under 4999">
+                  <i className="fas fa-chevron-right"></i>
+                </button>
               </Card.Body>
             </Card>
           </Col>
@@ -40,7 +50,10 @@ const ShopByPrice = () => {
               <Card.Body>
                 <p className={styles.priceLabel}>Premium</p>
                 <p className={styles.priceValue}>Gifts</p>
-                <Button className={styles.priceBtn}><i className="fas fa-chevron-right"></i></Button>
+                {/* Changed to a standard HTML button */}
+                <button className={styles.priceBtn} aria-label="Shop premium gifts">
+                  <i className="fas fa-chevron-right"></i>
+                </button>
               </Card.Body>
             </Card>
           </Col>
