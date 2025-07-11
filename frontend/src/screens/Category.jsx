@@ -46,6 +46,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
         reviews: 520,
         image: earring,
         hoverImage: earring1,
+        description: 'Elegant silver drop earrings for a sophisticated look.',
+        category: 'earrings',
         badge: null,
       })),
     },
@@ -62,6 +64,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
         reviews: 820,
         image: necklace,
         hoverImage: necklace1,
+        description: 'Gold necklace with radiant gemstones.',
+        category: 'necklaces',
         badge: null,
       })),
     },
@@ -78,6 +82,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
         reviews: 670,
         image: ring,
         hoverImage: ring1,
+        description: 'Rose gold ring with a bold, modern design.',
+        category: 'rings',
         badge: null,
       })),
     },
@@ -94,6 +100,8 @@ const Category = ({ setCartItems, setLikedItems }) => {
         reviews: 540,
         image: bracelet,
         hoverImage: bracelet1,
+        description: 'Silver charm bracelet with heart-shaped pendants.',
+        category: 'bracelets',
         badge: null,
       })),
     },
@@ -339,7 +347,12 @@ const Category = ({ setCartItems, setLikedItems }) => {
         {currentCategory.products && currentCategory.products.length > 0 ? (
           <div className={`${styles['products-scroll-container']} d-flex flex-row gap-3 flex-nowrap overflow-auto px-3`}>
             {currentCategory.products.map((product) => (
-              <div key={product.id} className={`${styles['product-card']} flex-shrink-0`}>
+              <div 
+                key={product.id} 
+                className={`${styles['product-card']} flex-shrink-0`} 
+                onClick={() => navigate(`/product/${product.id}`)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles['product-image-container']}>
                   <div className={styles['product-image-wrapper']}>
                     <img
@@ -355,7 +368,7 @@ const Category = ({ setCartItems, setLikedItems }) => {
                     {product.badge && <span className={styles['product-badge']}>{product.badge}</span>}
                   </div>
                 </div>
-                <div className="p-2">
+                <div className="p-2" onClick={(e) => e.stopPropagation()}>
                   <h3 className={styles['product-name']}>{product.name}</h3>
                   <div className={styles['rating-container']}>
                     <div className={styles['stars-container']}>{renderStars(product.rating)}</div>

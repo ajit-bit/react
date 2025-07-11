@@ -1,13 +1,42 @@
+/* Ensure the layout container takes up the full viewport height and uses flexbox for layout */
 .layout-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
+/* Navbar is fixed at the top */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Ensure navbar stays above other content */
+  height: 60px; /* Adjust based on your Navbar component's actual height */
+}
+
+/* Main content adjusts for fixed navbar and footer */
 .main-content {
   flex: 1;
+  padding-top: 70px; /* Space for fixed navbar (60px height + 10px margin) */
+  padding-bottom: 110px; /* Space for fixed footer (100px height + 10px margin) */
+  min-height: calc(100vh - 160px); /* Ensure content fills remaining space (100vh - navbar - footer) */
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
 
+/* Footer is fixed at the bottom */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px; /* Adjust based on your Footer component's actual height */
+  z-index: 1000; /* Ensure footer stays above other content */
+  background-color: #f8f9fa; /* Match Product.jsx background for consistency */
+}
+
+/* Auth layout for /auth route (no navbar or footer) */
 .auth-layout {
   padding: 0;
   margin: 0;
@@ -19,15 +48,39 @@
 .auth-layout .main-content {
   padding: 0;
   margin: 0;
-  height: 100%;
+  flex: 1;
+  height: 100vh; /* Full viewport height for auth page */
+  overflow-y: auto; /* Allow scrolling if auth content overflows */
 }
 
-@media (min-width: 768px) {
-  .layout-container {
-    padding-top: 60px; /* Adjust based on your Navbar height if needed */
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .navbar {
+    height: 50px; /* Smaller navbar height for mobile */
+  }
+
+  .main-content {
+    padding-top: 60px; /* Adjust for smaller navbar */
+    padding-bottom: 110px; /* Same footer space */
+    min-height: calc(100vh - 150px); /* Adjust for smaller navbar height */
+  }
+
+  .footer {
+    height: 100px; /* Same footer height, adjustable if needed */
   }
 }
 
-.auth-layout {
-  padding-top: 0 !important; /* Override any default padding */
+@media (min-width: 768px) {
+  .main-content {
+    padding-left: 15px; /* Match Bootstrap container padding */
+    padding-right: 15px;
+  }
+}
+
+/* Ensure no content is hidden on smaller screens */
+@media (max-width: 576px) {
+  .main-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }

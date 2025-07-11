@@ -68,46 +68,46 @@ const Men = ({ setCartItems, setLikedItems }) => {
     {
       name: 'Alpha Sports Collection',
       products: [
-        { id: '507f1f77bcf86cd799439051', name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439052', name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439053', name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439054', name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439051', name: 'Silver Voltage Necklace', originalPrice: 720, currentPrice: 549, reviews: 12, rating: 4, image: ring1, hoverImage: men1, description: 'Bold silver necklace with a modern design.', category: 'necklaces' },
+        { id: '507f1f77bcf86cd799439052', name: 'Black Voltage Necklace', originalPrice: 900, currentPrice: 599, reviews: 4, rating: 4, image: ring1, hoverImage: men1, description: 'Sleek black necklace for a bold statement.', category: 'necklaces' },
+        { id: '507f1f77bcf86cd799439053', name: 'Bag Mitts Golden Chain', originalPrice: 1050, currentPrice: 749, reviews: 2, rating: 3, image: ring1, hoverImage: men1, description: 'Golden chain with a sporty edge.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439054', name: 'Bag Mitts Silver Cuff', originalPrice: 1300, currentPrice: 699, reviews: 4, rating: 2, image: ring1, hoverImage: men1, description: 'Silver cuff for a rugged look.', category: 'bracelets' },
       ],
     },
     {
       name: 'Icy and Spicy Jewellery',
       products: [
-        { id: '507f1f77bcf86cd799439055', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439056', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439057', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439058', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439055', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1, description: 'Edgy silver chain with a bold design.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439056', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1, description: 'Golden chain with a striking look.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439057', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1, description: 'Golden earrings with diamond accents.', category: 'earrings' },
+        { id: '507f1f77bcf86cd799439058', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1, description: 'Unique silver chain with a leaf motif.', category: 'chains' },
       ],
     },
     {
       name: 'Alpha BestSellers',
       products: [
-        { id: '507f1f77bcf86cd799439059', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439060', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439061', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439062', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439059', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1, description: 'Edgy silver chain with a bold design.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439060', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1, description: 'Golden chain with a striking look.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439061', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1, description: 'Golden earrings with diamond accents.', category: 'earrings' },
+        { id: '507f1f77bcf86cd799439062', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1, description: 'Unique silver chain with a leaf motif.', category: 'chains' },
       ],
     },
     {
       name: 'The Halloween Collection',
       products: [
-        { id: '507f1f77bcf86cd799439063', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439064', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439065', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439066', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439063', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1, description: 'Edgy silver chain with a bold design.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439064', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1, description: 'Golden chain with a striking look.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439065', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1, description: 'Golden earrings with diamond accents.', category: 'earrings' },
+        { id: '507f1f77bcf86cd799439066', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1, description: 'Unique silver chain with a leaf motif.', category: 'chains' },
       ],
     },
     {
       name: 'The Sicko Jewellery Collection',
       products: [
-        { id: '507f1f77bcf86cd799439067', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439068', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439069', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1 },
-        { id: '507f1f77bcf86cd799439070', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1 },
+        { id: '507f1f77bcf86cd799439067', name: 'Ak 47 Silver Chain', originalPrice: 630, currentPrice: 549, reviews: 21, rating: 4, image: ring1, hoverImage: men1, description: 'Edgy silver chain with a bold design.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439068', name: 'Ak 47 Golden Chain', originalPrice: 630, currentPrice: 549, reviews: 13, rating: 3, image: ring1, hoverImage: men1, description: 'Golden chain with a striking look.', category: 'chains' },
+        { id: '507f1f77bcf86cd799439069', name: 'Diamond Golden Tidbit Earrings', originalPrice: 900, currentPrice: 699, reviews: 6, rating: 3, image: ring1, hoverImage: men1, description: 'Golden earrings with diamond accents.', category: 'earrings' },
+        { id: '507f1f77bcf86cd799439070', name: 'Cannabis Leaf Silver Chain', originalPrice: 1050, currentPrice: 799, reviews: 9, rating: 5, image: ring1, hoverImage: men1, description: 'Unique silver chain with a leaf motif.', category: 'chains' },
       ],
     },
   ];
@@ -355,7 +355,12 @@ const Men = ({ setCartItems, setLikedItems }) => {
           <button className={styles.viewMore} onClick={() => navigate('/collections')}>View All</button>
           <div className={styles.productsGrid}>
             {collection.products.map((product) => (
-              <div key={product.id} className={styles.productCard}>
+              <div 
+                key={product.id} 
+                className={styles.productCard} 
+                onClick={() => navigate(`/product/${product.id}`)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles['product-image-container']}>
                   <div className={styles['product-image-wrapper']}>
                     <img
@@ -382,7 +387,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
                       <span className={styles['original-price']}>Rs. {product.originalPrice.toFixed(2)}</span>
                     </div>
                   </div>
-                  <div className={styles['action-buttons']}>
+                  <div className={styles['action-buttons']} onClick={(e) => e.stopPropagation()}>
                     <button
                       className={styles['add-to-bag-button']}
                       onClick={() => addToCart(product.id)}

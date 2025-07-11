@@ -33,7 +33,7 @@ const authMiddleware = (req, res, next) => {
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173'], // Allow frontend origin
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], // Allow necessary methods
+     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
   credentials: true, // Allow credentials (cookies, tokens)
 }));
