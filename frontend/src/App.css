@@ -6,22 +6,23 @@
   overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-/* Navbar is fixed at the top */
+/* Navbar is fixed at the top with increased minimum distance */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000; /* Ensure navbar stays above other content */
-  height: 60px; /* Adjust based on your Navbar component's actual height */
+  height: 80px; /* Increased height for better spacing */
+  padding: 10px 20px; /* Added padding for internal spacing */
 }
 
-/* Main content adjusts for fixed navbar and footer */
+/* Main content adjusts for fixed navbar and footer with increased top padding */
 .main-content {
   flex: 1;
-  padding-top: 70px; /* Space for fixed navbar (60px height + 10px margin) */
+  padding-top: 100px; /* Increased to 100px to ensure no overlap with navbar (80px height + 20px margin) */
   padding-bottom: 110px; /* Space for fixed footer (100px height + 10px margin) */
-  min-height: calc(100vh - 160px); /* Ensure content fills remaining space (100vh - navbar - footer) */
+  min-height: calc(100vh - 190px); /* Adjusted for increased navbar height (100vh - navbar - footer) */
   overflow-y: auto; /* Allow vertical scrolling if content overflows */
 }
 
@@ -56,13 +57,14 @@
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .navbar {
-    height: 50px; /* Smaller navbar height for mobile */
+    height: 70px; /* Smaller navbar height for mobile with padding */
+    padding: 8px 15px; /* Adjusted padding for mobile */
   }
 
   .main-content {
-    padding-top: 60px; /* Adjust for smaller navbar */
+    padding-top: 90px; /* Adjust for smaller navbar with margin */
     padding-bottom: 110px; /* Same footer space */
-    min-height: calc(100vh - 150px); /* Adjust for smaller navbar height */
+    min-height: calc(100vh - 180px); /* Adjust for smaller navbar height */
   }
 
   .footer {

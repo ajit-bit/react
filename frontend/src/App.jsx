@@ -10,7 +10,7 @@ import AuthComponent from './screens/Auth';
 import Women from './screens/Women';
 import Men from './screens/Men';
 import Product from './screens/Product';
-import Profile from './screens/Profile'; // Import the Profile component
+import Profile from './screens/Profile';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -170,6 +170,24 @@ const AppContent = ({ setCartItems, setLikedItems, cartItems, likedItems }) => {
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [likedItems, setLikedItems] = useState([]);
+  const [products, setProducts] = useState([]); // State for search functionality
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products", { credentials: "include" });
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          console.error("Failed to fetch products:", response.status);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <Router>
@@ -178,6 +196,7 @@ function App() {
         setLikedItems={setLikedItems}
         cartItems={cartItems}
         likedItems={likedItems}
+        products={products} // Pass products to Navbar via AppContent
       />
     </Router>
   );

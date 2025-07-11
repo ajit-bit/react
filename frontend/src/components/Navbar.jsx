@@ -9,7 +9,7 @@ import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
 import shopLogo from '../assets/images/shoplogo.svg';
 
-// Inline SVG Icons for the mobile bottom nav and back button
+// Inline SVG Icons
 const CategoriesIcon = () => (
   <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"></rect>
@@ -38,16 +38,16 @@ const SearchIcon = () => (
   </svg>
 );
 
-const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser }) => {
+const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], user, setUser, products = [] }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuLevel, setMenuLevel] = useState(0);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('cart');
-  const [products, setProducts] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const sidebarRef = useRef(null);
@@ -67,31 +67,14 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         setIsMobileMenuOpen(false);
         setMenuLevel(0);
       }
-      if (!event.target.closest('.icon-bar .search-link') && !event.target.closest('.search-dropdown')) {
+      if (!event.target.closest('.search-container') && !event.target.closest('.search-dropdown')) {
         setShowSearchDropdown(false);
+        setSearchQuery('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobileMenuOpen]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/products", { credentials: "include" });
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data);
-        } else {
-          console.error("Failed to fetch products:", response.status);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        toast.error("Failed to fetch products", { position: 'top-right', autoClose: 3000 });
-      }
-    };
-    fetchProducts();
-  }, []);
 
   useEffect(() => {
     const fetchCartItems = async (identifier) => {
@@ -103,7 +86,6 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         });
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched cart items:", data);
           const normalizedItems = data.map(item => ({
             id: item.productId || item.id,
             name: item.product?.name || item.name,
@@ -129,7 +111,6 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         });
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched liked items:", data);
           const normalizedItems = data.map(item => ({
             id: item.productId || item.id,
             name: item.product?.name || item.name,
@@ -146,8 +127,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       }
     };
 
-    const sessionId = localStorage.getItem('sessionId') || '';
-    const identifier = user ? user.id : sessionId;
+    const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
     if (identifier) {
       fetchCartItems(identifier);
       fetchLikedItems(identifier);
@@ -305,6 +285,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowAboutDropdown(false);
     setShowSearchDropdown(false);
     setMenuLevel(0);
+    setSearchQuery('');
   };
 
   const openTab = (tabName) => {
@@ -323,6 +304,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   const toggleSearchDropdown = () => {
     setShowSearchDropdown(!showSearchDropdown);
+    if (!showSearchDropdown) setSearchQuery('');
   };
 
   const handleNavigation = (path) => {
@@ -351,13 +333,9 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowAboutDropdown(false);
   };
 
-  const searchOptions = [
-    { label: 'Earrings', path: '/category/earrings' },
-    { label: 'Rings', path: '/category/rings' },
-    { label: 'Necklaces', path: '/category/necklaces' },
-    { label: 'Bracelets', path: '/category/bracelets' },
-    { label: 'Jewellery Sets', path: '/jewellery-sets' },
-  ];
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ).slice(0, 5);
 
   return (
     <>
@@ -382,27 +360,43 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           </div>
 
           <nav className="icon-bar" aria-label="Quick actions">
-            <button 
-              className="icon-link search-link"
-              onClick={(e) => { e.preventDefault(); toggleSearchDropdown(); }}
-              aria-label="Search"
-            >
-              <SearchIcon />
-            </button>
-            {showSearchDropdown && (
-              <div className="search-dropdown dropdown-menu">
-                {searchOptions.map((option) => (
-                  <a
-                    key={option.path}
-                    href={option.path}
-                    onClick={(e) => { e.preventDefault(); handleNavigation(option.path); }}
-                    className="dropdown-item"
-                  >
-                    {option.label}
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="search-container">
+              <button 
+                className="search-link"
+                onClick={(e) => { e.preventDefault(); toggleSearchDropdown(); }}
+                aria-label="Search"
+              >
+                <SearchIcon />
+              </button>
+              {showSearchDropdown && (
+                <div className="search-dropdown">
+                  <div className="search-bar">
+                    <SearchIcon className="search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  {searchQuery && (
+                    <div className="search-suggestions">
+                      {filteredProducts.length > 0 ? (
+                        filteredProducts.map((product) => (
+                          <div key={product.id} className="suggestion-item" onClick={() => handleNavigation(`/product/${product.id}`)}>
+                            <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} />
+                            <span>{product.name} - ₹{product.price.toFixed(2)}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="suggestion-item">No results found</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             
             <button 
               className="icon-link"
