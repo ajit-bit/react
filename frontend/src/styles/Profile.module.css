@@ -1,75 +1,237 @@
+/* src/styles/Profile.module.css */
+
+/* --- Page Wrapper & Main Title --- */
 .profileWrapper {
+  background-color: #f8f9fa;
+  padding-top: 120px; 
+  padding-bottom: 60px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f7c823, #ffffff);
-  padding: 20px;
 }
 
-.card {
-  border: none;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.cardTitle {
-  color: #DAA520;
+.pageTitle {
+  font-size: 2.25rem;
   font-weight: 700;
+  color: #343a40;
+  margin-bottom: 1.5rem;
 }
 
+/* --- Two-Column Layout --- */
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+}
+
+/* --- Left Navigation Panel --- */
+.navPanel {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  align-self: flex-start;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  transition: all 0.2s ease-in-out;
+}
+
+.navLink:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+.navLink:hover {
+  background-color: #f8f9fa;
+  color: #DAA520;
+}
+
+.navLinkActive {
+  background-color: #fef8e3;
+  color: #DAA520;
+  font-weight: 600;
+}
+
+/* --- Right Content Panel --- */
+.contentPanel {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contentTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 1.5rem; /* Give space AFTER title */
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.divider {
+  border-top: 1px solid #e9ecef;
+  margin: 1.5rem 0;
+}
+
+.sectionSubtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: -1.25rem; /* Pull up closer to title */
+  margin-bottom: 1rem;
+}
+
+/* --- NEW Form Layout Styles --- */
+.formGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem; /* Vertical gap, Horizontal gap */
+}
+
+.formGroup {
+  flex: 1 1 calc(50% - 0.75rem); /* 2 columns, accounts for horizontal gap */
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup.fullWidth {
+  flex-basis: 100%;
+}
+
+/* --- Form Elements --- */
 .formControl {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  transition: border-color 0.3s ease;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
 }
 
 .formControl:focus {
   border-color: #DAA520;
-  box-shadow: 0 0 5px rgba(218, 165, 32, 0.3);
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2);
 }
 
-.inputPassword {
+.form-label {
+  margin-bottom: 0.35rem; 
+}
+
+.inputGroup {
   position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputGroup .formControl {
+  width: 100%;
+  padding-right: 40px;
 }
 
 .eyeIcon {
   position: absolute;
-  right: 10px;
-  top: 70%;
-  transform: translateY(-50%);
+  right: 15px;
   cursor: pointer;
-  color: #2c2c2c;
+  color: #6c757d;
+  transition: color 0.2s ease;
 }
 
 .submitBtn {
-  background: #DAA520;
+  background-color: #DAA520;
+  color: white;
   border: none;
-  color: #ffffff;
+  padding: 12px 25px;
+  border-radius: 8px;
   font-weight: 600;
-  padding: 10px;
-  border-radius: 5px;
-  transition: background 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 .submitBtn:hover {
-  background: #f7c823;
-  color: #000000;
+  background-color: #c9971c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+/* --- Empty State for Order History --- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.emptyState p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* --- Toast Styles --- */
+.toastSuccess, .toastError, .toastWarning, .toastInfo {
+  background-color: #fff !important;
+  color: #333 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 10px 16px !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+}
+.toastSuccess { border-left: 5px solid #28a745 !important; }
+.toastError { border-left: 5px solid #dc3545 !important; }
+.toastWarning { border-left: 5px solid #ffc107 !important; }
+.toastInfo { border-left: 5px solid #17a2b8 !important; }
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+  .layoutGrid {
+    grid-template-columns: 1fr; 
+  }
+  .navPanel {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .navLink span {
+    display: none; 
+  }
+  .navLink {
+    flex-direction: column; 
+    justify-content: center;
+    width: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .formGroup {
+    flex-basis: 100%; /* Stack all fields on mobile */
+  }
 }
 
 @media (max-width: 576px) {
   .profileWrapper {
+    padding-top: 100px;
+  }
+  .pageTitle {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  .contentPanel {
+    padding: 20px;
+  }
+  .navPanel {
     padding: 10px;
-  }
-
-  .card {
-    padding: 15px;
-  }
-
-  .formControl {
-    font-size: 0.9rem;
-  }
-
-  .submitBtn {
-    font-size: 0.9rem;
+    gap: 5px;
   }
 }

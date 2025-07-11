@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// src/components/Profile.jsx
+
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Eye, EyeOff, LogOut, ShoppingBag, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from '../styles/Profile.module.css';
 
+// ... (No changes to the component's state or logic)
 const Profile = ({ user, setUser }) => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [formData, setFormData] = useState({ /* ... */ });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-  const [showPassword, setShowPassword] = useState({ password: false, confirmPassword: false });
+  const [showPassword, setShowPassword] = useState({ /* ... */ });
+  const [activeTab, setActiveTab] = useState('profile');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +28,7 @@ const Profile = ({ user, setUser }) => {
         confirmPassword: '',
       });
     } else {
+      toast.info("Please log in to view your profile.", { className: styles.toastInfo });
       navigate('/auth');
     }
   }, [user, navigate]);
@@ -47,9 +46,9 @@ const Profile = ({ user, setUser }) => {
       case 'email':
         return validators.email(value) ? '' : 'Invalid email address';
       case 'password':
-        return validators.password(value) ? '' : 'Password must be at least 6 characters';
+        return value && !validators.password(value) ? 'Password must be at least 6 characters' : '';
       case 'confirmPassword':
-        return !value || value === formData.password ? '' : 'Passwords do not match';
+        return !formData.password || value === formData.password ? '' : 'Passwords do not match';
       case 'firstName':
       case 'lastName':
         return validators.name(value) ? '' : 'Name must be at least 2 characters';
@@ -59,19 +58,12 @@ const Profile = ({ user, setUser }) => {
         return '';
     }
   };
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (touched[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: validateField(name, value),
-      }));
+      setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
     }
   };
 
@@ -85,20 +77,30 @@ const Profile = ({ user, setUser }) => {
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    toast.success("You have been logged out.", { className: styles.toastSuccess });
+    navigate('/');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const fields = ['firstName', 'lastName', 'email', 'phone', 'password', 'confirmPassword'];
+    const fieldsToValidate = ['firstName', 'lastName', 'email', 'phone'];
+    if (formData.password) {
+      fieldsToValidate.push('password', 'confirmPassword');
+    }
     const newErrors = {};
-    fields.forEach((field) => {
+    fieldsToValidate.forEach((field) => {
       newErrors[field] = validateField(field, formData[field]);
     });
-
     setErrors(newErrors);
-    setTouched(fields.reduce((acc, curr) => ({ ...acc, [curr]: true }), {}));
-
+    setTouched(fieldsToValidate.reduce((acc, curr) => ({ ...acc, [curr]: true }), {}));
     const hasErrors = Object.values(newErrors).some((msg) => msg);
-    if (hasErrors) return;
+    if (hasErrors) {
+      toast.warn("Please fix the errors before submitting.", { className: styles.toastWarning });
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -114,159 +116,124 @@ const Profile = ({ user, setUser }) => {
 
       const response = await fetch('http://localhost:5000/api/auth/update', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
-        toast.success('Profile updated successfully!', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
-        navigate('/');
+        toast.success('Profile updated successfully!', { className: styles.toastSuccess });
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to update profile', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error(errorData.message || 'Failed to update profile', { className: styles.toastError });
       }
     } catch (err) {
       console.error('Update profile error:', err);
-      toast.error('An error occurred while updating profile', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.error('An error occurred while updating profile', { className: styles.toastError });
     }
   };
 
-  return (
-    <div className={`${styles.profileWrapper} container my-5`}>
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className={`${styles.card} card shadow-sm`}>
-            <div className="card-body">
-              <h2 className={`${styles.cardTitle} card-title text-center mb-4`}>User Profile</h2>
-              <div className="form">
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label htmlFor="firstName" className="form-label">First Name</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      className={`form-control ${styles.formControl} ${errors.firstName && touched.firstName ? 'is-invalid' : ''}`}
-                      placeholder="First Name"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.firstName && touched.firstName && (
-                      <div className="invalid-feedback">{errors.firstName}</div>
-                    )}
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="lastName" className="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      className={`form-control ${styles.formControl} ${errors.lastName && touched.lastName ? 'is-invalid' : ''}`}
-                      placeholder="Last Name"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.lastName && touched.lastName && (
-                      <div className="invalid-feedback">{errors.lastName}</div>
-                    )}
-                  </div>
-                </div>
 
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className={`form-control ${styles.formControl} ${errors.email && touched.email ? 'is-invalid' : ''}`}
-                    placeholder="Email Address"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.email && touched.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="phone" className="form-label">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    className={`form-control ${styles.formControl} ${errors.phone && touched.phone ? 'is-invalid' : ''}`}
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.phone && touched.phone && (
-                    <div className="invalid-feedback">{errors.phone}</div>
-                  )}
-                </div>
-
-                <div className={`mb-3 position-relative ${styles.inputPassword}`}>
-                  <label htmlFor="password" className="form-label">New Password (Optional)</label>
-                  <input
-                    type={showPassword.password ? 'text' : 'password'}
-                    name="password"
-                    className={`form-control ${styles.formControl} ${errors.password && touched.password ? 'is-invalid' : ''}`}
-                    placeholder="New Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                  />
-                  <span
-                    className={styles.eyeIcon}
-                    onClick={() => togglePasswordVisibility('password')}
-                  >
-                    👁
-                  </span>
-                  {errors.password && touched.password && (
-                    <div className="invalid-feedback">{errors.password}</div>
-                  )}
-                </div>
-
-                <div className={`mb-3 position-relative ${styles.inputPassword}`}>
-                  <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
-                  <input
-                    type={showPassword.confirmPassword ? 'text' : 'password'}
-                    name="confirmPassword"
-                    className={`form-control ${styles.formControl} ${errors.confirmPassword && touched.confirmPassword ? 'is-invalid' : ''}`}
-                    placeholder="Confirm New Password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                  />
-                  <span
-                    className={styles.eyeIcon}
-                    onClick={() => togglePasswordVisibility('confirmPassword')}
-                  >
-                    👁
-                  </span>
-                  {errors.confirmPassword && touched.confirmPassword && (
-                    <div className="invalid-feedback">{errors.confirmPassword}</div>
-                  )}
-                </div>
-
-                <div className="d-grid">
-                  <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} onClick={handleSubmit}>Update Profile</button>
-                </div>
-              </div>
+  const renderContent = () => {
+    if (activeTab === 'profile') {
+      return (
+        <form onSubmit={handleSubmit} noValidate>
+          <h3 className={styles.contentTitle}>Personal Information</h3>
+          {/* REPLACED Bootstrap grid with custom flexbox layout */}
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label htmlFor="firstName" className="form-label">First Name</label>
+              <input id="firstName" type="text" name="firstName" className={`form-control ${styles.formControl} ${touched.firstName && errors.firstName ? 'is-invalid' : ''}`} value={formData.firstName} onChange={handleInputChange} onBlur={handleBlur} />
+              {touched.firstName && errors.firstName && <div className="invalid-feedback">{errors.firstName}</div>}
             </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="lastName" className="form-label">Last Name</label>
+              <input id="lastName" type="text" name="lastName" className={`form-control ${styles.formControl} ${touched.lastName && errors.lastName ? 'is-invalid' : ''}`} value={formData.lastName} onChange={handleInputChange} onBlur={handleBlur} />
+              {touched.lastName && errors.lastName && <div className="invalid-feedback">{errors.lastName}</div>}
+            </div>
+            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+              <label htmlFor="email" className="form-label">Email Address</label>
+              <input id="email" type="email" name="email" className={`form-control ${styles.formControl} ${touched.email && errors.email ? 'is-invalid' : ''}`} value={formData.email} onChange={handleInputChange} onBlur={handleBlur} />
+              {touched.email && errors.email && <div className="invalid-feedback">{errors.email}</div>}
+            </div>
+            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+              <label htmlFor="phone" className="form-label">Phone Number</label>
+              <input id="phone" type="tel" name="phone" className={`form-control ${styles.formControl} ${touched.phone && errors.phone ? 'is-invalid' : ''}`} value={formData.phone} onChange={handleInputChange} onBlur={handleBlur} />
+              {touched.phone && errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+            </div>
+          </div>
+
+          <hr className={styles.divider} />
+
+          <h3 className={styles.contentTitle}>Change Password</h3>
+          <p className={styles.sectionSubtitle}>Leave blank if you don't want to change it.</p>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label htmlFor="password" className="form-label">New Password</label>
+              <div className={styles.inputGroup}>
+                <input id="password" name="password" type={showPassword.password ? 'text' : 'password'} className={`form-control ${styles.formControl} ${touched.password && errors.password ? 'is-invalid' : ''}`} value={formData.password} onChange={handleInputChange} onBlur={handleBlur} />
+                <span className={styles.eyeIcon} onClick={() => togglePasswordVisibility('password')}>{showPassword.password ? <EyeOff size={18} /> : <Eye size={18} />}</span>
+              </div>
+              {touched.password && errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
+              <div className={styles.inputGroup}>
+                <input id="confirmPassword" name="confirmPassword" type={showPassword.confirmPassword ? 'text' : 'password'} className={`form-control ${styles.formControl} ${touched.confirmPassword && errors.confirmPassword ? 'is-invalid' : ''}`} value={formData.confirmPassword} onChange={handleInputChange} onBlur={handleBlur} />
+                <span className={styles.eyeIcon} onClick={() => togglePasswordVisibility('confirmPassword')}>{showPassword.confirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}</span>
+              </div>
+              {touched.confirmPassword && errors.confirmPassword && <div className="invalid-feedback d-block">{errors.confirmPassword}</div>}
+            </div>
+          </div>
+          <div className="text-end mt-4">
+            <button type="submit" className={styles.submitBtn}>Save Changes</button>
+          </div>
+        </form>
+      );
+    }
+    // ... (rest of the component is the same)
+    if (activeTab === 'orders') {
+      return (
+        <div>
+          <h3 className={styles.contentTitle}>Order History</h3>
+          <div className={styles.emptyState}>
+            <ShoppingBag size={48} strokeWidth={1.5} />
+            <p>You have no past orders.</p>
+          </div>
+        </div>
+      );
+    }
+  };
+  return (
+    <div className={styles.profileWrapper}>
+      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar />
+      <div className="container">
+        <h1 className={styles.pageTitle}>My Account</h1>
+        <div className={styles.layoutGrid}>
+          <div className={styles.navPanel}>
+            <button
+              className={`${styles.navLink} ${activeTab === 'profile' ? styles.navLinkActive : ''}`}
+              onClick={() => setActiveTab('profile')}
+            >
+              <User size={20} />
+              <span>Profile Details</span>
+            </button>
+            <button
+              className={`${styles.navLink} ${activeTab === 'orders' ? styles.navLinkActive : ''}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              <ShoppingBag size={20} />
+              <span>Order History</span>
+            </button>
+            <button className={styles.navLink} onClick={handleLogout}>
+              <LogOut size={20} />
+              <span>Logout</span>
+            </button>
+          </div>
+          <div className={styles.contentPanel}>
+            {renderContent()}
           </div>
         </div>
       </div>

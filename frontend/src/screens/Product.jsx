@@ -431,4 +431,4 @@ const chProduct = ({ setCartItems, setLikedItems }) => {
   );
 };
 
-export default Product;
+export default chProduct;
