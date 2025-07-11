@@ -1,0 +1,267 @@
+.container {
+  padding: 80px 16px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.innerContainer {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #D4A017;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card.updating {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cardBody {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.cardPrice {
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin: 0;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantityButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #D4A017;
+  background: #fff;
+  color: #D4A017;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.quantityButton:hover {
+  background: #D4A017;
+  color: #fff;
+}
+
+.quantityButton:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.quantity {
+  font-size: 1rem;
+  color: #1a1a1a;
+  min-width: 24px;
+  text-align: center;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton, .secondaryButton, .removeButton, .checkoutButton, .continueButton {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.actionButton {
+  background: #D4A017;
+  color: #fff;
+  border: none;
+}
+
+.actionButton:hover {
+  background: #b38b14;
+  transform: translateY(-1px);
+}
+
+.secondaryButton {
+  background: #fff;
+  color: #D4A017;
+  border: 1px solid #D4A017;
+}
+
+.secondaryButton:hover {
+  background: #D4A017;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.removeButton {
+  background: #fff;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.removeButton:hover {
+  background: #dc3545;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.actionButton:disabled, .secondaryButton:disabled, .removeButton:disabled, .checkoutButton:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  border-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.emptyContainer {
+  text-align: center;
+  padding: 48px 0;
+}
+
+.emptyText {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.emptySubText {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.continueButton {
+  background: #fff;
+  color: #D4A017;
+  border: 1px solid #D4A017;
+}
+
+.continueButton:hover {
+  background: #D4A017;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.checkoutSection {
+  margin-top: 24px;
+  padding: 16px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.subtotal {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #D4A017;
+}
+
+.checkoutButton {
+  background: #D4A017;
+  color: #fff;
+  border: none;
+  width: 100%;
+  max-width: 300px;
+}
+
+.checkoutButton:hover {
+  background: #b38b14;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .cardBody {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .productImage {
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .cardActions {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .actionButton, .secondaryButton, .removeButton {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .checkoutSection {
+    align-items: center;
+  }
+
+  .checkoutButton, .continueButton {
+    width: 100%;
+  }
+}

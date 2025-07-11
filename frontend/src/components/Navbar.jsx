@@ -32,9 +32,16 @@ const BackIcon = () => (
 );
 
 const SearchIcon = () => (
-  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8"></circle>
     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg className="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
   </svg>
 );
 
@@ -46,8 +53,8 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showAllJewelryDropdown, setShowAllJewelryDropdown] = useState(false);
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
-  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchPopup, setShowSearchPopup] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const sidebarRef = useRef(null);
@@ -67,14 +74,14 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         setIsMobileMenuOpen(false);
         setMenuLevel(0);
       }
-      if (!event.target.closest('.search-container') && !event.target.closest('.search-dropdown')) {
-        setShowSearchDropdown(false);
+      if (!event.target.closest('.search-popup') && !event.target.closest('.search-toggle') && showSearchPopup) {
+        setShowSearchPopup(false);
         setSearchQuery('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, showSearchPopup]);
 
   useEffect(() => {
     const fetchCartItems = async (identifier) => {
@@ -283,8 +290,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowUserDropdown(false);
     setShowAllJewelryDropdown(false);
     setShowAboutDropdown(false);
-    setShowSearchDropdown(false);
-    setMenuLevel(0);
+    setShowSearchPopup(false);
     setSearchQuery('');
   };
 
@@ -302,9 +308,9 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowAllJewelryDropdown(false);
   };
 
-  const toggleSearchDropdown = () => {
-    setShowSearchDropdown(!showSearchDropdown);
-    if (!showSearchDropdown) setSearchQuery('');
+  const toggleSearchPopup = () => {
+    setShowSearchPopup(!showSearchPopup);
+    if (!showSearchPopup) setSearchQuery('');
   };
 
   const handleNavigation = (path) => {
@@ -333,9 +339,24 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     setShowAboutDropdown(false);
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ).slice(0, 5);
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' || e.type === 'click') {
+      if (searchQuery.trim()) {
+        navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+        setShowSearchPopup(false);
+      }
+    }
+  };
+
+  const popularProducts = products.slice(0, 4).map(product => ({
+    ...product,
+    imageUrl: product.imageUrl || '/images/default-product.jpg',
+  }));
+
+  const recommendedProducts = products.slice(0, 5).map(product => ({
+    ...product,
+    oldPrice: product.price * 1.2,
+  }));
 
   return (
     <>
@@ -360,43 +381,13 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           </div>
 
           <nav className="icon-bar" aria-label="Quick actions">
-            <div className="search-container">
-              <button 
-                className="search-link"
-                onClick={(e) => { e.preventDefault(); toggleSearchDropdown(); }}
-                aria-label="Search"
-              >
-                <SearchIcon />
-              </button>
-              {showSearchDropdown && (
-                <div className="search-dropdown">
-                  <div className="search-bar">
-                    <SearchIcon className="search-icon" />
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      autoFocus
-                    />
-                  </div>
-                  {searchQuery && (
-                    <div className="search-suggestions">
-                      {filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
-                          <div key={product.id} className="suggestion-item" onClick={() => handleNavigation(`/product/${product.id}`)}>
-                            <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} />
-                            <span>{product.name} - ₹{product.price.toFixed(2)}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="suggestion-item">No results found</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            <button 
+              className="search-toggle"
+              onClick={toggleSearchPopup}
+              aria-label="Toggle search"
+            >
+              <SearchIcon />
+            </button>
             
             <button 
               className="icon-link"
@@ -561,6 +552,53 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         </div>
       </aside>
 
+      {showSearchPopup && (
+        <div className="search-popup-overlay">
+          <div className="search-popup">
+            <div className="search-header">
+              <input
+                type="text"
+                placeholder="Search jewelry..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleSearch}
+                autoFocus
+              />
+              <button className="search-icon-btn" onClick={handleSearch} aria-label="Search">
+                <SearchIcon style={{ color: '#DAA520' }} />
+              </button>
+              <button className="close-button" onClick={toggleSearchPopup} aria-label="Close search">
+                <CloseIcon style={{ color: '#DAA520' }} />
+              </button>
+            </div>
+            <div className="popular-choices">
+              <h3>Popular Choices</h3>
+              <div className="category-buttons">
+                {popularProducts.map((product) => (
+                  <div key={product.id} className="product-image-container" onClick={(e) => { e.preventDefault(); handleNavigation(`/category/${product.category}`); }}>
+                    {/* Placeholder for product image - replace with actual image src */}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="recommended-section">
+              <h3>Recommended</h3>
+              <div className="recommended-carousel">
+                {recommendedProducts.map((product) => (
+                  <div key={product.id} className="product-card">
+                    {product.oldPrice && <span className="sale-badge">Sale</span>}
+                    <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} className="product-image" />
+                    <h4>{product.name}</h4>
+                    <p><s>₹{product.oldPrice.toFixed(2)}</s> <span className="discounted-price">₹{product.price.toFixed(2)}</span></p>
+                    <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }} className="add-to-cart-btn">Add to Cart</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {(isMobileMenuOpen || isCartSidebarOpen) && (
         <div className="overlay" onClick={closeAllMenus}></div>
       )}
@@ -682,7 +720,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               {cartItems.length > 0 && <span className="badge">{cartItems.length}</span>}
               <span>Cart</span>
           </button>
-          <button onClick={toggleSearchDropdown} className="nav-btn">
+          <button onClick={toggleSearchPopup} className="nav-btn">
               <SearchIcon />
               <span>Search</span>
           </button>

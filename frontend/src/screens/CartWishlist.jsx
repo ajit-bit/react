@@ -1,25 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import styles from '../styles/CartWishlist.module.css';
 
 const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems, setLikedItems }) => {
   const navigate = useNavigate();
   const isCart = type === 'cart';
   const title = isCart ? 'Your Shopping Cart' : 'Your Wishlist';
-  const sessionId = localStorage.getItem('sessionId') || uuidv4();
+  const [isLoading, setIsLoading] = useState(true);
+  const [updatingItem, setUpdatingItem] = useState(null);
+  
+  // Initialize sessionId
+  const sessionId = localStorage.getItem('sessionId') || (() => {
+    const newSessionId = uuidv4();
+    localStorage.setItem('sessionId', newSessionId);
+    return newSessionId;
+  })();
+  
   const items = isCart ? cartItems : likedItems;
   const total = isCart ? items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) : 0;
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1 || updatingItem === productId) return;
+    setUpdatingItem(productId);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/cart/update', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+        body: JSON.stringify({
+          productId,
+          userId: user?.id,
+          sessionId: !user ? sessionId : undefined,
+          quantity: newQuantity,
+        }),
+      });
+
+      if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server returned non-JSON response (status: ${response.status})`);
+        }
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update quantity');
+      }
+
+      const data = await response.json();
+      setCartItems(data.cartItems?.map(item => ({
+        id: item.productId || item._id,
+        name: item.name || 'Unknown Product',
+        price: parseFloat(item.price || 0),
+        imageUrl: item.imageUrl || '/images/default-product.jpg',
+        quantity: item.quantity || 1,
+      })) || []);
+
+      toast.success('Quantity updated!', {
+        position: 'top-right',
+        autoClose: 2000,
+        theme: 'light',
+        toastId: `quantity-${productId}`,
+      });
+    } catch (err) {
+      console.error('Quantity update failed:', err);
+      toast.error(err.message || 'Failed to update quantity', {
+        position: 'top-right',
+        autoClose: 2000,
+        theme: 'light',
+        toastId: `error-quantity-${productId}`,
+      });
+    } finally {
+      setUpdatingItem(null);
+    }
+  };
+
   const deleteItem = async (productId) => {
+    if (updatingItem === productId) return;
+    setUpdatingItem(productId);
     try {
       const token = localStorage.getItem('token');
       const apiBase = isCart ? 'cart' : 'liked';
-
-      console.log(`Attempting to remove item from ${apiBase}:`, { productId, userId: user?.id, sessionId });
-
       const response = await fetch(`http://localhost:5000/api/${apiBase}/remove`, {
         method: 'POST',
         credentials: 'include',
@@ -34,29 +106,20 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         }),
       });
 
-      console.log(`Response status for /api/${apiBase}/remove: ${response.status}`);
-
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
-        console.log(`Content-Type: ${contentType}`);
         if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.log(`Non-JSON response body: ${text}`);
-          throw new Error(
-            `Server returned non-JSON response (status: ${response.status}). Please check if the server is running at http://localhost:5000 and the endpoint /api/${apiBase}/remove exists.`
-          );
+          throw new Error(`Server returned non-JSON response (status: ${response.status})`);
         }
         const errorData = await response.json();
-        throw new Error(errorData.message || `Failed to remove item from ${type} (status: ${response.status})`);
+        throw new Error(errorData.message || `Failed to remove item from ${type}`);
       }
 
       const data = await response.json();
-      console.log(`Response data from /api/${apiBase}/remove:`, data);
-
       if (isCart) {
         setCartItems(data.cartItems?.map(item => ({
           id: item.productId || item._id,
-          name: item.name,
+          name: item.name || 'Unknown Product',
           price: parseFloat(item.price || 0),
           imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
@@ -64,21 +127,16 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
       } else {
         setLikedItems(data.likedItems?.map(item => ({
           id: item.productId || item._id,
-          name: item.name,
+          name: item.name || 'Unknown Product',
           price: parseFloat(item.price || 0),
           imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
         })) || []);
       }
 
-      localStorage.setItem('sessionId', sessionId);
       toast.success(`Item removed from ${type}!`, {
         position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
+        autoClose: 2000,
         theme: 'light',
         toastId: `remove-${productId}`,
       });
@@ -89,25 +147,25 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
       } else {
         setLikedItems(likedItems.filter(item => item.id !== productId));
       }
-      toast.error(err.message || `Failed to remove item from ${type}. Item removed locally.`, {
+      toast.error(`Failed to remove item from ${type}. Removed locally.`, {
         position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
+        autoClose: 2000,
         theme: 'light',
         toastId: `error-${productId}`,
       });
+    } finally {
+      setUpdatingItem(null);
     }
   };
 
-  const handleAction = async (productId, name) => {
+  const handleAction = async (productId, name, actionType) => {
+    if (updatingItem === productId) return;
+    setUpdatingItem(productId);
     try {
       const token = localStorage.getItem('token');
-      const endpoint = isCart ? '/api/cart/add' : '/api/liked/add';
-      console.log(`Attempting action on ${endpoint}:`, { productId, userId: user?.id, sessionId });
-
+      const endpoint = actionType === 'buy' ? '/api/cart/buy' : actionType === 'cart' ? '/api/cart/add' : '/api/liked/add';
+      const isMoveAction = (isCart && actionType === 'wishlist') || (!isCart && actionType === 'cart');
+      
       const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: 'POST',
         credentials: 'include',
@@ -115,7 +173,12 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
           'Content-Type': 'application/json',
           ...(token && { 'Authorization': `Bearer ${token}` }),
         },
-        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? sessionId : undefined }),
+        body: JSON.stringify({
+          productId,
+          userId: user?.id,
+          sessionId: !user ? sessionId : undefined,
+          quantity: 1,
+        }),
       });
 
       if (!response.ok) {
@@ -124,51 +187,62 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
           throw new Error(`Server returned non-JSON response (status: ${response.status})`);
         }
         const errorData = await response.json();
-        throw new Error(errorData.message || (isCart ? 'Buy failed' : 'Add to cart failed'));
+        throw new Error(errorData.message || `Failed to ${actionType === 'buy' ? 'purchase' : actionType === 'cart' ? 'add to cart' : 'save to wishlist'}`);
       }
 
       const data = await response.json();
-      toast.success(data.message || (isCart ? `Purchased ${name}!` : `Added ${name} to cart!`), {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        theme: 'light',
-        toastId: `action-${productId}`,
-      });
-      if (!isCart) {
+      if (actionType === 'cart') {
         setCartItems(data.cartItems?.map(item => ({
           id: item.productId || item._id,
-          name: item.name,
+          name: item.name || 'Unknown Product',
           price: parseFloat(item.price || 0),
           imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
         })) || []);
+        if (isMoveAction) {
+          setLikedItems(likedItems.filter(item => item.id !== productId));
+        }
+      } else if (actionType === 'wishlist') {
+        setLikedItems(data.likedItems?.map(item => ({
+          id: item.productId || item._id,
+          name: item.name || 'Unknown Product',
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
+          quantity: item.quantity || 1,
+        })) || []);
+        if (isMoveAction) {
+          setCartItems(cartItems.filter(item => item.id !== productId));
+        }
       }
+
+      toast.success(
+        actionType === 'buy' ? `Purchased ${name}!` : actionType === 'cart' ? `Added ${name} to cart!` : `Saved ${name} to wishlist!`,
+        {
+          position: 'top-right',
+          autoClose: 2000,
+          theme: 'light',
+          toastId: `action-${productId}-${actionType}`,
+        }
+      );
     } catch (err) {
-      console.error(`${isCart ? 'Buy' : 'Add to cart'} failed:`, err);
-      toast.error(err.message || `Failed to ${isCart ? 'purchase' : 'add to cart'} item`, {
+      console.error(`${actionType} failed:`, err);
+      toast.error(err.message || `Failed to ${actionType === 'buy' ? 'purchase' : actionType === 'cart' ? 'add to cart' : 'save to wishlist'}`, {
         position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
+        autoClose: 2000,
         theme: 'light',
-        toastId: `error-action-${productId}`,
+        toastId: `error-action-${productId}-${actionType}`,
       });
+    } finally {
+      setUpdatingItem(null);
     }
   };
 
   return (
-    <div className="bg-light min-vh-100 py-4">
+    <div className={styles.container}>
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={2000}
         limit={3}
-        hideProgressBar={false}
         newestOnTop
         closeOnClick
         rtl={false}
@@ -177,74 +251,139 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         pauseOnHover={false}
         theme="light"
       />
-      <div className="container">
-        <h1 className="text-center mb-4 text-warning fw-bold">{title}</h1>
-        <div className="row">
-          {items.length === 0 ? (
-            <div className="col-12 text-center py-5">
+      <div className={styles.innerContainer}>
+        <h1 className={styles.title}>{title}</h1>
+        <div className={styles.items}>
+          {isLoading ? (
+            Array(3).fill().map((_, index) => (
+              <div key={index} className={styles.card}>
+                <div className={styles.cardBody}>
+                  <Skeleton width={100} height={100} circle={false} />
+                  <div className={styles.cardContent}>
+                    <Skeleton width={200} height={20} />
+                    <Skeleton width={100} height={15} />
+                    {isCart && <Skeleton width={80} height={30} />}
+                  </div>
+                  <div className={styles.cardActions}>
+                    <Skeleton width={100} height={35} />
+                    <Skeleton width={100} height={35} />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : items.length === 0 ? (
+            <div className={styles.emptyContainer}>
               <svg
                 width="60"
                 height="60"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#ffc107"
+                stroke="#D4A017"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="mx-auto mb-3"
               >
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
               </svg>
-              <p className="fs-5 text-dark">Your {title} is empty.</p>
-              <p className="text-muted">
-                You don't have any products in your {type} yet. Explore our shop for exciting products!
+              <p className={styles.emptyText}>Your {title} is empty.</p>
+              <p className={styles.emptySubText}>
+                Explore our collection to find something you love!
               </p>
               <button
                 onClick={() => navigate('/products')}
-                className="btn btn-warning btn-lg mt-3"
+                className={styles.continueButton}
               >
-                Return to Shop
+                Continue Shopping
               </button>
             </div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="col-12 mb-3">
-                <div className="card shadow-sm border-0">
-                  <div className="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-md-between p-3">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="img-fluid rounded"
-                      style={{ width: '100px', height: 'auto' }}
-                    />
-                    <div className="flex-grow-1 mx-3 my-2 my-md-0">
-                      <h5 className="card-title text-warning mb-2">{item.name}</h5>
-                      <p className="card-text mb-1">Price: ₹{item.price.toFixed(2)}</p>
-                      {isCart && <p className="card-text mb-1">Quantity: {item.quantity || 1}</p>}
-                    </div>
-                    <div className="d-flex flex-column flex-md-row gap-2">
+              <div key={item.id} className={`${styles.card} ${updatingItem === item.id ? styles.updating : ''}`}>
+                <div className={styles.cardBody}>
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name || 'Product'}
+                    className={styles.productImage}
+                  />
+                  <div className={styles.cardContent}>
+                    <h5 className={styles.cardTitle}>{item.name || 'Unknown Product'}</h5>
+                    <p className={styles.cardPrice}>₹{(item.price || 0).toFixed(2)}</p>
+                    {isCart && (
+                      <div className={styles.quantitySelector}>
+                        <button
+                          className={styles.quantityButton}
+                          onClick={() => updateQuantity(item.id, (item.quantity || 1) - 1)}
+                          disabled={updatingItem === item.id || (item.quantity || 1) <= 1}
+                        >
+                          -
+                        </button>
+                        <span className={styles.quantity}>{item.quantity || 1}</span>
+                        <button
+                          className={styles.quantityButton}
+                          onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
+                          disabled={updatingItem === item.id}
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.cardActions}>
+                    {isCart ? (
+                      <>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleAction(item.id, item.name, 'buy')}
+                          disabled={updatingItem === item.id}
+                        >
+                          Buy Now
+                        </button>
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={() => handleAction(item.id, item.name, 'wishlist')}
+                          disabled={updatingItem === item.id}
+                        >
+                          Save to Wishlist
+                        </button>
+                      </>
+                    ) : (
                       <button
-                        className="btn btn-warning btn-sm"
-                        onClick={() => handleAction(item.id, item.name)}
+                        className={styles.actionButton}
+                        onClick={() => handleAction(item.id, item.name, 'cart')}
+                        disabled={updatingItem === item.id}
                       >
-                        {isCart ? 'Buy Now' : 'Add to Cart'}
+                        Add to Cart
                       </button>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => deleteItem(item.id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
+                    )}
+                    <button
+                      className={styles.removeButton}
+                      onClick={() => deleteItem(item.id)}
+                      disabled={updatingItem === item.id}
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               </div>
             ))
           )}
         </div>
-        {isCart && items.length > 0 && (
-          <div className="text-end mt-4">
-            <h4 className="text-warning fw-bold">Total: ₹{total.toFixed(2)}</h4>
+        {isCart && items.length > 0 && !isLoading && (
+          <div className={styles.checkoutSection}>
+            <h4 className={styles.subtotal}>Subtotal: ₹{total.toFixed(2)}</h4>
+            <button
+              className={styles.checkoutButton}
+              onClick={() => navigate('/checkout')}
+              disabled={updatingItem}
+            >
+              Proceed to Checkout
+            </button>
+            <button
+              className={styles.continueButton}
+              onClick={() => navigate('/products')}
+            >
+              Continue Shopping
+            </button>
           </div>
         )}
       </div>
