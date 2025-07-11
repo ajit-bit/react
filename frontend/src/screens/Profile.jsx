@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from '../styles/Profile.module.css'; // Assuming you have a CSS module for styles
+import styles from '../styles/Profile.module.css';
 
 const Profile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -35,10 +35,10 @@ const Profile = ({ user, setUser }) => {
   }, [user, navigate]);
 
   const validators = {
-    email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    email: (value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     password: (value) => !value || value.length >= 6,
-    phone: (value) => /^[+]?\d{10,15}$/.test(value),
-    name: (value) => value.trim().length >= 2,
+    phone: (value) => !value || /^[+]?\d{10,15}$/.test(value),
+    name: (value) => !value || value.trim().length >= 2,
   };
 
   const validateField = (name, value) => {
@@ -49,7 +49,7 @@ const Profile = ({ user, setUser }) => {
       case 'password':
         return validators.password(value) ? '' : 'Password must be at least 6 characters';
       case 'confirmPassword':
-        return value === formData.password ? '' : 'Passwords do not match';
+        return !value || value === formData.password ? '' : 'Passwords do not match';
       case 'firstName':
       case 'lastName':
         return validators.name(value) ? '' : 'Name must be at least 2 characters';
@@ -102,20 +102,23 @@ const Profile = ({ user, setUser }) => {
 
     try {
       const token = localStorage.getItem('token');
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+      };
+      if (formData.password) {
+        payload.password = formData.password;
+      }
+
       const response = await fetch('http://localhost:5000/api/auth/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        credentials: 'include',
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password || undefined,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {

@@ -37,7 +37,6 @@ const Blog = () => {
                   <div className="blog-card-image-wrapper rounded-top-4">
                     <Card.Img variant="top" src={post.image} alt={post.title} />
                     <Badge className="position-absolute top-0 start-0 m-3 z-1 blog-date-badge">
-                      {post.date.day}<span>{post.date.month}</span>
                     </Badge>
                     {post.hasVideo && <div className="video-overlay-icon position-absolute top-50 start-50 translate-middle"><PlayCircleFill color="white" size={50} style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} /></div>}
                   </div>

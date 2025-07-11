@@ -19,10 +19,10 @@ router.post('/register', async (req, res) => {
     const token = jwt.sign(
       { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName },
       'your_jwt_secret',
-      { expiresIn: '7d' } // Token valid for 7 days
+      { expiresIn: '7d' }
     );
 
-    res.status(201).json({ token, user: { id: user._id, firstName, lastName, email } });
+    res.status(201).json({ token, user: { id: user._id, firstName, lastName, email, phone } });
   } catch (err) {
     console.error('Register error:', err);
     res.status(500).json({ message: 'Server error' });
@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.json({ token, user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email } });
+    res.json({ token, user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email, phone: user.phone } });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: 'Server error' });
@@ -57,7 +57,6 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/logout', authMiddleware, (req, res) => {
-  // Client-side will remove token from localStorage
   res.json({ message: 'Logged out successfully' });
 });
 
@@ -70,6 +69,46 @@ router.get('/me', authMiddleware, async (req, res) => {
     res.json({ user });
   } catch (err) {
     console.error('Get user error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.put('/update', authMiddleware, async (req, res) => {
+  const { firstName, lastName, email, phone, password } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Only update fields that are provided
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) {
+      // Check if the new email is already in use by another user
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+      user.email = email;
+    }
+    if (phone) user.phone = phone;
+    if (password) user.password = password; // Assuming password hashing is handled in User model
+
+    await user.save();
+
+    const updatedUser = {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+    };
+
+    res.json({ user: updatedUser });
+  } catch (err) {
+    console.error('Update user error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
