@@ -113,16 +113,27 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.cart-sidebar.men-theme .return-to-shop,
 .cart-sidebar.men-theme .proceed-checkout {
-  background: var(--white);
-  color: var(--black);
+  background: var(--white) !important;
+  color: var(--black) !important;
+  border-color: var(--white) !important;
 }
 
-.cart-sidebar.men-theme .return-to-shop:hover,
 .cart-sidebar.men-theme .proceed-checkout:hover {
-  background: var(--gray-dark);
-  color: var(--white);
+  background: var(--gray-dark) !important;
+  color: var(--white) !important;
+  border-color: var(--gray-dark) !important;
+}
+
+.cart-sidebar.men-theme .return-to-shop {
+  background: transparent !important;
+  color: var(--white) !important;
+  border-color: var(--white) !important;
+}
+
+.cart-sidebar.men-theme .return-to-shop:hover {
+  background: var(--white) !important;
+  color: var(--black) !important;
 }
 
 .cart-sidebar.men-theme hr {
@@ -360,19 +371,27 @@
 }
 
 .account-dropdown button {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--yellow-gold);
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 8px 12px;
   width: 100%;
   text-align: left;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.account-dropdown button:hover {
-  color: var(--gold-light);
+/* === DEFINITIVE FIX FOR ACCOUNT DROPDOWN HOVER === */
+/* This hyper-specific selector should override all other styles. */
+.navbar-header .icon-bar .account-wrapper .account-dropdown button:hover,
+.navbar-header .icon-bar .account-wrapper .account-dropdown button:focus {
+  background-color: var(--yellow-gold) !important;
+  color: var(--white) !important;
+  outline: none;
 }
+/* === END FIX === */
 
 .cat-strip {
   background: linear-gradient(135deg, var(--yellow-gold), var(--gold-light));
@@ -795,28 +814,50 @@
   border-radius: 5px;
 }
 
-.return-to-shop,
-.proceed-checkout {
+/* === FIX for Cart/Wishlist Buttons === */
+.proceed-checkout.btn-primary {
   display: block;
   width: 100%;
   padding: 12px;
-  background: var(--gold-light);
-  color: var(--black);
+  background: var(--yellow-gold) !important;
+  color: var(--white) !important;
   text-decoration: none;
   text-align: center;
   margin-bottom: 10px;
-  border: none;
+  border: 1px solid var(--yellow-gold) !important;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: background var(--transition-speed) ease;
+  transition: all var(--transition-speed) ease;
 }
 
-.return-to-shop:hover,
-.proceed-checkout:hover {
-  background: var(--yellow-gold);
-  color: var(--white);
+.proceed-checkout.btn-primary:hover {
+  background: var(--gold-light) !important;
+  border-color: var(--gold-light) !important;
+  color: var(--black) !important;
 }
+
+.return-to-shop.btn-outline-primary {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: transparent !important;
+  color: var(--yellow-gold) !important;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 10px;
+  border: 1px solid var(--yellow-gold) !important;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-speed) ease;
+}
+
+.return-to-shop.btn-outline-primary:hover {
+  background: var(--yellow-gold) !important;
+  color: var(--white) !important;
+}
+/* === END FIX === */
 
 .common-section {
   margin-top: 20px;
