@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './Navbar.module.css'; // Changed to CSS Module import
+import styles from './Navbar.module.css';
 import logo from '../assets/images/logo-nobg.png';
 import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
@@ -58,6 +58,8 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const navigate = useNavigate();
   const location = useLocation();
   const sidebarRef = useRef(null);
+  const accountDropdownRef = useRef(null);
+  const searchPopupRef = useRef(null);
 
   const toastOptions = {
     position: 'top-right',
@@ -72,27 +74,36 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Close cart sidebar if clicking outside
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest(`.${styles['icon-bar']} button`) && !event.target.closest(`.${styles['mobile-bottom-nav']} button`)) {
         setIsCartSidebarOpen(false);
       }
+      // Close all jewelry dropdown if clicking outside
       if (!event.target.closest(`.${styles['cat-links']} .${styles['all-jewellery']}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAllJewelryDropdown(false);
       }
+      // Close about dropdown if clicking outside
       if (!event.target.closest(`.${styles['cat-links']} .${styles.about}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAboutDropdown(false);
       }
+      // Close mobile menu if clicking outside
       if (!event.target.closest(`.${styles['mobile-menu']}`) && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
         setMenuLevel(0);
       }
-      if (!event.target.closest(`.${styles['search-popup']}`) && !event.target.closest(`.${styles['search-toggle']}`) && showSearchPopup) {
+      // Close account dropdown if clicking outside
+      if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target) && !event.target.closest(`.${styles['account-button']}`)) {
+        setShowUserDropdown(false);
+      }
+      // Close search popup if clicking on the overlay
+      if (searchPopupRef.current && !searchPopupRef.current.contains(event.target) && event.target.closest(`.${styles['search-popup-overlay']}`)) {
         setShowSearchPopup(false);
         setSearchQuery('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMobileMenuOpen, showSearchPopup]);
+  }, [isMobileMenuOpen, showSearchPopup, showUserDropdown]);
 
   useEffect(() => {
     const fetchCartItems = async (identifier) => {
@@ -305,7 +316,6 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       if (setCartItems) setCartItems([]);
       if (setLikedItems) setLikedItems([]);
       setShowUserDropdown(false);
-      localStorage.removeItem('token');
       navigate("/");
       toast.success("Logged out successfully!", toastOptions);
     } catch (err) {
@@ -453,7 +463,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               )}
             </button>
 
-            <div className={styles['account-wrapper']}>
+            <div className={styles['account-wrapper']} ref={accountDropdownRef}>
               <button 
                 className={styles['account-button']}
                 onClick={(e) => { e.preventDefault(); handleProfileClick(); }}
@@ -607,7 +617,10 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
       {showSearchPopup && (
         <div className={styles['search-popup-overlay']}>
-          <div className={styles['search-popup']}>
+          <div className={styles['search-popup']} ref={searchPopupRef}>
+            <button className={styles['close-button']} onClick={toggleSearchPopup} aria-label="Close search">
+              <CloseIcon />
+            </button>
             <div className={styles['search-header']}>
               <input
                 type="text"
@@ -618,10 +631,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
                 autoFocus
               />
               <button className={styles['search-icon-btn']} onClick={handleSearch} aria-label="Search">
-                <SearchIcon style={{ color: '#DAA520' }} />
-              </button>
-              <button className={styles['close-button']} onClick={toggleSearchPopup} aria-label="Close search">
-                <CloseIcon style={{ color: '#DAA520' }} />
+                <SearchIcon />
               </button>
             </div>
             <div className={styles['popular-choices']}>
@@ -760,23 +770,25 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       )}
       
       <div className={styles['mobile-bottom-nav']}>
-          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')} className={styles['nav-btn']}>
-              <img src={accountLogo} alt="Account" className={styles['icon-svg']}/>
-              <span>{user ? 'Profile' : 'Account'}</span>
-          </button>
           <button onClick={toggleMobileMenu} className={styles['nav-btn']}>
               <CategoriesIcon />
               <span>Categories</span>
+          </button>
+          
+          <button onClick={toggleSearchPopup} className={styles['nav-btn']}>
+              <SearchIcon />
+              <span>Search</span>
+          </button>
+          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')} className={styles['nav-btn']}>
+              <img src={accountLogo} alt="Account" className={styles['icon-svg']}/>
+              <span>{user ? 'Profile' : 'Account'}</span>
           </button>
           <button className={`${styles['cart-button']} ${styles['nav-btn']}`} onClick={() => toggleCartSidebar('cart')}>
               <img src={shopLogo} alt="Cart" className={styles['icon-svg']}/>
               {cartItems.length > 0 && <span className={styles.badge}>{cartItems.length}</span>}
               <span>Cart</span>
           </button>
-          <button onClick={toggleSearchPopup} className={styles['nav-btn']}>
-              <SearchIcon />
-              <span>Search</span>
-          </button>
+          
           <button onClick={scrollToTop} className={styles['nav-btn']}>
               <TopIcon />
               <span>Top</span>
