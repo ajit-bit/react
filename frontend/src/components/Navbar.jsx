@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
@@ -59,6 +59,18 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const location = useLocation();
   const sidebarRef = useRef(null);
 
+  // Toast configuration matching Women.jsx
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    theme: 'light',
+    className: 'women-theme-toast',
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
@@ -103,10 +115,11 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           if (setCartItems) setCartItems(normalizedItems);
         } else {
           console.error("Failed to fetch cart items:", response.status);
+          toast.error("Failed to fetch cart items", toastOptions);
         }
       } catch (err) {
         console.error("Error fetching cart items:", err);
-        toast.error("Failed to fetch cart items", { position: 'top-right', autoClose: 3000 });
+        toast.error("Failed to fetch cart items", toastOptions);
       }
     };
 
@@ -128,10 +141,11 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           if (setLikedItems) setLikedItems(normalizedItems);
         } else {
           console.error("Failed to fetch liked items:", response.status);
+          toast.error("Failed to fetch liked items", toastOptions);
         }
       } catch (err) {
         console.error("Error fetching liked items:", err);
-        toast.error("Failed to fetch liked items", { position: 'top-right', autoClose: 3000 });
+        toast.error("Failed to fetch liked items", toastOptions);
       }
     };
 
@@ -145,7 +159,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const addToCart = async (productId) => {
     const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
     if (!identifier) {
-      toast.warn("Please login or create a session to add items to cart", { position: 'top-right', autoClose: 3000 });
+      toast.warn("Please login or create a session to add items to cart", toastOptions);
       navigate('/auth');
       return;
     }
@@ -175,21 +189,21 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           quantity: item.quantity || 1,
         }));
         if (setCartItems) setCartItems(normalizedItems);
-        toast.success("Added to Cart!", { position: 'top-right', autoClose: 3000 });
+        toast.success("Added to Cart!", toastOptions);
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to add to cart', { position: 'top-right', autoClose: 3000 });
+        toast.error(errorData.message || 'Failed to add to cart', toastOptions);
       }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      toast.error("Failed to add to cart", { position: 'top-right', autoClose: 3000 });
+      toast.error("Failed to add to cart", toastOptions);
     }
   };
 
   const addToWishlist = async (productId) => {
     const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
     if (!identifier) {
-      toast.warn("Please login or create a session to add items to wishlist", { position: 'top-right', autoClose: 3000 });
+      toast.warn("Please login or create a session to add items to wishlist", toastOptions);
       navigate('/auth');
       return;
     }
@@ -224,15 +238,17 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             imageUrl: item.imageUrl || '/images/default-product.jpg',
           }));
           if (setLikedItems) setLikedItems(normalizedItems);
-          toast.success("Added to Wishlist!", { position: 'top-right', autoClose: 3000 });
+          toast.success("Added to Wishlist!", toastOptions);
+        } else {
+          toast.error("Failed to fetch updated wishlist", toastOptions);
         }
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to add to wishlist', { position: 'top-right', autoClose: 3000 });
+        toast.error(errorData.message || 'Failed to add to wishlist', toastOptions);
       }
     } catch (err) {
       console.error("Error adding to wishlist:", err);
-      toast.error("Failed to add to wishlist", { position: 'top-right', autoClose: 3000 });
+      toast.error("Failed to add to wishlist", toastOptions);
     }
   };
 
@@ -268,14 +284,14 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           }));
           setLikedItems(normalizedItems);
         }
-        toast.success(`Item removed from ${type}!`, { position: 'top-right', autoClose: 3000 });
+        toast.success(`Item removed from ${type}!`, toastOptions);
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || `Failed to remove item from ${type}`, { position: 'top-right', autoClose: 3000 });
+        toast.error(errorData.message || `Failed to remove item from ${type}`, toastOptions);
       }
     } catch (err) {
       console.error(`Error removing from ${type}:`, err);
-      toast.error(`Failed to remove item from ${type}`, { position: 'top-right', autoClose: 3000 });
+      toast.error(`Failed to remove item from ${type}`, toastOptions);
     }
   };
 
@@ -292,10 +308,10 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       setShowUserDropdown(false);
       localStorage.removeItem('token');
       navigate("/");
-      toast.success("Logged out successfully!", { position: 'top-right', autoClose: 3000 });
+      toast.success("Logged out successfully!", toastOptions);
     } catch (err) {
       console.error("Logout failed", err);
-      toast.error("Failed to log out", { position: 'top-right', autoClose: 3000 });
+      toast.error("Failed to log out", toastOptions);
     }
   };
 
@@ -386,6 +402,18 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <header className={`navbar-header ${isMenRoute ? 'men-theme' : ''}`}>
         <div className="promo">
           FREE JEWELLERY ORGANIZER WORTH ₹400 ON ORDERS ABOVE RS. 1500

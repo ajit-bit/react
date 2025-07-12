@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/images/logo.jpg';
-import '../styles/Auth.css';
+import styles from '../styles/Women.module.css'; // Import Women.module.css for women-theme-toast
 
 const AuthComponent = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -145,12 +145,14 @@ const AuthComponent = ({ onLogin }) => {
         localStorage.setItem('token', data.token);
         if (onLogin) onLogin(data.token, data.user);
         toast.success(`${isLogin ? 'Login' : 'Signup'} successful!`, {
+          className: styles['women-theme-toast'],
           position: 'top-right',
           autoClose: 3000,
         });
         setTimeout(() => navigate('/'), 1000);
       } else {
         toast.error(data.message || 'Authentication failed', {
+          className: styles['women-theme-toast'],
           position: 'top-right',
           autoClose: 3000,
         });
@@ -162,6 +164,7 @@ const AuthComponent = ({ onLogin }) => {
         errorMessage = 'Unable to connect to the server. Please check your network or server status.';
       }
       toast.error(errorMessage, {
+        className: styles['women-theme-toast'],
         position: 'top-right',
         autoClose: 3000,
       });
@@ -170,6 +173,7 @@ const AuthComponent = ({ onLogin }) => {
 
   const handleSocialLogin = (provider) => {
     toast.info(`${provider} login is not implemented yet.`, {
+      className: styles['women-theme-toast'],
       position: 'top-right',
       autoClose: 3000,
     });
@@ -177,6 +181,19 @@ const AuthComponent = ({ onLogin }) => {
 
   return (
     <div className="auth-wrapper">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className={styles['women-theme-toast']}
+      />
       <div className="auth-container">
         <div className="auth-header">
           <div className="auth-logo">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
   const title = isCart ? 'Your Shopping Cart' : 'Your Wishlist';
   const [isLoading, setIsLoading] = useState(true);
   const [updatingItem, setUpdatingItem] = useState(null);
+  const toastIdRef = useRef(null); // Ref to track the current toast ID
   
   // Initialize sessionId
   const sessionId = localStorage.getItem('sessionId') || (() => {
@@ -24,10 +25,40 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
   const items = isCart ? cartItems : likedItems;
   const total = isCart ? items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) : 0;
 
+  // Toast configuration
+  const toastOptions = {
+    position: 'top-right',
+    autoClose: 1500, // 1.5 seconds
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: false,
+    theme: 'light',
+    style: {
+      background: '#fff',
+      color: '#333',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '14px',
+      padding: '12px',
+    },
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  const showToast = (type, message) => {
+    if (toastIdRef.current) {
+      toast.dismiss(toastIdRef.current); // Dismiss the previous toast
+    }
+    toastIdRef.current = toast[type](message, {
+      ...toastOptions,
+      toastId: `single-${Date.now()}`, // Unique ID based on timestamp
+    });
+  };
 
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1 || updatingItem === productId) return;
@@ -70,20 +101,10 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         quantity: item.quantity || 1,
       })) || []);
 
-      toast.success('Quantity updated!', {
-        position: 'top-right',
-        autoClose: 2000,
-        theme: 'light',
-        toastId: `quantity-${productId}`,
-      });
+      showToast('success', 'Quantity updated!');
     } catch (err) {
       console.error('Quantity update failed:', err);
-      toast.error(err.message || 'Failed to update quantity', {
-        position: 'top-right',
-        autoClose: 2000,
-        theme: 'light',
-        toastId: `error-quantity-${productId}`,
-      });
+      showToast('error', err.message || 'Failed to update quantity');
     } finally {
       setUpdatingItem(null);
     }
@@ -126,12 +147,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
           } else {
             setLikedItems(likedItems.filter(item => item.id !== productId));
           }
-          toast.info(`Item not found in ${type}, removed locally.`, {
-            position: 'top-right',
-            autoClose: 2000,
-            theme: 'light',
-            toastId: `info-${productId}`,
-          });
+          showToast('info', `Item not found in ${type}, removed locally.`);
           return;
         }
         throw new Error(errorData.message || `Failed to remove item from ${type}`);
@@ -156,20 +172,10 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         })) || []);
       }
 
-      toast.success(`Item removed from ${type}!`, {
-        position: 'top-right',
-        autoClose: 2000,
-        theme: 'light',
-        toastId: `remove-${productId}`,
-      });
+      showToast('success', `Item removed from ${type}!`);
     } catch (err) {
       console.error(`Remove from ${type} failed:`, err);
-      toast.error(err.message || `Failed to remove item from ${type}.`, {
-        position: 'top-right',
-        autoClose: 2000,
-        theme: 'light',
-        toastId: `error-${productId}`,
-      });
+      showToast('error', err.message || `Failed to remove item from ${type}.`);
     } finally {
       setUpdatingItem(null);
     }
@@ -235,23 +241,10 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         }
       }
 
-      toast.success(
-        actionType === 'buy' ? `Purchased ${name}!` : actionType === 'cart' ? `Added ${name} to cart!` : `Saved ${name} to wishlist!`,
-        {
-          position: 'top-right',
-          autoClose: 2000,
-          theme: 'light',
-          toastId: `action-${productId}-${actionType}`,
-        }
-      );
+      showToast('success', actionType === 'buy' ? `Purchased ${name}!` : actionType === 'cart' ? `Added ${name} to cart!` : `Saved ${name} to wishlist!`);
     } catch (err) {
       console.error(`${actionType} failed:`, err);
-      toast.error(err.message || `Failed to ${actionType === 'buy' ? 'purchase' : actionType === 'cart' ? 'add to cart' : 'save to wishlist'}`, {
-        position: 'top-right',
-        autoClose: 2000,
-        theme: 'light',
-        toastId: `error-action-${productId}-${actionType}`,
-      });
+      showToast('error', err.message || `Failed to ${actionType === 'buy' ? 'purchase' : actionType === 'cart' ? 'add to cart' : 'save to wishlist'}`);
     } finally {
       setUpdatingItem(null);
     }
@@ -261,8 +254,8 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
     <div className={styles.container}>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
-        limit={3}
+        autoClose={1500}
+        limit={1} // Limit to one toast at a time
         newestOnTop
         closeOnClick
         rtl={false}
@@ -270,6 +263,15 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         draggable={false}
         pauseOnHover={false}
         theme="light"
+        toastStyle={{
+          background: '#fff',
+          color: '#333',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+          padding: '12px',
+        }}
       />
       <div className={styles.innerContainer}>
         <h1 className={styles.title}>{title}</h1>

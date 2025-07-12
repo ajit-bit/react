@@ -15,6 +15,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  position: relative; /* Added to ensure ToastContainer is positioned relative to auth-wrapper */
 }
 
 .auth-container {
@@ -32,18 +33,27 @@ body {
 }
 
 .auth-logo {
-  width: 4rem;
-  height: 4rem;
-  background-color: #facc15;
-  border-radius: 50%;
-  margin: 0 auto;
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto 1rem;
+  border-radius: 9999px;
+  overflow: hidden;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-weight: bold;
-  color: white;
-  font-size: 1.25rem;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  justify-content: center;
+  background-color: #facc15;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.auth-logo:hover {
+  transform: scale(1.05);
+}
+
+.auth-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .auth-title {
@@ -111,13 +121,13 @@ body {
   border-color: #facc15; /* yellow highlight on focus */
 }
 
-/* ✅ Error state */
+/* Error state */
 .auth-form .input.error {
   border-color: #dc2626 !important;
   background-color: #fef2f2;
 }
 
-/* ✅ Error text */
+/* Error text */
 .auth-form .error-text {
   color: #dc2626;
   font-size: 0.75rem;
@@ -125,7 +135,6 @@ body {
   margin-bottom: 0.75rem;
   display: block;
 }
-
 
 .form-row {
   display: flex;
@@ -241,28 +250,49 @@ body {
   background: white;
   cursor: pointer;
 }
-.auth-logo {
-  width: 5rem;
-  height: 5rem;
-  margin: 0 auto 1rem;
-  border-radius: 9999px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #facc15;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+
+/* Toast styles */
+.women-theme-toast {
+  background: #ffffff;
+  color: #374151;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.875rem;
+  padding: 1rem;
+  border: 1px solid #facc15; /* Yellow border to match theme */
 }
 
-.auth-logo:hover {
-  transform: scale(1.05);
+/* Success toast */
+.women-theme-toast .Toastify__toast--success {
+  background: #fefce8; /* Light yellow background */
+  color: #374151;
 }
 
-.auth-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-
+/* Error toast */
+.women-theme-toast .Toastify__toast--error {
+  background: #fef2f2; /* Light red background */
+  color: #dc2626;
 }
 
+/* Info toast */
+.women-theme-toast .Toastify__toast--info {
+  background: #eff6ff; /* Light blue background */
+  color: #1e40af;
+}
+
+/* Close button */
+.women-theme-toast .Toastify__close-button {
+  color: #374151;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.women-theme-toast .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+/* Progress bar */
+.women-theme-toast .Toastify__progress-bar {
+  background: linear-gradient(to right, #facc15, #fcd34d); /* Match submit-btn gradient */
+}
