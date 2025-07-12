@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/images/logo.jpg';
-import styles from '../styles/Women.module.css'; // Import Women.module.css for women-theme-toast
+import styles from '../styles/Auth.module.css'; // Updated to import Auth.module.css
 
 const AuthComponent = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -180,7 +180,7 @@ const AuthComponent = ({ onLogin }) => {
   };
 
   return (
-    <div className="auth-wrapper">
+    <div className={styles['auth-wrapper']}>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -194,35 +194,35 @@ const AuthComponent = ({ onLogin }) => {
         theme="light"
         className={styles['women-theme-toast']}
       />
-      <div className="auth-container">
-        <div className="auth-header">
-          <div className="auth-logo">
+      <div className={styles['auth-container']}>
+        <div className={styles['auth-header']}>
+          <div className={styles['auth-logo']}>
             <Link to="/">
-              <img src={logo} alt="Logo" className="auth-logo-img" />
+              <img src={logo} alt="Logo" className={styles['auth-logo-img']} />
             </Link>
           </div>
-          <h1 className="auth-title">AAISHA HOUSE OF SILVER</h1>
-          <p className="auth-subtitle">EXCLUSIVE JEWELRY</p>
+          <h1 className={styles['auth-title']}>AAISHA HOUSE OF SILVER</h1>
+          <p className={styles['auth-subtitle']}>EXCLUSIVE JEWELRY</p>
         </div>
 
-        <div className="auth-tabs">
-          <button className={`tab ${isLogin ? 'active' : ''}`} onClick={() => toggleTab(true)}>
+        <div className={styles['auth-tabs']}>
+          <button className={`${styles.tab} ${isLogin ? styles.active : ''}`} onClick={() => toggleTab(true)}>
             Login
           </button>
-          <button className={`tab ${!isLogin ? 'active' : ''}`} onClick={() => toggleTab(false)}>
+          <button className={`${styles.tab} ${!isLogin ? styles.active : ''}`} onClick={() => toggleTab(false)}>
             Sign Up
           </button>
         </div>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <h2 className="form-heading">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
-          <p className="form-subheading">
+        <form className={styles['auth-form']} onSubmit={handleSubmit}>
+          <h2 className={styles['form-heading']}>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+          <p className={styles['form-subheading']}>
             {isLogin ? 'Sign in to your account' : 'Join our exclusive jewelry collection'}
           </p>
 
           {!isLogin && (
             <>
-              <div className="form-row">
+              <div className={styles['form-row']}>
                 <input
                   type="text"
                   name="firstName"
@@ -230,7 +230,7 @@ const AuthComponent = ({ onLogin }) => {
                   value={formData.firstName}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  className={errors.firstName && touched.firstName ? 'input error' : 'input'}
+                  className={`${styles.input} ${errors.firstName && touched.firstName ? styles.error : ''}`}
                 />
                 <input
                   type="text"
@@ -239,11 +239,11 @@ const AuthComponent = ({ onLogin }) => {
                   value={formData.lastName}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  className={errors.lastName && touched.lastName ? 'input error' : 'input'}
+                  className={`${styles.input} ${errors.lastName && touched.lastName ? styles.error : ''}`}
                 />
               </div>
-              {errors.firstName && touched.firstName && <span className="error-text">{errors.firstName}</span>}
-              {errors.lastName && touched.lastName && <span className="error-text">{errors.lastName}</span>}
+              {errors.firstName && touched.firstName && <span className={styles['error-text']}>{errors.firstName}</span>}
+              {errors.lastName && touched.lastName && <span className={styles['error-text']}>{errors.lastName}</span>}
 
               <input
                 type="tel"
@@ -252,9 +252,9 @@ const AuthComponent = ({ onLogin }) => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={errors.phone && touched.phone ? 'input error' : 'input'}
+                className={`${styles.input} ${errors.phone && touched.phone ? styles.error : ''}`}
               />
-              {errors.phone && touched.phone && <span className="error-text">{errors.phone}</span>}
+              {errors.phone && touched.phone && <span className={styles['error-text']}>{errors.phone}</span>}
             </>
           )}
 
@@ -265,11 +265,11 @@ const AuthComponent = ({ onLogin }) => {
             value={formData.email}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            className={errors.email && touched.email ? 'input error' : 'input'}
+            className={`${styles.input} ${errors.email && touched.email ? styles.error : ''}`}
           />
-          {errors.email && touched.email && <span className="error-text">{errors.email}</span>}
+          {errors.email && touched.email && <span className={styles['error-text']}>{errors.email}</span>}
 
-          <div className="input-password">
+          <div className={styles['input-password']}>
             <input
               type={showPassword.password ? 'text' : 'password'}
               name="password"
@@ -277,16 +277,16 @@ const AuthComponent = ({ onLogin }) => {
               value={formData.password}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              className={errors.password && touched.password ? 'input error' : 'input'}
+              className={`${styles.input} ${errors.password && touched.password ? styles.error : ''}`}
             />
-            <span className="eye-icon" onClick={() => togglePasswordVisibility('password')}>
+            <span className={styles['eye-icon']} onClick={() => togglePasswordVisibility('password')}>
               👁
             </span>
           </div>
-          {errors.password && touched.password && <span className="error-text">{errors.password}</span>}
+          {errors.password && touched.password && <span className={styles['error-text']}>{errors.password}</span>}
 
           {!isLogin && (
-            <div className="input-password">
+            <div className={styles['input-password']}>
               <input
                 type={showPassword.confirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
@@ -294,20 +294,20 @@ const AuthComponent = ({ onLogin }) => {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={errors.confirmPassword && touched.confirmPassword ? 'input error' : 'input'}
+                className={`${styles.input} ${errors.confirmPassword && touched.confirmPassword ? styles.error : ''}`}
               />
-              <span className="eye-icon" onClick={() => togglePasswordVisibility('confirmPassword')}>
+              <span className={styles['eye-icon']} onClick={() => togglePasswordVisibility('confirmPassword')}>
                 👁
               </span>
             </div>
           )}
           {!isLogin && errors.confirmPassword && touched.confirmPassword && (
-            <span className="error-text">{errors.confirmPassword}</span>
+            <span className={styles['error-text']}>{errors.confirmPassword}</span>
           )}
 
           {isLogin ? (
-            <div className="options-row">
-              <label className="checkbox-label">
+            <div className={styles['options-row']}>
+              <label className={styles['checkbox-label']}>
                 <input
                   type="checkbox"
                   name="rememberMe"
@@ -316,22 +316,22 @@ const AuthComponent = ({ onLogin }) => {
                 />
                 Remember me
               </label>
-              <a href="#" className="link-yellow">Forgot Password?</a>
+              <a href="#" className={styles['link-yellow']}>Forgot Password?</a>
             </div>
           ) : (
             <>
-              <label className="checkbox-label">
+              <label className={styles['checkbox-label']}>
                 <input
                   type="checkbox"
                   name="agreeTerms"
                   checked={formData.agreeTerms}
                   onChange={handleInputChange}
                 />
-                I agree to the <span className="link-yellow">Terms & Conditions</span>
+                I agree to the <span className={styles['link-yellow']}>Terms & Conditions</span>
               </label>
-              {errors.agreeTerms && <span className="error-text">{errors.agreeTerms}</span>}
+              {errors.agreeTerms && <span className={styles['error-text']}>{errors.agreeTerms}</span>}
 
-              <label className="checkbox-label">
+              <label className={styles['checkbox-label']}>
                 <input
                   type="checkbox"
                   name="newsletter"
@@ -343,17 +343,17 @@ const AuthComponent = ({ onLogin }) => {
             </>
           )}
 
-          <button type="submit" className="submit-btn">
+          <button type="submit" className={styles['submit-btn']}>
             {isLogin ? 'SIGN IN' : 'CREATE ACCOUNT'}
           </button>
 
-          <div className="divider"><span>or continue with</span></div>
+          <div className={styles.divider}><span>or continue with</span></div>
 
-          <div className="social-buttons">
-            <button type="button" className="social-btn" onClick={() => handleSocialLogin('Google')}>
+          <div className={styles['social-buttons']}>
+            <button type="button" className={styles['social-btn']} onClick={() => handleSocialLogin('Google')}>
               <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google" /> Google
             </button>
-            <button type="button" className="social-btn" onClick={() => handleSocialLogin('Facebook')}>
+            <button type="button" className={styles['social-btn']} onClick={() => handleSocialLogin('Facebook')}>
               <img src="https://img.icons8.com/fluency/24/000000/facebook-new.png" alt="Facebook" /> Facebook
             </button>
           </div>
