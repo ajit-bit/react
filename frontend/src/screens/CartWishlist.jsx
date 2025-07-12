@@ -34,6 +34,9 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
     setUpdatingItem(productId);
     try {
       const token = localStorage.getItem('token');
+      if (!user?.id && !sessionId) {
+        throw new Error('User ID or session ID required for updating quantity');
+      }
       const response = await fetch('http://localhost:5000/api/cart/update', {
         method: 'POST',
         credentials: 'include',
@@ -44,7 +47,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         body: JSON.stringify({
           productId,
           userId: user?.id,
-          sessionId: !user ? sessionId : undefined,
+          sessionId: !user?.id ? sessionId : undefined,
           quantity: newQuantity,
         }),
       });
@@ -92,6 +95,10 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
     try {
       const token = localStorage.getItem('token');
       const apiBase = isCart ? 'cart' : 'liked';
+      if (!user?.id && !sessionId) {
+        throw new Error('User ID or session ID required for removing item');
+      }
+      console.log(`Attempting to remove item ${productId} from ${apiBase} with ${user?.id ? `userId: ${user.id}` : `sessionId: ${sessionId}`}`);
       const response = await fetch(`http://localhost:5000/api/${apiBase}/remove`, {
         method: 'POST',
         credentials: 'include',
@@ -102,7 +109,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         body: JSON.stringify({
           productId,
           userId: user?.id,
-          sessionId: !user ? sessionId : undefined,
+          sessionId: !user?.id ? sessionId : undefined,
         }),
       });
 
@@ -112,6 +119,21 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
           throw new Error(`Server returned non-JSON response (status: ${response.status})`);
         }
         const errorData = await response.json();
+        if (response.status === 404 && errorData.message === (isCart ? 'Cart item not found' : 'Item not found in wishlist')) {
+          console.warn(`Item ${productId} not found in ${apiBase}, removing locally`);
+          if (isCart) {
+            setCartItems(cartItems.filter(item => item.id !== productId));
+          } else {
+            setLikedItems(likedItems.filter(item => item.id !== productId));
+          }
+          toast.info(`Item not found in ${type}, removed locally.`, {
+            position: 'top-right',
+            autoClose: 2000,
+            theme: 'light',
+            toastId: `info-${productId}`,
+          });
+          return;
+        }
         throw new Error(errorData.message || `Failed to remove item from ${type}`);
       }
 
@@ -142,12 +164,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
       });
     } catch (err) {
       console.error(`Remove from ${type} failed:`, err);
-      if (isCart) {
-        setCartItems(cartItems.filter(item => item.id !== productId));
-      } else {
-        setLikedItems(likedItems.filter(item => item.id !== productId));
-      }
-      toast.error(`Failed to remove item from ${type}. Removed locally.`, {
+      toast.error(err.message || `Failed to remove item from ${type}.`, {
         position: 'top-right',
         autoClose: 2000,
         theme: 'light',
@@ -164,6 +181,9 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
     try {
       const token = localStorage.getItem('token');
       const endpoint = actionType === 'buy' ? '/api/cart/buy' : actionType === 'cart' ? '/api/cart/add' : '/api/liked/add';
+      if (!user?.id && !sessionId) {
+        throw new Error('User ID or session ID required for this action');
+      }
       const isMoveAction = (isCart && actionType === 'wishlist') || (!isCart && actionType === 'cart');
       
       const response = await fetch(`http://localhost:5000${endpoint}`, {
@@ -176,7 +196,7 @@ const CartWishlist = ({ type = 'cart', user, cartItems, setCartItems, likedItems
         body: JSON.stringify({
           productId,
           userId: user?.id,
-          sessionId: !user ? sessionId : undefined,
+          sessionId: !user?.id ? sessionId : undefined,
           quantity: 1,
         }),
       });
