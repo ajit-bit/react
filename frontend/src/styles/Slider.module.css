@@ -1,7 +1,7 @@
 .homeSlider {
   background: #f9f5f0;
-  min-height: 500px;
-  height: 85vh; 
+  min-height: 400px;
+  height: 80vh;
 }
 
 .homeSlider :global(.carousel-inner),
@@ -10,40 +10,33 @@
 }
 
 .textContainer {
-  padding: 2rem; 
+  padding: 1.5rem;
 }
 
 .textContainer h4 {
-  text-transform: uppercase;
-  color: #777;
+  font-size: clamp(12px, 2vw, 14px);
   letter-spacing: 1px;
-  font-size: 14px;
-  margin-bottom: 0.5rem;
 }
 
-.textContainer span {
+.textContainer h1 {
   font-family: 'Lora', serif;
-  font-size: 4rem;
-  margin: 0.5rem 0 1rem 0;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
   font-weight: bold;
   line-height: 1.2;
   color: #FDB813;
 }
 
 .textContainer p {
-  color: #666;
+  font-size: clamp(14px, 2vw, 16px);
   line-height: 1.6;
-  margin-bottom: 1.5rem;
-  font-size: 16px;
 }
 
 .shopNowBtn {
-  padding: 12px 24px;
+  padding: 10px 20px;
   border: 2px solid #333;
   color: #111827;
   background: transparent;
-  cursor: pointer;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 14px);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -57,25 +50,51 @@
 }
 
 .slideImage {
-  max-height: 75vh;
+  max-height: 70vh;
   object-fit: contain;
-  margin: 0 auto;
+  width: 100%;
 }
 
-@media (max-width: 992px) {
-  .textContainer h1 {
-    font-size: 3rem;
+@media (max-width: 768px) {
+  .homeSlider {
+    height: auto;
+    min-height: 600px;
   }
+
   .textContainer {
-    padding: 2rem 1rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .textContainer h1 {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+
+  .textContainer p {
+    font-size: clamp(12px, 3vw, 14px);
+  }
+
+  .slideImage {
+    max-height: 50vh;
+    margin: 0 auto;
   }
 }
 
-@media (max-width: 480px) {
-  .textContainer h1 {
-    font-size: 2.2rem; 
+@media (max-width: 576px) {
+  .textContainer {
+    padding: 0.5rem;
   }
+
+  .textContainer h1 {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+  }
+
   .shopNowBtn {
-    padding: 10px 20px;
+    padding: 8px 16px;
+    font-size: clamp(10px, 2vw, 12px);
+  }
+
+  .slideImage {
+    max-height: 40vh;
   }
 }

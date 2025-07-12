@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import styles from '../styles/CategoryCarousel.module.css';
-import ring1 from '../assets/images/ring1.jpg'; // Using a placeholder image
+import ring1 from '../assets/images/ring1.jpg';
 
-// Reordered to match the image
 const categories = [
   { name: 'PENDANTS', img: ring1 },
   { name: 'MANGALSUTRA', img: ring1 },
@@ -16,7 +15,6 @@ const categories = [
 const loopedCategories = [...categories, ...categories];
 
 const CategoryCarousel = () => {
-  // CORRECTED THIS LINE: removed the extra '='
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitionDisabled, setTransitionDisabled] = useState(false);
   const trackRef = useRef(null);
@@ -31,15 +29,12 @@ const CategoryCarousel = () => {
     }, 3000);
   };
 
-  const resetAutoScroll = () => {
-    startAutoScroll();
-  };
-
+  
   useEffect(() => {
     startAutoScroll();
     return () => clearInterval(intervalRef.current);
   }, []);
-  
+
   useEffect(() => {
     if (isTransitionDisabled) {
       setTimeout(() => {
@@ -48,11 +43,7 @@ const CategoryCarousel = () => {
     }
   }, [isTransitionDisabled]);
 
-  const handleNext = () => {
-    setCurrentIndex(prev => prev + 1);
-    resetAutoScroll(); 
-  };
-
+ 
   const handleTransitionEnd = () => {
     if (currentIndex >= categories.length) {
       setTransitionDisabled(true);
@@ -60,36 +51,41 @@ const CategoryCarousel = () => {
     }
   };
 
-  const itemWidth = 270;
-  
   return (
-    // Added a section class for the background color
-    <Container as="section" className={`${styles.carouselSection} py-5 text-center`}>
-      {/* Removed the 'h2' class to let our custom style take over */}
+    <Container as="section" className={`${styles.carouselSection} py-4 py-md-5 text-center`}>
       <h1 className={styles.carouselTitle}>Everyday Demi-fine Jewellery</h1>
-      <div className={`${styles.categoryCarouselContainer} mt-4`}>
-        <div 
-          ref={trackRef}
-          className={`${styles.categoryCarouselTrack} ${isTransitionDisabled ? styles.noTransition : ''}`}
-          style={{ transform: `translateX(-${currentIndex * itemWidth}px)` }}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          {loopedCategories.map((category, index) => (
-            <div className={styles.categoryCarouselItem} key={index}>
-              <div className={styles.circleImage}>
-                <img src={category.img} alt={category.name} />
-              </div>
-              <p className={`mt-3 fw-bold ${styles.categoryCarouselName}`}>{category.name}</p>
+      <div className={`${styles.categoryCarouselContainer} mt-3 mt-md-4`}>
+        <Row className="g-0">
+          <Col xs={12}>
+            <div
+              ref={trackRef}
+              className={`${styles.categoryCarouselTrack} ${isTransitionDisabled ? styles.noTransition : ''}`}
+              style={{ transform: `translateX(-${currentIndex * (100 / getItemsPerView())}%)` }}
+              onTransitionEnd={handleTransitionEnd}
+            >
+              {loopedCategories.map((category, index) => (
+                <div className={styles.categoryCarouselItem} key={index}>
+                  <div className={styles.circleImage}>
+                    <img src={category.img} alt={category.name} className="img-fluid" />
+                  </div>
+                  <p className={`mt-2 mt-md-3 fw-bold ${styles.categoryCarouselName}`}>{category.name}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {/* Changed to a standard HTML button for full styling control */}
-        <button className={styles.nextBtn} onClick={handleNext} aria-label="Next category">
-          ❯
-        </button>
+          </Col>
+        </Row>
+        
       </div>
     </Container>
   );
+};
+
+// Helper function to determine items per view based on screen size
+const getItemsPerView = () => {
+  if (window.innerWidth <= 576) return 1;
+  if (window.innerWidth <= 768) return 2;
+  if (window.innerWidth <= 992) return 3;
+  return 4;
 };
 
 export default CategoryCarousel;

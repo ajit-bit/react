@@ -1,8 +1,21 @@
+.carouselSection {
+  background: #f9f5f0;
+}
+
+.carouselTitle {
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  color: #FFC107;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
 .categoryCarouselContainer {
   position: relative;
-  overflow: hidden;
   max-width: 1400px;
   margin: auto;
+  overflow: hidden;
 }
 
 .categoryCarouselTrack {
@@ -15,31 +28,32 @@
 }
 
 .categoryCarouselItem {
-  flex: 0 0 270px; 
+  flex: 0 0 calc(100% / 4);
   box-sizing: border-box;
-  padding: 10px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Updated styles to match the image */
 .categoryCarouselName {
   color: #383838;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.9rem;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
 }
 
 .circleImage {
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  max-width: 250px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background-color: #ffffff; /* Changed to pure white */
-  margin: auto;
+  background-color: #ffffff;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  /* Added a subtle shadow inside for depth */
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.07));
 }
 
@@ -54,21 +68,18 @@
   transform: scale(1.05);
 }
 
-/* Updated button style to match the image */
 .nextBtn {
   position: absolute;
-  top: 125px; /* Vertically centers on the 250px image */
+  top: 50%;
+  right: 1rem;
   transform: translateY(-50%);
-  right: 20px;
   width: 40px;
   height: 40px;
-  z-index: 2;
-  font-size: 1.2rem;
-  line-height: 1;
+  font-size: 1rem;
   background-color: #f0f0f0;
   color: #333;
   border: 1px solid #e0e0e0;
-  border-radius: 8px; /* Changed from circle to rounded square */
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -81,38 +92,47 @@
   background-color: #e0e0e0;
 }
 
-/* Updated Title styles to override Bootstrap and match the image */
-.carouselTitle {
-  font-family: 'Lora', serif;
-  font-weight: 400;
-  color: #FFC107;
-  text-align: center;
-  font-size: 2.25rem; /* Replaces the font-size from the 'h2' class */
+@media screen and (max-width: 992px) {
+  .categoryCarouselItem {
+    flex: 0 0 calc(100% / 3);
+  }
+  .circleImage {
+    max-width: 200px;
+  }
 }
-
 
 @media screen and (max-width: 768px) {
   .categoryCarouselItem {
-    flex: 0 0 50%; 
+    flex: 0 0 calc(100% / 2);
   }
   .circleImage {
-    width: 180px;
-    height: 180px;
+    max-width: 180px;
   }
   .nextBtn {
-    top: 90px;
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 576px) {
   .categoryCarouselItem {
-    flex: 0 0 100%; 
+    flex: 0 0 100%;
+    padding: 0.25rem;
   }
   .circleImage {
-    width: 200px;
-    height: 200px;
+    max-width: 200px;
   }
   .nextBtn {
-    top: 100px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    right: 0.5rem;
+  }
+  .carouselSection {
+    padding: 1.5rem 0;
+  }
+  .carouselTitle {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
   }
 }

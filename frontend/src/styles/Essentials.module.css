@@ -1,52 +1,106 @@
+.essentialsSection {
+  padding: 2rem 1rem;
+}
+
 .essentialsSection .headingEssentials {
-    font-family: 'Lora', serif;
-    font-weight: 500;
-    color:#FFC107 ;
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+  color: #FFC107;
+  margin-bottom: 2rem;
+  position: relative;
 }
 
 .essentialsSection .headingEssentials::after {
   content: "";
   width: 80px;
   height: 4px;
-  background: gold;
+  background: #FFC107;
   display: block;
-  margin: 12px auto 0;
+  margin: 0.75rem auto 0;
   border-radius: 2px;
 }
 
 .cardEssentials {
-  transition: transform .3s ease;
+  border-radius: 1rem !important;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
 }
 
 .cardEssentials:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+.imageWrapper {
+  overflow: hidden;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
 }
 
 .cardEssentials :global(.card-img-top) {
-  height: 250px;
+  height: 200px;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cardEssentials:hover :global(.card-img-top) {
+  transform: scale(1.05);
 }
 
 .cardEssentials h2 {
-  font-size: 1.5rem;
-  margin: 20px 0 15px;
-  color: #222;
+  font-size: 1.25rem;
   font-weight: 600;
+  color: #222;
+  margin: 1rem 0;
 }
 
 .discoverBtn {
-  padding: 10px 28px;
+  padding: 0.5rem 1.5rem;
   font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 10px;
-  transition: all .3s ease;
-  background: #e9a700;
-  color: #000;
-  border-color: #e9a700;
+  border-radius: 0.5rem;
+  background: #FFC107 !important;
+  color: #000 !important;
+  border: none !important;
+  transition: all 0.3s ease;
 }
 
-@media(max-width: 768px) {
+.discoverBtn:hover {
+  background: #e0a800 !important;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
   .essentialsSection .headingEssentials {
     font-size: 2rem;
+  }
+
+  .cardEssentials :global(.card-img-top) {
+    height: 150px;
+  }
+
+  .cardEssentials h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .essentialsSection {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .cardEssentials :global(.card-img-top) {
+    height: 120px;
+  }
+
+  .cardEssentials h2 {
+    font-size: 1rem;
+  }
+
+  .discoverBtn {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem;
   }
 }

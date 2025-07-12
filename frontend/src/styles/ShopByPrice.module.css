@@ -1,11 +1,13 @@
 .shopByPriceSection {    
   background: #fffaf5;
+  padding: 3rem 1rem; /* Reduced padding for smaller screens */
 }
 
 .shopByPriceSection .sectionTitle {
-    font-family: 'Lora', serif;
-    font-weight: 500;
-    color: #d4af37; /* Changed to match button and underline for consistency */
+  font-family: 'Lora', serif;
+  font-weight: 500;
+  color: #d4af37;
+  font-size: 2rem; /* Default for larger screens */
 }
 
 .shopByPriceSection .sectionTitle::after {
@@ -21,12 +23,13 @@
 .priceCard {
   border: 1px solid #f0e6da;
   border-radius: 16px;
-  transition: transform .3s ease, box-shadow .3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 1rem; /* Ensure spacing between cards on smaller screens */
 }
 
 .priceCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,.1) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
 }
 
 .priceLabel {
@@ -45,26 +48,21 @@
 }
 
 .priceBtn {
-  background: #007bff; /* This is the blue color you were seeing */
-  /* Your desired golden color is below, now it will apply correctly! */
   background: #d4af37;
   border: none;
   color: #fff;
-  /* Using a fixed value to get the rounded square from the image */
   border-radius: 8px;
   width: 45px;
   height: 45px;
   cursor: pointer;
-  transition: background .3s ease;
-  
-  /* Added these lines to perfectly center the arrow icon */
+  transition: background 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .priceBtn:hover {
-  background: #b89227; /* Darker gold for hover effect */
+  background: #b89227;
 }
 
 .priceCard.premium {
@@ -77,11 +75,57 @@
   color: #a75d5d;
 }
 
-/* Optional: Style the button on the premium card to match its theme */
 .priceCard.premium .priceBtn {
   background: #a75d5d;
 }
 
 .priceCard.premium .priceBtn:hover {
   background: #8e4a4a;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .shopByPriceSection .sectionTitle {
+    font-size: 1.5rem; /* Smaller title for mobile */
+  }
+
+  .priceCard {
+    padding: 0.5rem; /* Reduced padding for smaller screens */
+  }
+
+  .priceLabel {
+    font-size: 0.9rem; /* Slightly smaller font for mobile */
+  }
+
+  .priceValue {
+    font-size: 1.4rem; /* Adjusted for better fit */
+  }
+
+  .priceBtn {
+    width: 40px; /* Slightly smaller button */
+    height: 40px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .shopByPriceSection {
+    padding: 2rem 0.5rem; /* Further reduced padding for extra small screens */
+  }
+
+  .priceCard {
+    margin-bottom: 0.75rem; /* Tighter spacing */
+  }
+
+  .priceLabel {
+    font-size: 0.85rem;
+  }
+
+  .priceValue {
+    font-size: 1.2rem;
+  }
+
+  .priceBtn {
+    width: 35px;
+    height: 35px;
+  }
 }

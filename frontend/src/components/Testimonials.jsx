@@ -26,20 +26,9 @@ const testimonialsData = [
   },
 ];
 
-
-const chunkArray = (array, size) => {
-  const chunkedArr = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunkedArr.push(array.slice(i, i + size));
-  }
-  return chunkedArr;
-};
-
 const Testimonials = () => {
-  const testimonialChunks = chunkArray(testimonialsData, 3);
-
-  const renderTestimonialCard = (item) => (
-    <Card className={`${styles.testimonialCard} border-0 shadow-sm h-100`}>
+  const renderTestimonialCard = (item, index) => (
+    <Card key={index} className={`${styles.testimonialCard} border-0 shadow-sm h-100`}>
       <Card.Body>
         <div className={styles.testimonialRating}>★★★★★</div>
         <Card.Text className={styles.testimonialText}>{item.text}</Card.Text>
@@ -57,33 +46,34 @@ const Testimonials = () => {
   return (
     <Container as="section" className={`${styles.testimonialsSection} text-center my-5`}>
       <h1 className="fw-light">WHAT OUR CLIENTS SAY</h1>
-      <div className={`${styles.titleDivider} mx-auto`}></div>
+      <div className={`${styles.titleDivider} mx-auto mb-4`}></div>
 
-      {/* Desktop Carousel */}
+      {/* Desktop View: Show all testimonials in a grid */}
       <div className="d-none d-md-block">
-        <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
-          {testimonialChunks.map((chunk, index) => (
-            <Carousel.Item key={index}>
-              <Row className="g-4 justify-content-center">
-                {chunk.map((item, itemIndex) => (
-                  <Col key={itemIndex} md={4}>
-                    {renderTestimonialCard(item)}
-                  </Col>
-                ))}
-              </Row>
-            </Carousel.Item>
+        <Row className="g-4 justify-content-center">
+          {testimonialsData.map((item, index) => (
+            <Col key={index} xs={12} sm={6} md={4} lg={4}>
+              {renderTestimonialCard(item, index)}
+            </Col>
           ))}
-        </Carousel>
+        </Row>
       </div>
 
-      {/* Mobile Carousel */}
+      {/* Mobile View: Carousel with swipe, no indicators */}
       <div className="d-block d-md-none">
-        <Carousel variant="dark" indicators={false} interval={null} className="mt-4">
+        <Carousel
+          variant="dark"
+          indicators={false}
+          controls={false}
+          interval={null}
+          className="mt-4"
+          touch={true}
+        >
           {testimonialsData.map((item, index) => (
             <Carousel.Item key={index}>
               <div className="d-flex justify-content-center py-4">
                 <div className={styles.testimonialContainer}>
-                  {renderTestimonialCard(item)}
+                  {renderTestimonialCard(item, index)}
                 </div>
               </div>
             </Carousel.Item>

@@ -1,0 +1,113 @@
+.availableAtSection {
+  background: #fff;
+  padding: 3rem 1rem;
+}
+
+.title {
+  font-family: 'Lora', serif;
+  font-weight: 500;
+  color: #FFC107;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.titleDivider {
+  width: 60px;
+  height: 2px;
+  background-color: #ccc;
+  margin: 12px auto;
+}
+
+.logoRow {
+  display: flex;
+  overflow-x: auto; /* Enable horizontal scrolling on small screens */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+}
+
+.logoRow::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Webkit browsers */
+}
+
+.logoCol {
+  flex: 0 0 auto; /* Prevent columns from stretching */
+}
+
+.marketplaceLogo {
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.logoCircle {
+  width: 180px;
+  height: 100px;
+  background: white;
+  border-radius: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marketplaceLogo:hover .logoCircle {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.logoCircle img {
+  max-width: 70%;
+  max-height: 70%;
+  object-fit: contain;
+}
+
+.logoName {
+  font-weight: bold;
+  color: #1a1a1a;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .availableAtSection {
+    padding: 2rem 0.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .logoCircle {
+    width: 140px;
+    height: 80px;
+  }
+
+  .logoName {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .availableAtSection {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .titleDivider {
+    width: 50px;
+  }
+
+  .logoCircle {
+    width: 120px;
+    height: 70px;
+  }
+
+  .logoName {
+    font-size: 0.85rem;
+  }
+}

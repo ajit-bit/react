@@ -31,20 +31,19 @@ const Slider = () => {
   ];
 
   return (
-    <Carousel interval={5000} controls={false} className={styles.homeSlider}>
+    <Carousel interval={5000} controls={true} indicators={true} className={styles.homeSlider}>
       {slides.map((slide, index) => (
         <Carousel.Item key={index}>
-          <Row className="m-0 h-100 align-items-center px-lg-5">
-            <Col lg={6} className={`${styles.textContainer} text-start order-2 order-lg-1`}>
-              <h4>{slide.subtitle}</h4>
-              <span>{slide.title}</span>
-              <p>{slide.description}</p>
-              <button className={styles.shopNowBtn}>Shop now</button>
+          <Row className="m-0 h-100 align-items-center px-3 px-lg-5">
+            <Col xs={12} lg={6} className={`${styles.textContainer} text-start order-2 order-lg-1 py-4 py-lg-0`}>
+              <h4 className="text-uppercase text-muted mb-2">{slide.subtitle}</h4>
+              <h1 className="fw-bold mb-3">{slide.title}</h1>
+              <p className="text-secondary mb-4">{slide.description}</p>
+              <button className={`${styles.shopNowBtn} btn`}>Shop Now</button>
             </Col>
-            
-            <Col lg={6} className="order-1 order-lg-2">
+            <Col xs={12} lg={6} className="order-1 order-lg-2 d-flex justify-content-center">
               <img
-                className={`d-block w-100 ${styles.slideImage}`}
+                className={`img-fluid ${styles.slideImage}`}
                 src={slide.image}
                 alt={slide.alt}
               />

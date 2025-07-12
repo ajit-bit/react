@@ -1,7 +1,7 @@
 .testimonialsSection h1 {
   font-family: 'Lora', serif;
   font-weight: 500;
-  color:#FFC107 ;
+  color: #FFC107;
 }
 
 .titleDivider {
@@ -12,6 +12,7 @@
 
 .testimonialCard {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
 }
 
 .testimonialCard:hover {
@@ -50,16 +51,28 @@
 }
 
 .testimonialContainer {
-  max-width: 700px;
-  width: 80%;
+  max-width: 90%;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.testimonialsSection :global(.carousel-control-prev),
-.testimonialsSection :global(.carousel-control-next) {
-  width: 5%;
+@media (max-width: 767.98px) {
+  .testimonialsSection {
+    padding: 0 15px;
+  }
+
+  .testimonialCard {
+    margin: 0 auto;
+    max-width: 350px;
+  }
+
+  .testimonialText {
+    font-size: 0.95rem;
+  }
 }
 
-.testimonialsSection :global(.carousel-control-prev-icon),
-.testimonialsSection :global(.carousel-control-next-icon) {
-  filter: invert(1);
+@media (min-width: 768px) {
+  .testimonialCard {
+    max-width: 400px;
+  }
 }
