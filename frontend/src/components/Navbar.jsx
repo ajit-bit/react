@@ -94,10 +94,11 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         if (response.ok) {
           const data = await response.json();
           const normalizedItems = data.map(item => ({
-            id: item.productId || item.id,
-            name: item.product?.name || item.name,
-            price: parseFloat(item.product?.price || item.price || 0),
-            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            id: item.productId || item._id,
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            imageUrl: item.imageUrl || '/images/default-product.jpg',
+            quantity: item.quantity || 1,
           }));
           if (setCartItems) setCartItems(normalizedItems);
         } else {
@@ -119,10 +120,10 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         if (response.ok) {
           const data = await response.json();
           const normalizedItems = data.map(item => ({
-            id: item.productId || item.id,
-            name: item.product?.name || item.name,
-            price: parseFloat(item.product?.price || item.price || 0),
-            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            id: item.productId || item._id,
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            imageUrl: item.imageUrl || '/images/default-product.jpg',
           }));
           if (setLikedItems) setLikedItems(normalizedItems);
         } else {
@@ -139,7 +140,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       fetchCartItems(identifier);
       fetchLikedItems(identifier);
     }
-  }, [user]);
+  }, [user, setCartItems, setLikedItems]);
 
   const addToCart = async (productId) => {
     const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
@@ -150,19 +151,28 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     }
     try {
       const token = localStorage.getItem('token');
+      const product = products.find(p => p.id === productId);
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(token && { 'Authorization': `Bearer ${token}` }) },
         credentials: "include",
-        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
+        body: JSON.stringify({ 
+          productId, 
+          name: product?.name || 'Unknown Product', 
+          price: product?.price || 0, 
+          imageUrl: product?.imageUrl || '/images/default-product.jpg',
+          userId: user?.id, 
+          sessionId: !user ? identifier : undefined 
+        })
       });
       if (response.ok) {
         const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name,
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+        const normalizedItems = data.cartItems.map(item => ({
+          id: item.productId || item._id,
+          name: item.name,
+          price: parseFloat(item.price || 0),
+          imageUrl: item.imageUrl || '/images/default-product.jpg',
+          quantity: item.quantity || 1,
         }));
         if (setCartItems) setCartItems(normalizedItems);
         toast.success("Added to Cart!", { position: 'top-right', autoClose: 3000 });
@@ -185,22 +195,37 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     }
     try {
       const token = localStorage.getItem('token');
+      const product = products.find(p => p.id === productId);
       const response = await fetch("http://localhost:5000/api/liked/add", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(token && { 'Authorization': `Bearer ${token}` }) },
         credentials: "include",
-        body: JSON.stringify({ productId, userId: user?.id, sessionId: !user ? identifier : undefined })
+        body: JSON.stringify({ 
+          productId, 
+          name: product?.name || 'Unknown Product', 
+          price: product?.price || 0, 
+          imageUrl: product?.imageUrl || '/images/default-product.jpg',
+          userId: user?.id, 
+          sessionId: !user ? identifier : undefined 
+        })
       });
       if (response.ok) {
-        const data = await response.json();
-        const normalizedItems = data.map(item => ({
-          id: item.productId || item.id,
-          name: item.product?.name || item.name,
-          price: parseFloat(item.product?.price || item.price || 0),
-          imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
-        }));
-        if (setLikedItems) setLikedItems(normalizedItems);
-        toast.success("Added to Wishlist!", { position: 'top-right', autoClose: 3000 });
+        const identifier = user ? user.id : localStorage.getItem('sessionId') || '';
+        const fetchResponse = await fetch(`http://localhost:5000/api/liked/${identifier}`, {
+          credentials: "include",
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        if (fetchResponse.ok) {
+          const data = await fetchResponse.json();
+          const normalizedItems = data.map(item => ({
+            id: item.productId || item._id,
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            imageUrl: item.imageUrl || '/images/default-product.jpg',
+          }));
+          if (setLikedItems) setLikedItems(normalizedItems);
+          toast.success("Added to Wishlist!", { position: 'top-right', autoClose: 3000 });
+        }
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || 'Failed to add to wishlist', { position: 'top-right', autoClose: 3000 });
@@ -217,7 +242,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     try {
       const token = localStorage.getItem('token');
       const endpoint = type === 'cart' ? '/api/cart/remove' : '/api/liked/remove';
-      const response = await fetch(endpoint, {
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token && { 'Authorization': `Bearer ${token}` }) },
         credentials: 'include',
@@ -227,18 +252,19 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         const data = await response.json();
         if (type === 'cart') {
           const normalizedItems = data.cartItems.map(item => ({
-            id: item.productId || item.id,
-            name: item.product?.name || item.name,
-            price: parseFloat(item.product?.price || item.price || 0),
-            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            id: item.productId || item._id,
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            imageUrl: item.imageUrl || '/images/default-product.jpg',
+            quantity: item.quantity || 1,
           }));
           setCartItems(normalizedItems);
         } else {
           const normalizedItems = data.likedItems.map(item => ({
-            id: item.productId || item.id,
-            name: item.product?.name || item.name,
-            price: parseFloat(item.product?.price || item.price || 0),
-            imageUrl: item.product?.imageUrl || item.imageUrl || '/images/default-product.jpg'
+            id: item.productId || item._id,
+            name: item.name,
+            price: parseFloat(item.price || 0),
+            imageUrl: item.imageUrl || '/images/default-product.jpg',
           }));
           setLikedItems(normalizedItems);
         }
@@ -330,7 +356,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
   const isMenRoute = location.pathname === '/men';
 
   const goBack = () => {
@@ -634,7 +660,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
                   <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
                   <div className="flex-grow-1">
                     <h3>{item.name}</h3>
-                    <p>₹{item.price.toFixed(2)}</p>
+                    <p>₹{item.price.toFixed(2)} x {item.quantity}</p>
                   </div>
                   <button
                     className="btn btn-danger btn-sm"
