@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar.css';
+import styles from './Navbar.module.css'; // Changed to CSS Module import
 import logo from '../assets/images/logo-nobg.png';
 import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
@@ -11,7 +11,7 @@ import shopLogo from '../assets/images/shoplogo.svg';
 
 // Inline SVG Icons
 const CategoriesIcon = () => (
-  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className={styles['icon-svg']} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"></rect>
     <rect x="14" y="3" width="7" height="7"></rect>
     <rect x="3" y="14" width="7" height="7"></rect>
@@ -20,26 +20,26 @@ const CategoriesIcon = () => (
 );
 
 const TopIcon = () => (
-  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className={styles['icon-svg']} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="18 15 12 9 6 15"></polyline>
   </svg>
 );
 
 const BackIcon = () => (
-  <svg className="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className={styles['icon-svg']} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 18 9 12 15 6"></polyline>
   </svg>
 );
 
 const SearchIcon = () => (
-  <svg className="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className={styles['icon-svg']} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8"></circle>
     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
   </svg>
 );
 
 const CloseIcon = () => (
-  <svg className="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className={styles['icon-svg']} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"></line>
     <line x1="6" y1="6" x2="18" y2="18"></line>
   </svg>
@@ -59,7 +59,6 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const location = useLocation();
   const sidebarRef = useRef(null);
 
-  // Toast configuration matching Women.jsx
   const toastOptions = {
     position: 'top-right',
     autoClose: 3000,
@@ -68,25 +67,25 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     pauseOnHover: true,
     draggable: true,
     theme: 'light',
-    className: 'women-theme-toast',
+    className: styles['women-theme-toast'],
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest('.icon-bar button') && !event.target.closest('.mobile-bottom-nav button')) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest(`.${styles['icon-bar']} button`) && !event.target.closest(`.${styles['mobile-bottom-nav']} button`)) {
         setIsCartSidebarOpen(false);
       }
-      if (!event.target.closest('.cat-links .all-jewellery') && !event.target.closest('.dropdown-menu')) {
+      if (!event.target.closest(`.${styles['cat-links']} .${styles['all-jewellery']}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAllJewelryDropdown(false);
       }
-      if (!event.target.closest('.cat-links .about') && !event.target.closest('.dropdown-menu')) {
+      if (!event.target.closest(`.${styles['cat-links']} .${styles.about}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAboutDropdown(false);
       }
-      if (!event.target.closest('.mobile-menu') && isMobileMenuOpen) {
+      if (!event.target.closest(`.${styles['mobile-menu']}`) && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
         setMenuLevel(0);
       }
-      if (!event.target.closest('.search-popup') && !event.target.closest('.search-toggle') && showSearchPopup) {
+      if (!event.target.closest(`.${styles['search-popup']}`) && !event.target.closest(`.${styles['search-toggle']}`) && showSearchPopup) {
         setShowSearchPopup(false);
         setSearchQuery('');
       }
@@ -414,29 +413,29 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         pauseOnHover
         theme="light"
       />
-      <header className={`navbar-header ${isMenRoute ? 'men-theme' : ''}`}>
-        <div className="promo">
+      <header className={`${styles['navbar-header']} ${isMenRoute ? styles['men-theme'] : ''}`}>
+        <div className={styles.promo}>
           FREE JEWELLERY ORGANIZER WORTH ₹400 ON ORDERS ABOVE RS. 1500
         </div>
 
-        <div className="nav-row">
+        <div className={styles['nav-row']}>
           <button 
-            className={`burger ${isMobileMenuOpen ? 'open' : ''}`}
+            className={`${styles.burger} ${isMobileMenuOpen ? styles.open : ''}`}
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
           >
             <span></span>
           </button>
 
-          <div className="logo">
+          <div className={styles.logo}>
             <a href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>
               <img src={logo} alt="Aisha" />
             </a>
           </div>
 
-          <nav className="icon-bar" aria-label="Quick actions">
+          <nav className={styles['icon-bar']} aria-label="Quick actions">
             <button 
-              className="search-toggle"
+              className={styles['search-toggle']}
               onClick={toggleSearchPopup}
               aria-label="Toggle search"
             >
@@ -444,27 +443,27 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             </button>
             
             <button 
-              className="icon-link"
+              className={styles['icon-link']}
               onClick={(e) => { e.preventDefault(); toggleCartSidebar('liked'); }}
               aria-label="Wishlist"
             >
-              <img src={likeLogo} alt="Wishlist" className="icon-svg" />
+              <img src={likeLogo} alt="Wishlist" className={styles['icon-svg']} />
               {likedItems.length > 0 && (
-                <span className="badge">{likedItems.length}</span>
+                <span className={styles.badge}>{likedItems.length}</span>
               )}
             </button>
 
-            <div className="account-wrapper">
+            <div className={styles['account-wrapper']}>
               <button 
-                className="account-button"
+                className={styles['account-button']}
                 onClick={(e) => { e.preventDefault(); handleProfileClick(); }}
                 aria-label="Account"
               >
-                <img src={accountLogo} alt="Account" className="icon-svg" />
+                <img src={accountLogo} alt="Account" className={styles['icon-svg']} />
               </button>
               
               {user && showUserDropdown && (
-                <div className="account-dropdown">
+                <div className={styles['account-dropdown']}>
                   <span>Hello, {user.firstName} {user.lastName}</span>
                   <button onClick={(e) => { e.preventDefault(); handleNavigation('/profile'); }}>Profile</button>
                   <button onClick={(e) => { e.preventDefault(); logout(); }}>Logout</button>
@@ -473,26 +472,26 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             </div>
 
             <button 
-              className="icon-link"
+              className={styles['icon-link']}
               onClick={(e) => { e.preventDefault(); toggleCartSidebar('cart'); }}
               aria-label="Shopping cart"
             >
-              <img src={shopLogo} alt="Shopping cart" className="icon-svg" />
+              <img src={shopLogo} alt="Shopping cart" className={styles['icon-svg']} />
               {cartItems.length > 0 && (
-                <span className="badge">{cartItems.length}</span>
+                <span className={styles.badge}>{cartItems.length}</span>
               )}
             </button>
           </nav>
         </div>
 
-        <nav className="cat-strip" aria-label="Primary navigation">
-          <ul className="cat-links">
-            <li className={`all-jewellery ${showAllJewelryDropdown ? 'active' : ''}`}>
+        <nav className={styles['cat-strip']} aria-label="Primary navigation">
+          <ul className={styles['cat-links']}>
+            <li className={`${styles['all-jewellery']} ${showAllJewelryDropdown ? styles.active : ''}`}>
               <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
                 All Jewellery
               </a>
               {showAllJewelryDropdown && (
-                <div className="dropdown-menu">
+                <div className={styles['dropdown-menu']}>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>Earrings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/rings'); }}>Rings</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/category/necklaces'); }}>Necklaces</a>
@@ -504,12 +503,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             <li><a href="/collections" onClick={(e) => { e.preventDefault(); handleNavigation('/collections'); }}>Collections</a></li>
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>New Arrivals</a></li>
             <li><a href="/new-arrivals" onClick={(e) => { e.preventDefault(); handleNavigation('/new-arrivals'); }}>Best Seller</a></li>
-            <li className={`about ${showAboutDropdown ? 'active' : ''}`}>
+            <li className={`${styles.about} ${showAboutDropdown ? styles.active : ''}`}>
               <a href="/about" onClick={(e) => { e.preventDefault(); toggleAboutDropdown(); }}>
                 About
               </a>
               {showAboutDropdown && (
-                <div className="dropdown-menu">
+                <div className={styles['dropdown-menu']}>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>Our Story</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/blogs'); }}>Blogs</a>
                   <a href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}>Contact Us</a>
@@ -519,21 +518,21 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           </ul>
         </nav>
 
-        <nav className="gender-strip" aria-label="Shop by gender">
+        <nav className={styles['gender-strip']} aria-label="Shop by gender">
           <a href="/women" onClick={(e) => { e.preventDefault(); handleNavigation('/women'); }}>WOMEN</a>
           <span>|</span>
           <a href="/men" onClick={(e) => { e.preventDefault(); handleNavigation('/men'); }}>MEN</a>
         </nav>
       </header>
 
-      <aside className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="mobile-menu-header">
-          <button className="back-button" onClick={goBack} aria-label="Go back">
+      <aside className={`${styles['mobile-menu']} ${isMobileMenuOpen ? styles.open : ''}`}>
+        <div className={styles['mobile-menu-header']}>
+          <button className={styles['back-button']} onClick={goBack} aria-label="Go back">
             <BackIcon />
           </button>
-          <h2 className="mobile-menu-title">Menu</h2>
+          <h2 className={styles['mobile-menu-title']}>Menu</h2>
         </div>
-        <div className="menu-content">
+        <div className={styles['menu-content']}>
           <ul className="list-group">
             {menuLevel === 0 && (
               <>
@@ -559,13 +558,13 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
                 </li>
                 <li className="list-group-item">
                   <a href="/auth" onClick={(e) => { e.preventDefault(); handleNavigation(user ? '/profile' : '/auth'); }}>
-                    <img src={accountLogo} alt="Account" className="icon-svg" /> {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
+                    <img src={accountLogo} alt="Account" className={styles['icon-svg']} /> {user ? `Hello, ${user.firstName}` : 'Login/Sign Up'}
                   </a>
                 </li>
               </>
             )}
             {menuLevel === 1 && showAllJewelryDropdown && (
-              <div className="dropdown-menu list-group submenu">
+              <div className={`${styles['dropdown-menu']} list-group ${styles.submenu}`}>
                 <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/category/earrings'); }}>
                   <CategoriesIcon /> Earrings
                 </a>
@@ -584,7 +583,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               </div>
             )}
             {menuLevel === 1 && showAboutDropdown && (
-              <div className="dropdown-menu list-group submenu">
+              <div className={`${styles['dropdown-menu']} list-group ${styles.submenu}`}>
                 <a href="#" className="list-group-item" onClick={(e) => { e.preventDefault(); handleNavigation('/our-story'); }}>
                   <CategoriesIcon /> Our Story
                 </a>
@@ -607,9 +606,9 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       </aside>
 
       {showSearchPopup && (
-        <div className="search-popup-overlay">
-          <div className="search-popup">
-            <div className="search-header">
+        <div className={styles['search-popup-overlay']}>
+          <div className={styles['search-popup']}>
+            <div className={styles['search-header']}>
               <input
                 type="text"
                 placeholder="Search jewelry..."
@@ -618,33 +617,33 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
                 onKeyPress={handleSearch}
                 autoFocus
               />
-              <button className="search-icon-btn" onClick={handleSearch} aria-label="Search">
+              <button className={styles['search-icon-btn']} onClick={handleSearch} aria-label="Search">
                 <SearchIcon style={{ color: '#DAA520' }} />
               </button>
-              <button className="close-button" onClick={toggleSearchPopup} aria-label="Close search">
+              <button className={styles['close-button']} onClick={toggleSearchPopup} aria-label="Close search">
                 <CloseIcon style={{ color: '#DAA520' }} />
               </button>
             </div>
-            <div className="popular-choices">
+            <div className={styles['popular-choices']}>
               <h3>Popular Choices</h3>
-              <div className="category-buttons">
+              <div className={styles['category-buttons']}>
                 {popularProducts.map((product) => (
-                  <div key={product.id} className="product-image-container" onClick={(e) => { e.preventDefault(); handleNavigation(`/category/${product.category}`); }}>
+                  <div key={product.id} className={styles['product-image-container']} onClick={(e) => { e.preventDefault(); handleNavigation(`/category/${product.category}`); }}>
                     {/* Placeholder for product image - replace with actual image src */}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="recommended-section">
+            <div className={styles['recommended-section']}>
               <h3>Recommended</h3>
-              <div className="recommended-carousel">
+              <div className={styles['recommended-carousel']}>
                 {recommendedProducts.map((product) => (
-                  <div key={product.id} className="product-card">
-                    {product.oldPrice && <span className="sale-badge">Sale</span>}
-                    <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} className="product-image" />
+                  <div key={product.id} className={styles['product-card']}>
+                    {product.oldPrice && <span className={styles['sale-badge']}>Sale</span>}
+                    <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} className={styles['product-image']} />
                     <h4>{product.name}</h4>
-                    <p><s>₹{product.oldPrice.toFixed(2)}</s> <span className="discounted-price">₹{product.price.toFixed(2)}</span></p>
-                    <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }} className="add-to-cart-btn">Add to Cart</button>
+                    <p><s>₹{product.oldPrice.toFixed(2)}</s> <span className={styles['discounted-price']}>₹{product.price.toFixed(2)}</span></p>
+                    <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }} className={styles['add-to-cart-btn']}>Add to Cart</button>
                   </div>
                 ))}
               </div>
@@ -654,37 +653,37 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
       )}
 
       {(isMobileMenuOpen || isCartSidebarOpen) && (
-        <div className="overlay" onClick={closeAllMenus}></div>
+        <div className={styles.overlay} onClick={closeAllMenus}></div>
       )}
 
-      <aside className={`cart-sidebar ${isCartSidebarOpen ? 'open' : ''} ${isMenRoute ? 'men-theme' : ''}`} ref={sidebarRef}>
-        <div className="tab-buttons">
+      <aside className={`${styles['cart-sidebar']} ${isCartSidebarOpen ? styles.open : ''} ${isMenRoute ? styles['men-theme'] : ''}`} ref={sidebarRef}>
+        <div className={styles['tab-buttons']}>
           <button 
-            className={`tab-link ${activeTab === 'cart' ? 'active' : ''}`}
+            className={`${styles['tab-link']} ${activeTab === 'cart' ? styles.active : ''}`}
             onClick={(e) => { e.preventDefault(); openTab('cart'); }}
           >
             Cart
           </button>
           <button 
-            className={`tab-link ${activeTab === 'liked' ? 'active' : ''}`}
+            className={`${styles['tab-link']} ${activeTab === 'liked' ? styles.active : ''}`}
             onClick={(e) => { e.preventDefault(); openTab('liked'); }}
           >
             Wishlist
           </button>
         </div>
 
-        <div className={`tab-content ${activeTab === 'cart' ? 'active' : ''}`}>
+        <div className={`${styles['tab-content']} ${activeTab === 'cart' ? styles.active : ''}`}>
           <h2>SHOPPING CART</h2>
           <hr />
           {cartItems.length === 0 ? (
             <div className="text-center">
-              <p className="empty-message">Your cart is empty.</p>
+              <p className={styles['empty-message']}>Your cart is empty.</p>
               <img src={shopLogo} alt="Shopping Cart" onClick={(e) => { e.preventDefault(); navigate('/bag'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto' }} />
             </div>
           ) : (
-            <div className="items-container">
+            <div className={styles['items-container']}>
               {cartItems.map((item) => (
-                <div key={item.id} className="cart-item d-flex align-items-center mb-3">
+                <div key={item.id} className={`${styles['cart-item']} d-flex align-items-center mb-3`}>
                   <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
                   <div className="flex-grow-1">
                     <h3>{item.name}</h3>
@@ -700,27 +699,27 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               ))}
             </div>
           )}
-          <div className="subtotal">Subtotal: ₹{cartTotal.toFixed(2)}</div>
-          <button className="return-to-shop btn btn-outline-primary w-100" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
+          <div className={styles.subtotal}>Subtotal: ₹{cartTotal.toFixed(2)}</div>
+          <button className={`${styles['return-to-shop']} btn btn-outline-primary w-100`} onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             RETURN TO SHOP
           </button>
-          <button className="proceed-checkout btn btn-primary w-100" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
+          <button className={`${styles['proceed-checkout']} btn btn-primary w-100`} onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
             PROCEED TO SECURE CHECKOUT
           </button>
         </div>
 
-        <div className={`tab-content ${activeTab === 'liked' ? 'active' : ''}`}>
+        <div className={`${styles['tab-content']} ${activeTab === 'liked' ? styles.active : ''}`}>
           <h2>WISHLIST</h2>
           <hr />
           {likedItems.length === 0 ? (
             <div className="text-center">
-              <p className="empty-message">No liked items yet.</p>
+              <p className={styles['empty-message']}>No liked items yet.</p>
               <img src={likeLogo} alt="Liked Items" onClick={(e) => { e.preventDefault(); navigate('/wishlist'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto' }} />
             </div>
           ) : (
-            <div className="items-container">
+            <div className={styles['items-container']}>
               {likedItems.map((item) => (
-                <div key={item.id} className="liked-item d-flex align-items-center mb-3">
+                <div key={item.id} className={`${styles['liked-item']} d-flex align-items-center mb-3`}>
                   <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
                   <div className="flex-grow-1">
                     <h3>{item.name}</h3>
@@ -736,21 +735,21 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               ))}
             </div>
           )}
-          <button className="return-to-shop btn btn-outline-primary w-100" onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
+          <button className={`${styles['return-to-shop']} btn btn-outline-primary w-100`} onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
             GO TO WISHLIST
           </button>
         </div>
       </aside>
 
       {products.length > 0 && (
-        <main className="products-section">
-          <div className="product-grid">
+        <main className={styles['products-section']}>
+          <div className={styles['product-grid']}>
             {products.map((product) => (
-              <div key={product.id} className="product-card">
+              <div key={product.id} className={styles['product-card']}>
                 <img src={product.imageUrl || '/images/default-product.jpg'} alt={product.name} className="img-fluid" />
                 <h3>{product.name}</h3>
                 <p>₹{product.price.toFixed(2)}</p>
-                <div className="product-actions">
+                <div className={styles['product-actions']}>
                   <button onClick={(e) => { e.preventDefault(); addToCart(product.id); }} className="btn btn-outline-success">Add to Cart</button>
                   <button onClick={(e) => { e.preventDefault(); addToWishlist(product.id); }} className="btn btn-outline-danger">Add to Wishlist</button>
                 </div>
@@ -760,25 +759,25 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         </main>
       )}
       
-      <div className="mobile-bottom-nav">
-          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')} className="nav-btn">
-              <img src={accountLogo} alt="Account" className="icon-svg"/>
+      <div className={styles['mobile-bottom-nav']}>
+          <button onClick={() => handleNavigation(user ? '/profile' : '/auth')} className={styles['nav-btn']}>
+              <img src={accountLogo} alt="Account" className={styles['icon-svg']}/>
               <span>{user ? 'Profile' : 'Account'}</span>
           </button>
-          <button onClick={toggleMobileMenu} className="nav-btn">
+          <button onClick={toggleMobileMenu} className={styles['nav-btn']}>
               <CategoriesIcon />
               <span>Categories</span>
           </button>
-          <button className="cart-button nav-btn" onClick={() => toggleCartSidebar('cart')}>
-              <img src={shopLogo} alt="Cart" className="icon-svg"/>
-              {cartItems.length > 0 && <span className="badge">{cartItems.length}</span>}
+          <button className={`${styles['cart-button']} ${styles['nav-btn']}`} onClick={() => toggleCartSidebar('cart')}>
+              <img src={shopLogo} alt="Cart" className={styles['icon-svg']}/>
+              {cartItems.length > 0 && <span className={styles.badge}>{cartItems.length}</span>}
               <span>Cart</span>
           </button>
-          <button onClick={toggleSearchPopup} className="nav-btn">
+          <button onClick={toggleSearchPopup} className={styles['nav-btn']}>
               <SearchIcon />
               <span>Search</span>
           </button>
-          <button onClick={scrollToTop} className="nav-btn">
+          <button onClick={scrollToTop} className={styles['nav-btn']}>
               <TopIcon />
               <span>Top</span>
           </button>
