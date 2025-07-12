@@ -14,14 +14,14 @@ const AvailableAt = () => {
     <Container as="section" className={`${styles.availableAtSection} text-center py-5`}>
       <h1 className={styles.sectionTitle}>AVAILABLE AT</h1>
       <div className={styles.titleDivider}></div>
-      <Row className="justify-content-center align-items-center g-4 mt-4 flex-nowrap">
+      <Row className={`${styles.marketplaceRow} justify-content-center align-items-center g-4 mt-4 flex-nowrap`}>
         {marketplaces.map((place, index) => (
-          <Col key={index} xs="auto" className="d-flex flex-column align-items-center">
+          <Col key={index} xs="auto">
             <a href="#" className={styles.marketplaceLogo}>
-              <div className={`${styles.logoCircle} shadow-sm`}>
+              <div className={styles.logoCircle}>
                 <img src={place.logo} alt={place.name} style={place.style} />
               </div>
-              <p className={`${styles.marketplaceName} mt-2`}>{place.name}</p>
+              <p className={styles.marketplaceName}>{place.name}</p>
             </a>
           </Col>
         ))}

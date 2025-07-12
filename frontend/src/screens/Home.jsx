@@ -1,7 +1,5 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Slider from '../components/Slider';
 import CategoryCarousel from '../components/CategoryCarousel';
 import NewCollection from '../components/NewCollection';
@@ -17,6 +15,9 @@ import Testimonials from '../components/Testimonials';
 import Features from '../components/Features';
 
 const Home = () => {
+  const [_cartItems, setCartItems] = useState([]);
+  const [_likedItems, setLikedItems] = useState([]);
+
   return (
     <div>
       <br />
@@ -27,7 +28,7 @@ const Home = () => {
       <CategoryCarousel />
       <NewCollection />
       <Trending />
-      <TopProducts />
+      <TopProducts setCartItems={setCartItems} setLikedItems={setLikedItems} />
       <PromoSection />
       <Essentials />
       <ShopByPrice />

@@ -1,48 +1,42 @@
 .availableAtSection {
-  background: #fff;
-  padding: 3rem 1rem;
+  
+  padding: 3rem 1rem; /* Adjusted padding for responsiveness */
 }
 
-.title {
+.sectionTitle {
   font-family: 'Lora', serif;
   font-weight: 500;
-  color: #FFC107;
-  font-size: 2rem;
+  color: #d4af37; /* Yellow-gold color */
   text-align: center;
+  font-size: 2rem; /* Default for larger screens */
 }
 
 .titleDivider {
   width: 60px;
   height: 2px;
   background-color: #ccc;
-  margin: 12px auto;
+  margin: 0 auto;
 }
 
-.logoRow {
-  display: flex;
+.marketplaceRow {
   overflow-x: auto; /* Enable horizontal scrolling on small screens */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
   scrollbar-width: none; /* Hide scrollbar for Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
 }
 
-.logoRow::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for Webkit browsers */
-}
-
-.logoCol {
-  flex: 0 0 auto; /* Prevent columns from stretching */
+.marketplaceRow::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
 .marketplaceLogo {
   text-decoration: none;
   display: inline-block;
-  text-align: center;
 }
 
 .logoCircle {
   width: 180px;
   height: 100px;
-  background: white;
+  background: #fff5e6; /* Skin-tone background, no white */
   border-radius: 60px;
   display: flex;
   align-items: center;
@@ -53,7 +47,8 @@
 
 .marketplaceLogo:hover .logoCircle {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: #d4af37;
 }
 
 .logoCircle img {
@@ -62,52 +57,48 @@
   object-fit: contain;
 }
 
-.logoName {
+.marketplaceName {
+  margin-top: 0.5rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: #d4af37; /* Yellow-gold text */
   font-size: 1rem;
-  margin-top: 8px;
 }
 
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .availableAtSection {
-    padding: 2rem 0.5rem;
+    padding: 2rem 0.5rem; /* Reduced padding for smaller screens */
   }
 
-  .title {
-    font-size: 1.5rem;
+  .sectionTitle {
+    font-size: 1.5rem; /* Smaller title for mobile */
   }
 
   .logoCircle {
-    width: 140px;
+    width: 120px; /* Smaller logo circle for mobile */
     height: 80px;
   }
 
-  .logoName {
-    font-size: 0.9rem;
+  .marketplaceName {
+    font-size: 0.9rem; /* Smaller text for mobile */
   }
 }
 
 @media (max-width: 575.98px) {
   .availableAtSection {
-    padding: 1.5rem 0.5rem;
+    padding: 1.5rem 0.5rem; /* Further reduced padding */
   }
 
-  .title {
-    font-size: 1.25rem;
-  }
-
-  .titleDivider {
-    width: 50px;
+  .sectionTitle {
+    font-size: 1.2rem; /* Even smaller title for extra small screens */
   }
 
   .logoCircle {
-    width: 120px;
+    width: 100px; /* Further reduced size */
     height: 70px;
   }
 
-  .logoName {
-    font-size: 0.85rem;
+  .marketplaceName {
+    font-size: 0.85rem; /* Adjusted text size */
   }
 }
