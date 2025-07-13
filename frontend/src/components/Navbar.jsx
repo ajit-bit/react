@@ -8,6 +8,7 @@ import logo from '../assets/images/logo-nobg.png';
 import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
 import shopLogo from '../assets/images/shoplogo.svg';
+import ring1 from '../assets/images/ring1.jpg';
 
 // Inline SVG Icons
 const CategoriesIcon = () => (
@@ -61,6 +62,18 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
   const accountDropdownRef = useRef(null);
   const searchPopupRef = useRef(null);
 
+  // Add the new item to the cart
+  const initialCartItems = [
+    ...cartItems,
+    {
+      id: '507f1f77bcf86cd799439071',
+      name: 'Elegant Rose Ring',
+      price: 949,
+      imageUrl: ring1,
+      quantity: 1
+    }
+  ];
+
   const toastOptions = {
     position: 'top-right',
     autoClose: 3000,
@@ -74,28 +87,22 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Close cart sidebar if clicking outside
       if (sidebarRef.current && !sidebarRef.current.contains(event.target) && !event.target.closest(`.${styles['icon-bar']} button`) && !event.target.closest(`.${styles['mobile-bottom-nav']} button`)) {
         setIsCartSidebarOpen(false);
       }
-      // Close all jewelry dropdown if clicking outside
       if (!event.target.closest(`.${styles['cat-links']} .${styles['all-jewellery']}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAllJewelryDropdown(false);
       }
-      // Close about dropdown if clicking outside
       if (!event.target.closest(`.${styles['cat-links']} .${styles.about}`) && !event.target.closest(`.${styles['dropdown-menu']}`)) {
         setShowAboutDropdown(false);
       }
-      // Close mobile menu if clicking outside
       if (!event.target.closest(`.${styles['mobile-menu']}`) && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
         setMenuLevel(0);
       }
-      // Close account dropdown if clicking outside
       if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target) && !event.target.closest(`.${styles['account-button']}`)) {
         setShowUserDropdown(false);
       }
-      // Close search popup if clicking on the overlay
       if (searchPopupRef.current && !searchPopupRef.current.contains(event.target) && event.target.closest(`.${styles['search-popup-overlay']}`)) {
         setShowSearchPopup(false);
         setSearchQuery('');
@@ -122,7 +129,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             imageUrl: item.imageUrl || '/images/default-product.jpg',
             quantity: item.quantity || 1,
           }));
-          if (setCartItems) setCartItems(normalizedItems);
+          if (setCartItems) setCartItems([...normalizedItems, ...initialCartItems]);
         } else {
           console.error("Failed to fetch cart items:", response.status);
           toast.error("Failed to fetch cart items", toastOptions);
@@ -198,7 +205,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           imageUrl: item.imageUrl || '/images/default-product.jpg',
           quantity: item.quantity || 1,
         }));
-        if (setCartItems) setCartItems(normalizedItems);
+        if (setCartItems) setCartItems([...normalizedItems, ...initialCartItems]);
         toast.success("Added to Cart!", toastOptions);
       } else {
         const errorData = await response.json();
@@ -381,7 +388,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+  const cartTotal = initialCartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
   const isMenRoute = location.pathname === '/men';
 
   const goBack = () => {
@@ -487,8 +494,8 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               aria-label="Shopping cart"
             >
               <img src={shopLogo} alt="Shopping cart" className={styles['icon-svg']} />
-              {cartItems.length > 0 && (
-                <span className={styles.badge}>{cartItems.length}</span>
+              {initialCartItems.length > 0 && (
+                <span className={styles.badge}>{initialCartItems.length}</span>
               )}
             </button>
           </nav>
@@ -685,14 +692,14 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
         <div className={`${styles['tab-content']} ${activeTab === 'cart' ? styles.active : ''}`}>
           <h2>SHOPPING CART</h2>
           <hr />
-          {cartItems.length === 0 ? (
+          {initialCartItems.length === 0 ? (
             <div className="text-center">
               <p className={styles['empty-message']}>Your cart is empty.</p>
               <img src={shopLogo} alt="Shopping Cart" onClick={(e) => { e.preventDefault(); navigate('/bag'); }} style={{ width: '40px', height: '40px', cursor: 'pointer', margin: '20px auto' }} />
             </div>
           ) : (
             <div className={styles['items-container']}>
-              {cartItems.map((item) => (
+              {initialCartItems.map((item) => (
                 <div key={item.id} className={`${styles['cart-item']} d-flex align-items-center mb-3`}>
                   <img src={item.imageUrl} alt={item.name} className="img-fluid" style={{ width: '50px', height: '50px', marginRight: '10px' }} />
                   <div className="flex-grow-1">
@@ -710,10 +717,12 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
             </div>
           )}
           <div className={styles.subtotal}>Subtotal: ₹{cartTotal.toFixed(2)}</div>
-          <button className={`${styles['return-to-shop']} btn btn-outline-primary w-100`} onClick={(e) => { e.preventDefault(); closeAllMenus(); }}>
+          <button className={`${styles['return-to-shop']} btn btn-primary w-100`} onClick={(e) => { e.preventDefault(); closeAllMenus(); navigate('/category/earrings');}}>
             RETURN TO SHOP
           </button>
-          <button className={`${styles['proceed-checkout']} btn btn-primary w-100`} onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>
+          <br />
+          <br />
+          <button className={`${styles['proceed-checkout']} btn btn-primary w-100`} onClick={(e) => { e.preventDefault(); navigate('/'); }}>
             PROCEED TO SECURE CHECKOUT
           </button>
         </div>
@@ -785,7 +794,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           </button>
           <button className={`${styles['cart-button']} ${styles['nav-btn']}`} onClick={() => toggleCartSidebar('cart')}>
               <img src={shopLogo} alt="Cart" className={styles['icon-svg']}/>
-              {cartItems.length > 0 && <span className={styles.badge}>{cartItems.length}</span>}
+              {initialCartItems.length > 0 && <span className={styles.badge}>{initialCartItems.length}</span>}
               <span>Cart</span>
           </button>
           

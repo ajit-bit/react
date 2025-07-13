@@ -327,7 +327,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
       />
       <section className={styles.slider} ref={carouselRef}>
         <div className={styles.carouselInner} style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
