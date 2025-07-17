@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './Navbar.module.css';
+import styles from '../styles/Navbar.module.css';
 import logo from '../assets/images/logo-nobg.png';
 import likeLogo from '../assets/images/like.svg';
 import accountLogo from '../assets/images/acountlogo.svg';
@@ -505,7 +505,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
           <ul className={styles['cat-links']}>
             <li className={`${styles['all-jewellery']} ${showAllJewelryDropdown ? styles.active : ''}`}>
               <a href="/products" onClick={(e) => { e.preventDefault(); toggleAllJewelryDropdown(); }}>
-                All Jewellery
+                Shop by Category
               </a>
               {showAllJewelryDropdown && (
                 <div className={styles['dropdown-menu']}>
@@ -555,7 +555,7 @@ const Navbar = ({ setCartItems, setLikedItems, cartItems = [], likedItems = [], 
               <>
                 <li className="list-group-item">
                   <a href="/products" onClick={(e) => { e.preventDefault(); setShowAllJewelryDropdown(!showAllJewelryDropdown); setMenuLevel(1); }}>
-                    <CategoriesIcon /> All Jewellery
+                    <CategoriesIcon /> Shop by Category
                   </a>
                 </li>
                 <li className="list-group-item">
