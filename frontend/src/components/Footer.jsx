@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import styles from '../styles/Footer.module.css';
+import styles from '../styles/footer.module.css';
 import paytm from '../assets/images/paytm.svg';
 import googlepay from '../assets/images/googlepay.svg';
 import visa from '../assets/images/visa.svg';
