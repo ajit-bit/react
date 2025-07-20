@@ -322,6 +322,7 @@ const Men = ({ setCartItems, setLikedItems }) => {
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
+astica
         closeOnClick
         rtl={false}
         pauseOnFocusLoss

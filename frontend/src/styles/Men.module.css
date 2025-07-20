@@ -9,11 +9,11 @@
 }
 
 :root {
-  --bg-grey: #333;
-  --text-light: #ffffff;
-  --accent: #555;
-  --badge-bg: #eee;
-  --badge-text: #111;
+  --bg-black: #000000;
+  --bg-white: #ffffff;
+  --text-black: #000000;
+  --text-grey: #666666;
+  --border-grey: #cccccc;
 }
 
 *,
@@ -26,15 +26,15 @@
 
 body {
   font-family: 'Lora', serif;
-  background: #f9f5f0;
-  color: var(--text-light);
+  background: var(--bg-white);
+  color: var(--text-black);
 }
 
 .slider {
   position: relative;
   min-height: 400px;
   overflow: hidden;
-  background: #f9f5f0;
+  background: var(--bg-white);
   width: 100%;
   padding: 0;
 }
@@ -89,7 +89,7 @@ body {
 
 .text h4 {
   text-transform: uppercase;
-  color: #777;
+  color: var(--text-grey);
   letter-spacing: 1px;
   font-size: 14px;
   margin-bottom: 8px;
@@ -100,11 +100,11 @@ body {
   margin: 8px 0 16px 0;
   font-weight: bold;
   line-height: 1.2;
-  color: #111827;
+  color: var(--text-black);
 }
 
 .text p {
-  color: #666;
+  color: var(--text-grey);
   line-height: 1.6;
   margin-bottom: 24px;
   font-size: 16px;
@@ -112,8 +112,8 @@ body {
 
 .text button {
   padding: 12px 24px;
-  border: 2px solid #333;
-  color: #111827;
+  border: 2px solid var(--text-black);
+  color: var(--text-black);
   background: transparent;
   cursor: pointer;
   font-size: 14px;
@@ -124,40 +124,40 @@ body {
 }
 
 .text button:hover {
-  background: #333;
-  color: #fff;
+  background: var(--bg-black);
+  color: var(--bg-white);
   transform: translateY(-2px);
 }
 
 .collection {
   padding: 40px 0;
   text-align: center;
-  background-color: #fff;
+  background-color: var(--bg-white);
 }
 
 .collection h2 {
   margin-bottom: 20px;
   font-size: 32px;
-  color: #333;
+  color: var(--text-black);
   font-weight: 600;
 }
 
 .viewMore {
   background: none;
-  border: 1px solid #333;
+  border: 1px solid var(--text-black);
   padding: 10px 24px;
   margin-bottom: 40px;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: var(--text-black);
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
 }
 
 .viewMore:hover {
-  background: #333;
-  color: #fff;
+  background: var(--bg-black);
+  color: var(--bg-white);
 }
 
 .productsGrid,
@@ -181,7 +181,7 @@ body {
 .productCard,
 .shopLoveCard,
 .reviewCard {
-  background-color: white;
+  background-color: var(--bg-white);
   border-radius: 1rem;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -240,7 +240,7 @@ body {
 .product-name {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-black);
   margin-bottom: 0.5rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -264,22 +264,22 @@ body {
 .star {
   width: 1rem;
   height: 1rem;
-  color: #d1d5db;
+  color: var(--border-grey);
 }
 
 .star.filled {
-  color: #fbbf24;
-  fill: #fbbf24;
+  color: var(--text-black);
+  fill: var(--text-black);
 }
 
 .star.half-filled {
-  color: #fbbf24;
-  fill: #fde68a;
+  color: var(--text-black);
+  fill: var(--border-grey);
 }
 
 .reviews-text {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-grey);
 }
 
 .price-container {
@@ -298,12 +298,12 @@ body {
 .current-price {
   font-size: 1.125rem;
   font-weight: bold;
-  color: #111827;
+  color: var(--text-black);
 }
 
 .original-price {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-grey);
   text-decoration: line-through;
 }
 
@@ -315,8 +315,8 @@ body {
 
 .add-to-bag-button {
   flex: 1;
-  background-color: #eab308;
-  color: black;
+  background-color: var(--bg-black);
+  color: var(--bg-white);
   font-weight: 600;
   padding: 0.75rem 1rem;
   border: none;
@@ -331,7 +331,7 @@ body {
 }
 
 .add-to-bag-button:hover:not(:disabled) {
-  background-color: #ca8a04;
+  background-color: #333333;
   transform: scale(1.05);
 }
 
@@ -343,20 +343,21 @@ body {
 .bag-icon {
   width: 1rem;
   height: 1rem;
+  color: var(--bg-white);
 }
 
 .like-button {
   padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  background-color: white;
+  border: 2px solid var(--border-grey);
+  background-color: var(--bg-white);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .like-button:hover:not(:disabled) {
-  border-color: #fca5a5;
-  background-color: #fef2f2;
+  border-color: var(--text-black);
+  background-color: #f5f5f5;
 }
 
 .like-button:disabled {
@@ -365,49 +366,49 @@ body {
 }
 
 .like-button.liked {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--text-black);
+  background-color: #f5f5f5;
 }
 
 .like-button .heart-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: #9ca3af;
+  color: var(--text-grey);
   transition: color 0.3s ease;
 }
 
 .heart-icon.liked {
-  color: #ef4444;
-  fill: #ef4444;
+  color: var(--text-black);
+  fill: var(--text-black);
 }
 
 .heart-icon:hover:not(.liked) {
-  color: #ef4444;
+  color: var(--text-black);
 }
 
 .men-theme-toast {
-  background: linear-gradient(135deg, #000, #2c2c2c) !important;
-  color: #ffffff !important;
+  background: var(--bg-black) !important;
+  color: var(--bg-white) !important;
 }
 
 .men-theme-toast .Toastify__progress-bar {
-  background: #ffffff !important;
+  background: var(--bg-white) !important;
 }
 
 .men-theme-toast .Toastify__close-button {
-  color: #ffffff !important;
+  color: var(--bg-white) !important;
 }
 
 .shopLove {
   padding: 40px 0;
   text-align: center;
-  background-color: #fff;
+  background-color: var(--bg-white);
 }
 
 .shopLove h2 {
   margin-bottom: 20px;
   font-size: 32px;
-  color: #333;
+  color: var(--text-black);
   font-weight: 600;
 }
 
@@ -427,25 +428,25 @@ body {
 
 .shopLoveCard h3 {
   font-size: 1.25rem;
-  color: #333;
+  color: var(--text-black);
   margin-bottom: 0.5rem;
 }
 
 .shopLoveCard .reviewText {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-grey);
 }
 
 .reviews {
   padding: 40px 0;
   text-align: center;
-  background: linear-gradient(135deg, #878688, #242424);
+  background: linear-gradient(135deg, #333333, #000000);
 }
 
 .reviews h2 {
   margin-bottom: 20px;
   font-size: 32px;
-  color: #ffffff;
+  color: var(--bg-white);
   font-weight: 600;
 }
 
@@ -465,7 +466,7 @@ body {
 }
 
 .reviewStars {
-  color: #ffa500;
+  color: var(--text-black);
   font-size: 18px;
   margin-bottom: 15px;
 }
@@ -473,7 +474,7 @@ body {
 .reviewText {
   font-size: 14px;
   line-height: 1.5;
-  color: #333;
+  color: var(--text-black);
   margin-bottom: 25px;
   flex-grow: 1;
   display: flex;
@@ -495,14 +496,14 @@ body {
 }
 
 .reviewerInfo h4 {
-  color: #333;
+  color: var(--text-black);
   font-size: 16px;
   margin-bottom: 3px;
   font-weight: 600;
 }
 
 .reviewerInfo p {
-  color: #666;
+  color: var(--text-grey);
   font-size: 12px;
   margin: 0;
 }
